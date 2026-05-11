@@ -1,0 +1,96 @@
+{{ define "product_card" }}
+<div
+  class="w-full aspect-[16/10] items-center justify-center border-2 border-pos_lgh/10 rounded-2xl overflow-clip bg-pos_whi">
+  <div class="w-4/5 flex-col items-center justify-center gap-1.5 p-3">
+    <img src="{{ .Image }}" alt="product image" select="none"
+      class="w-full aspect-square object-center object-cover rounded-lg">
+    <div class="w-full flex-col gap-0">
+      <p class="text-lg text-pos_col font-black"><sup class="text-xs">Ugx</sup> {{ .Price }} <span
+          class="text-base text-pos_lgh font-semibold"><br>/ Serving</span></p>
+    </div>
+  </div>
+  <div class="w-full h-full flex-col items-start justify-between gap-1.5 p-3">
+    <h4 class="text-lg text-pos_bla font-black">{{ .Name }}</h4>
+    <p class="text-sm text-pos_lgh font-medium">{{ .Description }}</p>
+    <div class="text-3xl w-full flex items-center justify-between p-1 rounded-full bg-gray-100">
+      <button class="w-10 aspect-square rounded-full text-pos_col bg-pos_whi">-</button>
+      <span class="text-pos_bla text-base font-medium">0</span>
+      <button class="w-10 aspect-square rounded-full text-pos_whi bg-pos_col">+</button>
+    </div>
+  </div>
+</div>
+{{ end }}
+
+{{ define "order_card" }}
+<div
+  class="snap-center w-64 aspect-[16/12] flex-col items-center justify-start gap-2.5 border-2 border-pos_lgh/25 rounded-[inherit]">
+  <div class="w-full h-fit items-center justify-between p-2 border-b-2 border-b-pos_bla/15">
+    <div class="w-fit flex-col gap-0 items-start justify-center">
+      <h4 class="text-sm text-pos_bla font-bold">{{ .CustName }} - {{ .CustNumber}}</h4>
+      <p class="text-sm scolor font-black">{{ .Name }} - <span class="otype">{{ .Type }}</span></p>
+    </div>
+    <div class="w-fit items-center justify-end">
+      <span class="text-pos_whi text-2xl w-12 aspect-square flex items-center justify-center rounded-full sback">
+        <i class="hgi hgi-stroke otype-icon text-2xl sback"></i>
+      </span>
+    </div>
+  </div>
+  <div class="w-full flex-col items-start justify-center gap-1.5 p-2.5 font-medium">
+    <span class="w-full flex items-center justify-start gap-2">
+      <i class="hgi hgi-stroke hgi-location-03 text-2xl scolor leading-none"></i>
+      <span class="text-[13px] text-pos_bla font-medium">
+        {{if eq .Type "DineIn"}}
+        {{if .Destination}}
+        <strong>{{.Destination}}</strong>
+        {{else}}
+        <span class="text-pos_bla">No Tables Available</span>
+        {{end}}
+        {{else}}
+        {{.Destination}}
+        {{end}} - <span class="status">{{ .Status }}
+        </span>
+      </span>
+    </span>
+    <span class="w-full flex items-center justify-start gap-2">
+      <i class="hgi hgi-stroke hgi-serving-food text-2xl scolor leading-none"></i>
+      <span class="text-[13px] text-pos_bla font-medium">Items: {{ .Items }} - Total Price: {{ .Cost }}/=</span>
+    </span>
+    <span class="w-full flex items-center justify-start gap-2">
+      <i class="hgi hgi-stroke hgi-date-time text-2xl scolor leading-none"></i>
+      <span class="text-[13px] text-pos_bla font-medium">{{ .DateTime }}</span>
+    </span>
+  </div>
+</div>
+{{ end }}
+
+{{ define "table_card" }}
+<div id="tables" class="w-full grid grid-cols-3 grid-row-auto gap-5">
+  <div class="table w-full flex-col items-center justify-between p-2.5">
+    <div class="w-full flex-col items-center justify-center gap-1.5">
+      <h3 class="text-3xl text-center scolor font-black">{{ .Name }}</h3>
+      <div class="w-full items-center justify-center gap-1.5 font-bold">
+        <p class="text-xl text-pos_bla">Cap: {{ .Capacity }}</p>
+        <p class="text-lg">State:
+          {{if eq .State "Available"}}
+          <span>Available</span>
+          {{else if eq .State "Occupied"}}
+          <span class="text-pos_dlv">Occupied</span>
+          {{else if eq .State "Pending"}}
+          <span class="text-pos_pdg">Cleaning Required</span>
+          {{end}}
+        </p>
+        <p class="text-lg text-pos_bla">Cur Order:
+          {{if .OrderCurr}}
+          <span>{{ .OrderCurr.Name }}, {{ .OrderCurr.CustName }}</span>
+          {{else}}
+          <span>No Active Order</span>
+          {{end}}
+        </p>
+      </div>
+    </div>
+    <div class="w-full flex-col items-center justify-between py-3.5 px-3.5 gap-3.5">
+      <i class="hgi hgi-stroke hgi-restaurant-table text-9xl scolor"></i>
+    </div>
+  </div>
+</div>
+{{ end }}

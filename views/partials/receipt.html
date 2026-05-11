@@ -1,0 +1,111 @@
+{{ define "receipt" }}
+
+<div class="w-full h-full flex-col items-start justify-start gap-3.5">
+  <h4 class="text-xl text-pos_bla font-bold">Order Details</h4>
+
+  <div class="w-full items-center justify-between">
+    <h3 class="text-2xl text-pos_bla font-black">#ORD0023</h3>
+    <h5 class="text-base text-pos_rdy font-medium px-5 py-3 rounded-xl border-2 border-pos_rdy bg-pos_whi">Order
+      Ready</h5>
+  </div>
+
+  <div
+    class="w-full h-fit max-h-[67%] flex-col items-start justify-start gap-1.5 p-3 overflow-y-scroll scroll-py-3.5 rounded-2xl border-2 border-pos_lgh/15 bg-pos_lgh/15">
+    <div class="w-full items-center justify-start gap-5 rounded-lg bg-pos_lgh/10">
+      <img src="/assets/imgs/st-matooke.jpeg" alt="" class="w-20 aspect-square object-center object-cover rounded-md">
+      <div class="w-[100%] flex-col items-end justify-between gap-0">
+        <h5 class="text-lg text-pos_bla font-bold">Steamed Matooke</h5>
+        <p class="text-lg text-pos_bla font-semibold"><sup class="text-xs text-pos_lgh">Ugx</sup>
+          7,000</p>
+        <div class="text-xl w-2/3 flex items-center justify-between p-1 rounded-full bg-pos_lgh/10 gap-1.5">
+          <button class="w-7 aspect-square rounded-full text-pos_col bg-pos_whi">-</button>
+          <span class="text-pos_bla text-base font-medium">1</span>
+          <button class="w-7 aspect-square rounded-full text-pos_whi bg-pos_col">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="w-full items-center justify-start gap-5 rounded-lg bg-pos_lgh/10">
+      <img src="/assets/imgs/juice-mango.jpg" alt="" class="w-20 aspect-square object-center object-cover rounded-md">
+      <div class="w-[100%] flex-col items-end justify-between gap-0">
+        <h5 class="text-lg text-pos_bla font-bold">Mango Juice</h5>
+        <p class="text-lg text-pos_bla font-semibold"><sup class="text-xs text-pos_lgh">Ugx</sup>
+          7,000</p>
+        <div class="text-xl w-2/3 flex items-center justify-between p-1 rounded-full bg-pos_lgh/10 gap-1.5">
+          <button class="w-7 aspect-square rounded-full text-pos_col bg-pos_whi">-</button>
+          <span class="text-pos_bla text-base font-medium">2</span>
+          <button class="w-7 aspect-square rounded-full text-pos_whi bg-pos_col">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="w-full items-center justify-start gap-5 rounded-lg bg-pos_lgh/10">
+      <img src="/assets/imgs/st-fish.jpeg" alt="" class="w-20 aspect-square object-center object-cover rounded-md">
+      <div class="w-[100%] flex-col items-end justify-between gap-0">
+        <h5 class="text-lg text-pos_bla font-bold">Deep Fried Fish</h5>
+        <p class="text-lg text-pos_bla font-semibold"><sup class="text-xs text-pos_lgh">Ugx</sup>
+          50,000</p>
+        <div class="text-xl w-2/3 flex items-center justify-between p-1 rounded-full bg-pos_lgh/10 gap-1.5">
+          <button class="w-7 aspect-square rounded-full text-pos_col bg-pos_whi">-</button>
+          <span class="text-pos_bla text-base font-medium">1</span>
+          <button class="w-7 aspect-square rounded-full text-pos_whi bg-pos_col">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="w-full items-center justify-start gap-5 rounded-lg bg-pos_lgh/10">
+      <img src="/assets/imgs/fr-salads.jpg" alt="" class="w-20 aspect-square object-center object-cover rounded-md">
+      <div class="w-[100%] flex-col items-end justify-between gap-0">
+        <h5 class="text-lg text-pos_bla font-bold">Kachumbali</h5>
+        <p class="text-lg text-pos_bla font-semibold"><sup class="text-xs text-pos_lgh">Ugx</sup>
+          9,000</p>
+        <div class="text-xl w-2/3 flex items-center justify-between p-1 rounded-full bg-pos_lgh/10 gap-1.5">
+          <button class="w-7 aspect-square rounded-full text-pos_col bg-pos_whi">-</button>
+          <span class="text-pos_bla text-base font-medium">2</span>
+          <button class="w-7 aspect-square rounded-full text-pos_whi bg-pos_col">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="w-full items-center justify-start gap-5 rounded-lg bg-pos_lgh/10">
+      <img src="/assets/imgs/lw-chicken.jpeg" alt="" class="w-20 aspect-square object-center object-cover rounded-md">
+      <div class="w-[100%] flex-col items-end justify-between gap-0">
+        <h5 class="text-lg text-pos_bla font-bold">Luwombo Chicken</h5>
+        <p class="text-lg text-pos_bla font-semibold"><sup class="text-xs text-pos_lgh">Ugx</sup>
+          25,000</p>
+        <div class="text-xl w-2/3 flex items-center justify-between p-1 rounded-full bg-pos_lgh/10 gap-1.5">
+          <button class="w-7 aspect-square rounded-full text-pos_col bg-pos_whi">-</button>
+          <span class="text-pos_bla text-base font-medium">1</span>
+          <button class="w-7 aspect-square rounded-full text-pos_whi bg-pos_col">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full flex-col items-start justify-start gap-5">
+    <div class="w-full flex-col items-stretch justify-start gap-0">
+      <div class="text-pos_lgh w-full items-center justify-between">
+        <p class="text-base">Subtotal</p>
+        <p class="text-lg text-pos_bla font-semibold"><sup class="text-xs text-pos_lgh">Ugx</sup>
+          114,000</p>
+      </div>
+      <div class="text-pos_lgh w-full items-center justify-between">
+        <p class="text-base">Transit fee</p>
+        <p class="text-lg text-pos_bla font-semibold"><sup class="text-xs text-pos_lgh">Ugx</sup>
+          3,000</p>
+      </div>
+      <span class="w-full h-0.5 bg-pos_lgh"></span>
+      <div class="w-full grid grid-cols-3 items-center justify-between gap-5 p-3 mt-3">
+        <button class="w-full aspect-[4/3] flex items-center justify-center bg-pos_col/10 rounded-xl">
+          <i class="hgi hgi-stroke hgi-smart-phone-01 text-3xl text-pos_col"></i>
+        </button>
+        <button class="w-full aspect-[4/3] flex items-center justify-center bg-pos_col rounded-xl">
+          <i class="hgi hgi-stroke hgi-cash-02 text-3xl text-pos_whi"></i>
+        </button>
+        <button class="w-full aspect-[4/3] flex items-center justify-center bg-pos_col/10 rounded-xl">
+          <i class="hgi hgi-stroke hgi-credit-card text-3xl text-pos_col"></i>
+        </button>
+      </div>
+      <button class="w-full flex items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col">Proceed
+        to
+        payment</button>
+    </div>
+  </div>
+</div>
+{{ end }}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=1367">
+  <title>Point Of Sale</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LINE+Seed+JP&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap"
+    rel="stylesheet">
+
+  <!-- icons -->
+  <link href="/assets/hugeicons.css" rel="stylesheet">
+  <link href="/assets/card.png" rel="shortcut icon" type="image/x-icon" />
+
+  <link href="/css/output.css" rel="stylesheet">
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> -->
+
+  <script src="/js/alpine.min.js" defer></script>
+  <script src="/js/htmx.min.js" defer></script>
+  <script src="/js/main.js" defer></script>
+</head>
+
+<body class="bg-pos_bla h-screen flex items-start justify-center">
+  <div class="relative w-screen aspect-[16/10] flex items-start justify-between gap-0 bg-pos_whi">
+    <div class="w-full h-full flex flex-col gap-12">
+      <div class="w-full h-full flex-col mx-auto bg-white p-4 rounded shadow">
+        <input type="search" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
+          class="mb-4 w-full p-2 border border-pos_bla/25 rounded outline-none">
+
+        <div class="w-full h-[93%] flex flex-col gap-0.5">
+          <h2 class="text-pos_bla text-3xl font-bold mb-3">Tables List</h2>
+
+          <div class="w-full max-h-[93%] overflow-y-scroll">
+            {{ range .tables }}
+            {{ template "table_card" . }}
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const stateColors = {
+        available: "text-pos_plc",
+        pending: "text-pos_pdg",
+        occupied: "text-pos_dlv",
+      };
+
+      document.querySelectorAll("#tables div").forEach((row) => {
+        const stateEl = row.querySelector(".state");
+        if (!stateEl) return;
+
+        const state = stateEl.textContent.trim().toLowerCase();
+        const textClass = stateColors[state];
+        if (!textClass) return;
+
+        stateEl.classList.add(textClass);
+
+        row.querySelectorAll(".scolor").forEach((el) => {
+          el.classList.add(textClass);
+        });
+      });
+    });
+
+    // Search functionality
+    function searchTable() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("tbody tr");
+
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(input) ? "" : "none";
+      });
+    }
+
+    // Sort functionality
+    function sortTable(n) {
+      const table = document.getElementById("dataTable");
+      let switching = true;
+      let dir = "asc";
+      let switchCount = 0;
+
+      while (switching) {
+        switching = false;
+        const rows = table.rows;
+        for (let i = 1; i < rows.length - 1; i++) {
+          let shouldSwitch = false;
+          const x = rows[i].getElementsByTagName("TD")[n];
+          const y = rows[i + 1].getElementsByTagName("TD")[n];
+          if (dir === "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          } else if (dir === "desc" && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          switchCount++;
+        } else {
+          if (switchCount === 0 && dir === "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

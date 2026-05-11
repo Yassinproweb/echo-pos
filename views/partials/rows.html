@@ -1,0 +1,47 @@
+{{ define "order_row" }}
+<tr class="even:bg-pos_lgh/15">
+  <td class="px-4 py-2 text-left text-base scolor font-black">{{ .Name }}</td>
+  <td class="px-4 py-2 text-left text-base text-pos_bla font-medium">{{ .DateTime }}</td>
+  <td class="px-4 py-2 text-left text-base text-pos_bla font-semibold">{{ .CustName }}</td>
+  <td class="px-4 py-2 text-left text-base text-pos_bla font-semibold">{{ .CustNumber }}</td>
+  <td class="px-4 py-2 text-left text-sm scolor font-bold uppercase">
+    {{if eq .Type "DineIn"}}
+    {{if .Destination}}
+    <strong>{{.Destination}}</strong>
+    {{else}}
+    <span class="text-pos_bla">No Tables Available</span>
+    {{end}}
+    {{else}}
+    {{.Destination}}
+    {{end}}
+  </td>
+  <td class="px-4 py-2 text-left text-sm scolor font-bold uppercase">{{ .Type }}</td>
+  <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .Items }}</td>
+  <td class="px-4 py-2 text-left text-sm scolor font-bold uppercase status">{{ .Status }}</td>
+  <td class="px-4 py-2 text-left text-base text-pos_bla font-semibold">{{ .Cost }}</td>
+</tr>
+{{ end }}
+
+{{ define "table_row" }}
+<tr>
+  <td class="px-4 py-2 text-left text-base scolor font-normal">{{ .Name }}</td>
+  <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .Capacity }}</td>
+  <td class="px-4 py-2 text-left text-base text-pos_plc font-bold">
+    {{if eq .State "Available"}}
+    <span>Available</span>
+    {{else if eq .State "Occupied"}}
+    <span class="text-pos_dlv">Occupied</span>
+    {{else if eq .State "Pending"}}
+    <span class="text-pos_pdg">Cleaning Required</span>
+    {{end}}
+  </td>
+
+  <td class="px-4 py-2 text-left text-base scolor font-bold">
+    {{if .OrderCurr}}
+    <span>{{ .OrderCurr.Name }}, {{ .OrderCurr.CustName }}</span>
+    {{else}}
+    <span>No Active Order</span>
+    {{end}}
+  </td>
+</tr>
+{{ end }}

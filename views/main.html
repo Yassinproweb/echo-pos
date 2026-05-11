@@ -1,0 +1,53 @@
+{{ template "head" . }}
+
+<main
+  class="w-[60%] h-full flex flex-col items-center justify-start p-5 pt-20 pb-11 gap-5 overflow-y-scroll bg-pos_bla/10">
+  <div id="orders-card" class="w-full flex flex-col items-stretch justify-start gap-2.5">
+    <section class="w-full flex items-center justify-between">
+      <h3 class="text-2xl text-pos_bla font-black">Current Orders</h3>
+      <button class="text-pos_col font-medium underline">See all orders</button>
+    </section>
+    <section
+      class="w-full grid grid-flow-col justify-start p-5 gap-3.5 border-2 border-pos_lgh/15 rounded-3xl snap-mandatory snap-x scroll-pl-5 bg-pos_whi overflow-x-scroll">
+      {{ range .orders }}
+      {{ template "order_card" . }}
+      {{ end }}
+    </section>
+  </div>
+
+  <div class="hidden invisible max-h-0 max-w-0">
+    <span class="bg-pos_plc"></span>
+    <span class="bg-pos_pdg"></span>
+    <span class="bg-pos_cld"></span>
+    <span class="bg-pos_rdy"></span>
+    <span class="bg-pos_trs"></span>
+    <span class="bg-pos_dlv"></span>
+    <span class="text-pos_plc"></span>
+    <span class="text-pos_pdg"></span>
+    <span class="text-pos_cld"></span>
+    <span class="text-pos_rdy"></span>
+    <span class="text-pos_trs"></span>
+    <span class="text-pos_dlv"></span>
+  </div>
+
+  <div id="products-card" class="w-full max-h-[55%] flex flex-col items-start justify-start gap-2.5">
+    <div class="w-full flex items-center justify-between">
+      <h3 class="text-2xl text-pos_bla font-black">Meals List</h3>
+      <button class="text-pos_col font-medium underline">See all products</button>
+    </div>
+    <div class="w-full max-h-[100%] flex flex-col items-start justify-start gap-2.5">
+      <section class="w-full grid grid-flow-col gap-2 justify-start overflow-x-scroll"></section>
+      <section class="w-full grid grid-cols-2 justify-start gap-3 snap-mandatory snap-y scroll-pb-9 overflow-y-scroll">
+        {{ range .products }}
+        {{ template "product_card" .}}
+        {{ end }}
+      </section>
+    </div>
+  </div>
+</main>
+
+<aside class="w-[25%] h-full flex-col items-start justify-start p-5 border-l-2 border-l-pos_lgh/25">
+  <section class="w-full h-full flex-col items-start justify-between">
+    {{ template "receipt" . }}
+  </section>
+</aside>

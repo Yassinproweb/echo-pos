@@ -1,0 +1,93 @@
+{{ define "head" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=1367">
+  <title>Point Of Sale</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LINE+Seed+JP&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght,MONO@0,300..800,1;1,300..800,1&display=swap"
+    rel="stylesheet">
+
+  <!-- icons -->
+  <link href="/assets/hugeicons.css" rel="stylesheet">
+  <link href="/assets/card.png" rel="shortcut icon" type="image/x-icon" />
+
+  <link href="/css/output.css" rel="stylesheet">
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> -->
+
+  <script src="/js/alpine.min.js" defer></script>
+  <script src="/js/htmx.min.js" defer></script>
+  <script src="/js/main.js" defer></script>
+</head>
+
+<body class="bg-pos_bla h-screen flex items-start justify-center">
+  <div class="relative w-screen aspect-[16/10] flex items-start justify-between gap-0 bg-pos_whi">
+    <header class="w-[15%] h-full flex flex-col items-start justify-start p-5 border-r border-r-pos_cld/25 bg-pos_col">
+      <div class="w-full flex flex-col gap-7">
+        <div class="w-fit flex flex-col items-start justify-center gap-0">
+          <h3 class="text-xl text-pos_whi font-bold leading-none">Cashier's Name</h3>
+          <p class="text-pos_whi">{{ .user }}</p>
+        </div>
+
+        <nav class="w-full flex flex-col items-start justify-start gap-9">
+          <div class="w-full flex flex-col items-start justify-start gap-3.5">
+            <h3 class="text-xl text-pos_whi font-black">Main Menu</h3>
+            <div class="w-full flex flex-col items-start justify-start gap-2 pl-2.5">
+              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+                <i class="hgi hgi-stroke hgi-dashboard-square-03 text-3xl"></i>
+                <span>Dashboard</span>
+              </button>
+              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65"
+                hx-get="/orders" hx-trigger="click" hx-target="html" hx-swap="outerHtml">
+                <i class="hgi hgi-stroke hgi-menu-restaurant text-3xl"></i>
+                <span>Orders</span>
+              </button>
+              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+                <i class="hgi hgi-stroke hgi-dining-table text-3xl"></i>
+                <span>Tables</span>
+              </button>
+              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+                <i class="hgi hgi-stroke hgi-waiters text-3xl"></i>
+                <span>Waitlist</span>
+              </button>
+              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+                <i class="hgi hgi-stroke hgi-license-pin text-3xl"></i>
+                <span>Reservations</span>
+              </button>
+            </div>
+          </div>
+          <div class="w-full flex flex-col items-start justify-start gap-3.5">
+            <h3 class="text-xl text-pos_whi font-semibold">Company</h3>
+            <div class="w-full flex flex-col items-start justify-start gap-2 pl-2.5">
+              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+                <i class="hgi hgi-stroke hgi-analytics-02 text-3xl"></i>
+                <span>Analytics</span>
+              </button>
+              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+                <i class="hgi hgi-stroke hgi-store-management-02 text-3xl"></i>
+                <span>Manage</span>
+              </button>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <menu
+      class="absolute w-[60%] h-[4.5rem] px-7 py-3.5 flex items-center justify-between top-0 right-[25%] border-b-2 border-b-pos_lgh/25 bg-pos_whi">
+      <h1 class="w-full flex flex-col items-start justify-center gap-0 text-2xl font-bold font-mono">
+        {{if .canDineIn}}
+        <span class="text-pos_dlv">We are accepting DineIn orders.</span>
+        {{else}}
+        <span class="text-pos_rdy">Restaurant is Full. DineIn is currently disabled.</span>
+        {{end}}
+      </h1>
+    </menu>
+    {{ end }}
