@@ -1133,10 +1133,6 @@ video {
   text-align: right;
 }
 
-.font-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -1281,7 +1277,9 @@ video {
 }
 
 .mono>* {
-  font-family: "Google Sans Code";
+  /* font-family: "M PLUS 1 Code"; */
+  /* Iosevka+Charon+Mono */
+  font-family: "Iosevka Charon Mono";
 }
 
 html {

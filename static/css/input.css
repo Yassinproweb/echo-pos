@@ -9,7 +9,9 @@
 }
 
 .mono>* {
-  font-family: "Google Sans Code";
+  /* font-family: "M PLUS 1 Code"; */
+  /* Iosevka+Charon+Mono */
+  font-family: "Iosevka Charon Mono";
 }
 
 html {
