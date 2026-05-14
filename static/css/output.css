@@ -661,24 +661,12 @@ video {
   max-height: 55%;
 }
 
-.max-h-\[67\%\] {
-  max-height: 67%;
+.max-h-\[85\%\] {
+  max-height: 85%;
 }
 
 .max-h-\[93\%\] {
   max-height: 93%;
-}
-
-.max-h-\[80\%\] {
-  max-height: 80%;
-}
-
-.max-h-\[75\%\] {
-  max-height: 75%;
-}
-
-.max-h-\[85\%\] {
-  max-height: 85%;
 }
 
 .w-10 {
@@ -728,6 +716,10 @@ video {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
 }
 
 .snap-x {
@@ -1015,10 +1007,6 @@ video {
   background-color: hsl(141 93% 37% / var(--tw-bg-opacity, 1));
 }
 
-.bg-pos_lgh\/15 {
-  background-color: hsl(195 1% 57% / 0.15);
-}
-
 .bg-pos_pdg {
   --tw-bg-opacity: 1;
   background-color: hsl(195 1% 67% / var(--tw-bg-opacity, 1));
@@ -1047,6 +1035,10 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+
+.bg-pos_col\/55 {
+  background-color: hsl(195 97% 49% / 0.55);
 }
 
 .object-cover {
@@ -1098,6 +1090,11 @@ video {
   padding-right: 1.75rem;
 }
 
+.py-0\.5 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
 .py-2 {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -1113,17 +1110,8 @@ video {
   padding-bottom: 0.875rem;
 }
 
-.py-0\.5 {
-  padding-top: 0.125rem;
-  padding-bottom: 0.125rem;
-}
-
 .pb-11 {
   padding-bottom: 2.75rem;
-}
-
-.pb-3 {
-  padding-bottom: 0.75rem;
 }
 
 .pl-2\.5 {
@@ -1276,6 +1264,10 @@ video {
   text-decoration-line: underline;
 }
 
+.opacity-65 {
+  opacity: 0.65;
+}
+
 .shadow {
   --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
@@ -1285,6 +1277,12 @@ video {
 .outline-none {
   outline: 2px solid transparent;
   outline-offset: 2px;
+}
+
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
 
 * {
@@ -1321,6 +1319,18 @@ footer {
 
 .even\:bg-pos_lgh\/15:nth-child(even) {
   background-color: hsl(195 1% 57% / 0.15);
+}
+
+.hover\:bg-pos_col\/90:hover {
+  background-color: hsl(195 97% 49% / 0.9);
+}
+
+.hover\:bg-pos_col\/65:hover {
+  background-color: hsl(195 97% 49% / 0.65);
+}
+
+.hover\:bg-pos_col\/85:hover {
+  background-color: hsl(195 97% 49% / 0.85);
 }
 
 .hover\:opacity-65:hover {

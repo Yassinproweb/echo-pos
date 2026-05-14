@@ -50,3 +50,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if (icon) icon.classList.add(iconClass);
   });
 });
+
+// changing order status after print
+function handlePrint(orderId, orderType) {
+  window.print();
+
+  console.log(`Print triggered for ${orderId}. Waiting 30s to update status...`);
+
+  setTimeout(() => {
+    htmx.ajax('POST', `/pos/order/update-status/${orderId}`, {
+      values: { type: orderType },
+      target: '#receipt'
+    });
+  }, 5000);
+}
+

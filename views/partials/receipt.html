@@ -13,8 +13,18 @@
   </div>
 
   <div class="w-full flex flex-col items-start justify-start gap-5">
-    <button class="w-full flex items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col">Print
-      Receipt</button>
+    {{ $isCanceled := eq .Status "Canceled" }}
+    {{ $isNotReady := ne .Status "Ready" }}
+
+    {{ if or $isCanceled $isNotReady }}
+    <button disabled
+      class="w-full flex items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col/55 cursor-not-allowed hover:bg-pos_col/65">
+      Print Receipt</button>
+    {{ else }}
+    <button onclick="handlePrint('{{ .Name | urlquery }}', '{{ .Type }}')"
+      class="w-full flex items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col transition-all hover:bg-pos_col/85">
+      Print Receipt</button>
+    {{ end }}
   </div>
 </div>
 {{ end }}

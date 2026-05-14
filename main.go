@@ -8,6 +8,7 @@ import (
 
 	"github.com/Yassinproweb/echo-pos/controllers"
 	"github.com/Yassinproweb/echo-pos/models"
+	"github.com/Yassinproweb/echo-pos/routes"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
 )
@@ -75,7 +76,7 @@ func main() {
 			"products":      products,
 			"tables":        tables,
 			"canDineIn":     canDineIn,
-			"selectedOrder": selectedOrder,
+			"selectedOrder": nil,
 		})
 	})
 
@@ -84,6 +85,9 @@ func main() {
 
 	// Route for the POS UI orders page
 	e.GET("/pos/tables", controllers.RenderTables)
+
+	e.GET("/pos/order/:id", routes.SelectOrderRoute)
+	e.POST("/pos/order/update-status/:id", routes.UpdateStatusAfterPrint)
 
 	// Helper function to convert DATETIME to DD-MM-YYYY HH:MM
 	// convertFromSQLiteDateTime := func(sqliteDateTime string) (string, error) {

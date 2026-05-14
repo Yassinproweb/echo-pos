@@ -22,7 +22,7 @@
 {{ end }}
 
 {{ define "order_card" }}
-<div
+<div hx-get="/pos/order/{{ .Name | urlquery }}" hx-target="#receipt" hx-swap="innerHTML"
   class="snap-center w-64 aspect-[16/12] flex-col items-center justify-start gap-2.5 border-2 border-pos_lgh/25 rounded-[inherit]">
   <div class="w-full h-fit items-center justify-between p-2 border-b-2 border-b-pos_bla/15">
     <div class="w-fit flex-col gap-0 items-start justify-center">
