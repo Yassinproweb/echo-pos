@@ -669,6 +669,18 @@ video {
   max-height: 93%;
 }
 
+.max-h-\[80\%\] {
+  max-height: 80%;
+}
+
+.max-h-\[75\%\] {
+  max-height: 75%;
+}
+
+.max-h-\[85\%\] {
+  max-height: 85%;
+}
+
 .w-10 {
   width: 2.5rem;
 }
@@ -1099,6 +1111,11 @@ video {
 .py-3\.5 {
   padding-top: 0.875rem;
   padding-bottom: 0.875rem;
+}
+
+.py-0\.5 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
 }
 
 .pb-11 {

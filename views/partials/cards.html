@@ -96,14 +96,14 @@
 {{ end }}
 
 {{ define "receipt_card" }}
-<div class="w-full 80mm flex flex-col items-center justify-start text-pos_bla bg-pos_whi">
-  <div class="w-full flex flex-col items-center pb-3 mb-3">
+<div class="w-full 80mm flex flex-col items-center justify-start text-pos_bla">
+  <div class="w-full flex flex-col items-center mb-3">
     <h2 class="text-xl font-bold uppercase">Receipt</h2>
     <p class="text-base">{{ .DateTime }}</p>
   </div>
 </div>
 
-<div class="w-full flex flex-col items-center gap-1 mb-4">
+<div class="w-full flex flex-col items-center gap-1 mb-3">
   <div class="w-full flex justify-between">
     <span class="font-bold">Order ID:</span>
     <span>{{ .Name }}</span>
@@ -128,7 +128,7 @@
   {{ end }}
 </div>
 
-<table class="w-full text-base mb-4">
+<table class="w-full text-base mb-3">
   <thead>
     <tr class="border-b border-pos_bla">
       <th class="text-left py-3">Item</th>
@@ -139,7 +139,7 @@
   <tbody>
     {{ range .OrderCart }}
     <tr class="border-b border-pos_lgh/10">
-      <td class="py-2">{{ .PdtName }}</td>
+      <td class="py-0.5">{{ .PdtName }}</td>
       <td class="text-center">x{{ .Quantity }}</td>
       <td class="text-right">{{ .UnitPrice }}</td>
     </tr>
