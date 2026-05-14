@@ -6,11 +6,18 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "LINE Seed JP";
+}
+
+.mono>* {
+  font-family: "Google Sans Code";
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+body {
+  font-family: "LINE Seed JP";
 }
 
 header,

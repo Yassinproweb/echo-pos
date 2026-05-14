@@ -19,9 +19,6 @@ module.exports = {
         pos_pdg: 'hsl(195, 1%, 67%)',
         pos_rdy: 'hsl(41, 93%, 45%)',
       },
-      fontFamily: {
-        mono: 'Google Sans Code',
-      }
     },
   },
   plugins: [],

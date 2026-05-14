@@ -59,18 +59,23 @@ func main() {
 		canDineIn := models.CanAcceptDineIn(tables)
 
 		orders := models.FetchOrders()
+
+		models.AssignOrderDestination(orders, tables)
+
 		for i := range orders {
 			orders[i].CalculateOrderTotal()
 		}
 
-		models.AssignOrderDestination(orders, tables)
+		selectedOrder := orders[0]
+		selectedOrder.CalculateOrderTotal()
 
 		return c.Render(http.StatusOK, "main.html", map[string]any{
-			"user":      "Cashier Admin",
-			"orders":    orders,
-			"products":  products,
-			"tables":    tables,
-			"canDineIn": canDineIn,
+			"user":          "Cashier Admin",
+			"orders":        orders,
+			"products":      products,
+			"tables":        tables,
+			"canDineIn":     canDineIn,
+			"selectedOrder": selectedOrder,
 		})
 	})
 
@@ -89,7 +94,7 @@ func main() {
 	// 	return parsed.Format("02-01-2006 15:04"), nil
 	// }
 
-	if err := e.Start(":4000"); err != nil {
+	if err := e.Start(":3000"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
 	}
 }

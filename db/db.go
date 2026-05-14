@@ -110,11 +110,9 @@ func ConnectDB() {
 	// Create order_items table with pdt_name referencing products.name
 	_, err = DB.Exec(`CREATE TABLE IF NOT EXISTS order_items (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		order_name INTEGER NOT NULL,
 		pdt_name TEXT NOT NULL,
 		quantity INTEGER NOT NULL CHECK (quantity >= 0),
 		unit_price REAL NOT NULL CHECK (unit_price >= 0),
-		FOREIGN KEY (order_name) REFERENCES orders(order_name),
 		FOREIGN KEY (pdt_name) REFERENCES products(name)
 	)`)
 	if err != nil {
