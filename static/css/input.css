@@ -33,3 +33,30 @@ form,
 footer {
   display: flex;
 }
+
+@media print {
+  main * {
+    visibility: hidden;
+  }
+
+  /* Show only the receipt and its children */
+  #receipt,
+  #receipt * {
+    visibility: visible;
+  }
+
+  /* Position the receipt at the very top-left of the printed page */
+  #receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* Specifically hide the 'Print' button on the actual paper */
+  button {
+    display: none !important;
+  }
+}

@@ -4,8 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "build": "tailwindcss -i ~/echo-pos/static/css/input.css -o ~/echo-pos/static/css/output.css",
-    "watch": "tailwindcss -i ~/echo-pos/static/css/input.css -o ~/echo-pos/static/css/output.css -w"
+    "build": "tailwindcss -i ~/echo-pos/static/css/input.css -o ~/echo-pos/static/css/output.min.css --minify",
+    "watch": "tailwindcss -i ~/echo-pos/static/css/input.css -o ~/echo-pos/static/css/output.min.css --minify -w"
   },
   "keywords": [],
   "author": "",

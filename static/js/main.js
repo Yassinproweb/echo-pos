@@ -55,10 +55,10 @@ document.addEventListener("DOMContentLoaded", () => {
 function handlePrint(orderId, orderType) {
   window.print();
 
-  console.log(`Print triggered for ${orderId}. Waiting 30s to update status...`);
+  const safeId = encodeURIComponent(orderId);
 
   setTimeout(() => {
-    htmx.ajax('POST', `/pos/order/update-status/${orderId}`, {
+    htmx.ajax('POST', `/pos/order/update-status/${safeId}`, {
       values: { type: orderType },
       target: '#receipt'
     });
