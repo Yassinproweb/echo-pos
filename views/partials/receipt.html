@@ -7,8 +7,8 @@
     <h5 class="text-base text-pos_bla font-semibold">{{ .Status }}</h5>
   </div>
 
-  <div
-    class="w-full h-max max-h-[85%] flex flex-col items-start justify-start gap-1.5 p-3 overflow-y-scroll border-2 border-pos_lgh/15 mono">
+  <div id="receipt_card"
+    class="w-full h-max flex flex-col items-start justify-start gap-1.5 p-3 border-2 border-pos_lgh/15 mono">
     {{ template "receipt_card" .}}
   </div>
 
