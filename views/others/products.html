@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=1367">
-  <title>Point Of Sale - Orders</title>
+  <title>Point Of Sale - Products</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,19 +40,14 @@
               <thead class="sticky top-0 bg-pos_bla">
                 <tr class="text-xl text-pos_whi font-bold">
                   <th onclick="sortTable(0)" class="px-4 py-2 text-left cursor-pointer">Name</th>
-                  <th onclick="sortTable(1)" class="px-4 py-2 text-left cursor-pointer">Date&nbsp;Time</th>
-                  <th onclick="sortTable(2)" class="px-4 py-2 text-left cursor-pointer">Customer Name</th>
-                  <th onclick="sortTable(3)" class="px-4 py-2 text-left cursor-pointer">Customer Number</th>
-                  <th onclick="sortTable(4)" class="px-4 py-2 text-left cursor-pointer">Destination (Table)</th>
-                  <th onclick="sortTable(5)" class="px-4 py-2 text-left cursor-pointer">Type</th>
-                  <th onclick="sortTable(6)" class="px-4 py-2 text-left cursor-pointer">Items Quantity</th>
-                  <th onclick="sortTable(7)" class="px-4 py-2 text-left cursor-pointer">Status</th>
-                  <th onclick="sortTable(8)" class="px-4 py-2 text-left cursor-pointer">Total Amount</th>
+                  <th onclick="sortTable(1)" class="px-4 py-2 text-left cursor-pointer">Description</th>
+                  <th onclick="sortTable(2)" class="px-4 py-2 text-left cursor-pointer">Price</th>
+                  <th onclick="sortTable(3)" class="px-4 py-2 text-left cursor-pointer">Thumbnail</th>
                 </tr>
               </thead>
-              <tbody id="orders" class="divide-y divide-gray-200">
-                {{ range .orders }}
-                {{ template "order_row" . }}
+              <tbody id="products" class="divide-y divide-gray-200">
+                {{ range .products }}
+                {{ template "product_row" . }}
                 {{ end }}
               </tbody>
             </table>
@@ -63,34 +58,6 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const statusColors = {
-        placed: "text-pos_plc",
-        transit: "text-pos_trs",
-        ready: "text-pos_rdy",
-        preparing: "text-pos_pdg",
-        canceled: "text-pos_cld",
-        taken: "text-pos_dlv",
-        served: "text-pos_dlv",
-        delivered: "text-pos_dlv",
-      };
-
-      document.querySelectorAll("#orders tr").forEach((row) => {
-        const statusEl = row.querySelector(".status");
-        if (!statusEl) return;
-
-        const status = statusEl.textContent.trim().toLowerCase();
-        const textClass = statusColors[status];
-        if (!textClass) return;
-
-        statusEl.classList.add(textClass);
-
-        row.querySelectorAll(".scolor").forEach((el) => {
-          el.classList.add(textClass);
-        });
-      });
-    });
-
     // Search functionality
     function searchTable() {
       const input = document.getElementById("searchInput").value.toLowerCase();

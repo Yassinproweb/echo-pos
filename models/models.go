@@ -248,10 +248,22 @@ type Product struct {
 func FetchProducts() []Product {
 	return []Product{
 		{
-			"Luwombo Chicken",
-			"Steamed chicken with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
-			35000,
-			"/assets/imgs/lw-chicken.jpeg",
+			"Delicious Burger",
+			"Prepared from the best wheat and vegetable oil plus eggs from locally bred poultry.",
+			10000,
+			"/assets/imgs/ff-burger.jpeg",
+		},
+		{
+			"Roasted Chapati",
+			"Prepared from the best wheat and vegetable oil plus eggs from locally bred poultry.",
+			1000,
+			"/assets/imgs/ff-chapati.jpg",
+		},
+		{
+			"Vegetable Pizza",
+			"Prepared from the best wheat and vegetable oil plus eggs from locally bred poultry.",
+			32000,
+			"/assets/imgs/ff-pizza.jpeg",
 		},
 		{
 			"Spicy Rolex",
@@ -260,16 +272,112 @@ func FetchProducts() []Product {
 			"/assets/imgs/ff-rolex.jpeg",
 		},
 		{
-			"Pineapple Juice",
-			"Perfectly blended from organic fruits locally grown in Uganda with zero sugar added.",
+			"Scrumbled Eggs",
+			"Prepared from the best wheat and vegetable oil plus eggs from locally bred poultry.",
 			5000,
-			"/assets/imgs/juice-pineapple.jpg",
+			"/assets/imgs/ff-scrumbled_eggs.jpeg",
 		},
 		{
 			"Tropical Fruitsalad",
-			"A mix of most tropical fruits, vegetables, berries, nuts and citrus fruits.",
+			"A mix of most tropical fruits, citrus fruits, wild berries and grapes.",
 			15000,
 			"/assets/imgs/fr-fruit_salad.jpg",
+		},
+		{
+			"Vegetable Salad",
+			"A mix of most tropical vegetables cultivated here in Uganda fresh and clean for you.",
+			11000,
+			"/assets/imgs/fr-salads.jpg",
+		},
+		{
+			"Apple Juice",
+			"Perfectly blended from organic apples locally grown in Uganda with zero sugar added.",
+			9000,
+			"/assets/imgs/juice-apple.jpg",
+		},
+		{
+			"Coconut Juice",
+			"Perfectly blended from organic coconuts locally grown in Uganda with zero sugar added.",
+			7000,
+			"/assets/imgs/juice-coconut.jpg",
+		},
+		{
+			"Mango Juice",
+			"Perfectly blended from organic mangoes locally grown in Uganda with zero sugar added.",
+			5000,
+			"/assets/imgs/juice-mango.jpg",
+		},
+		{
+			"Pineapple Juice",
+			"Perfectly blended from organic pineapples locally grown in Uganda with zero sugar added.",
+			3000,
+			"/assets/imgs/juice-pineapple.jpg",
+		},
+		{
+			"Strawberry Juice",
+			"Perfectly blended from organic strawberries locally grown in Uganda with zero sugar added.",
+			15000,
+			"/assets/imgs/juice-strawberry.jpg",
+		},
+		{
+			"Luwombo Beef",
+			"Steamed beef with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
+			30000,
+			"/assets/imgs/lw-beef.jpeg",
+		},
+		{
+			"Luwombo Chicken",
+			"Steamed chicken with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
+			35000,
+			"/assets/imgs/lw-chicken.jpeg",
+		},
+		{
+			"Luwombo Fish",
+			"Steamed fish with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
+			32000,
+			"/assets/imgs/lw-fish.jpg",
+		},
+		{
+			"Luwombo Binyebwa",
+			"Steamed g-nuts with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
+			13000,
+			"/assets/imgs/lw-gnuts.jpeg",
+		},
+		{
+			"Luwombo Goat",
+			"Steamed goat's meat with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
+			35000,
+			"/assets/imgs/lw-mbuzi.jpeg",
+		},
+		{
+			"Akatogo Ka Muwogo",
+			"An ancient meal during the times of famine a blend of cassava, beans, and green vegetables.",
+			5000,
+			"/assets/imgs/st-cassava_katogo.jpeg",
+		},
+		{
+			"Deep-fried Chicken",
+			"The taste of Ugandan chicken dipped in hot oil for a crispy taste loved by the locals.",
+			8000,
+			"/assets/imgs/st-chicken.jpg",
+		},
+		{
+			"Deep-fried Fish",
+			"A pure taste of locally farmed Ugandan tilapia deeped in organic cooking oil.",
+			48000,
+			"/assets/imgs/st-fish.jpeg",
+		},
+		{
+			"Breakfast Katogo",
+			"An ancient breakfast meal for wedding which includes matooke, meat, avocado, and green vegetables.",
+			7000,
+			"/assets/imgs/st-katogo.jpeg",
+		},
+		{
+			"Ettooke Eriboobedde",
+			"Steamed matooke/plantain wrapped in banana leaves to keep the natural aroma.",
+			5000,
+			"/assets/imgs/st-matooke.jpeg",
 		},
 		{
 			"Pilau & Goat",
@@ -278,10 +386,10 @@ func FetchProducts() []Product {
 			"/assets/imgs/st-pilau.jpeg",
 		},
 		{
-			"Ettooke Eriboobedde",
-			"Steamed matooke/bananas wrapped in banana leaves to keep the natural aroma.",
-			5000,
-			"/assets/imgs/st-matooke.jpeg",
+			"Boiled White Rice",
+			"Boiled white rice with the best vegetable seasoning for a soothing natural aroma.",
+			10000,
+			"/assets/imgs/st-rice_boil.jpeg",
 		},
 	}
 }

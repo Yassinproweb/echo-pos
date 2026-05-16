@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=1367">
-  <title>Point Of Sale</title>
+  <title>Point Of Sale - Tables</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,12 +33,24 @@
           class="mb-4 w-full p-2 border border-pos_bla/25 rounded outline-none">
 
         <div class="w-full h-[93%] flex flex-col gap-0.5">
-          <h2 class="text-pos_bla text-3xl font-bold mb-3">Tables List</h2>
+          <h2 class="text-pos_bla text-3xl font-bold mb-3">Orders List</h2>
 
           <div class="w-full max-h-[93%] overflow-y-scroll">
-            {{ range .tables }}
-            {{ template "table_card" . }}
-            {{ end }}
+            <table class="w-full divide-y divide-pos_bla border border-pos_lgh">
+              <thead class="sticky top-0 bg-pos_bla">
+                <tr class="text-xl text-pos_whi font-bold">
+                  <th onclick="sortTable(0)" class="px-4 py-2 text-left cursor-pointer">Name</th>
+                  <th onclick="sortTable(1)" class="px-4 py-2 text-left cursor-pointer">Capacity</th>
+                  <th onclick="sortTable(2)" class="px-4 py-2 text-left cursor-pointer">State</th>
+                  <th onclick="sortTable(3)" class="px-4 py-2 text-left cursor-pointer">Current Order</th>
+                </tr>
+              </thead>
+              <tbody id="orders" class="divide-y divide-gray-200">
+                {{ range .tables }}
+                {{ template "table_card" . }}
+                {{ end }}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

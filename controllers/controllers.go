@@ -29,6 +29,13 @@ func RenderOrders(c *echo.Context) error {
 	return c.Render(http.StatusOK, "orders.html", data)
 }
 
+// products controllers
+func RenderProducts(c *echo.Context) error {
+	products := models.FetchProducts()
+
+	return c.Render(http.StatusOK, "products.html", products)
+}
+
 // tables controllers
 func RenderTables(c *echo.Context) error {
 	orders := models.FetchOrders()
