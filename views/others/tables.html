@@ -45,7 +45,7 @@
                   <th onclick="sortTable(3)" class="px-4 py-2 text-left cursor-pointer">Current Order</th>
                 </tr>
               </thead>
-              <tbody id="orders" class="divide-y divide-gray-200">
+              <tbody id="tables" class="divide-y divide-gray-200">
                 {{ range .tables }}
                 {{ template "table_card" . }}
                 {{ end }}
