@@ -98,7 +98,7 @@ func main() {
 	// 	return parsed.Format("02-01-2006 15:04"), nil
 	// }
 
-	if err := e.Start(":3000"); err != nil {
+	if err := e.Start(":3003"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
 	}
 }

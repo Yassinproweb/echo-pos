@@ -40,7 +40,8 @@
           <div class="w-full flex flex-col items-start justify-start gap-3.5">
             <h3 class="text-xl text-pos_whi font-black">Main Menu</h3>
             <div class="w-full flex flex-col items-start justify-start gap-2 pl-2.5">
-              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+              <button hx-get="/pos/orders" hx-target="html" hx-swap="outerHTML"
+                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-dashboard-square-03 text-3xl"></i>
                 <span>Dashboard</span>
               </button>

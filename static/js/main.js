@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const statusColors = {
     placed: { text: "text-pos_plc", bg: "bg-pos_plc" },
     transit: { text: "text-pos_trs", bg: "bg-pos_trs" },
+    waiting: { text: "text-pos_trs", bg: "bg-pos_trs" },
+    pickup: { text: "text-pos_trs", bg: "bg-pos_trs" },
     ready: { text: "text-pos_rdy", bg: "bg-pos_rdy" },
     preparing: { text: "text-pos_pdg", bg: "bg-pos_pdg" },
     canceled: { text: "text-pos_cld", bg: "bg-pos_cld" },
@@ -51,17 +53,31 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// changing order status after print
-function handlePrint(orderId, orderType) {
-  window.print();
+// // changing order status after print
+// function handlePrint(orderId, orderType) {
+//   window.print();
+//
+//   const safeId = encodeURIComponent(orderId);
+//
+//   window.onafterprint = () => {
+//     htmx.ajax('POST', `/pos/order/update-status/${safeId}`, {
+//       values: { type: orderType },
+//       target: '#receipt',
+//       swap: 'innerHTML'
+//     });
+//   };
+// }
 
+function handlePrint(orderId, orderType) {
   const safeId = encodeURIComponent(orderId);
+
+  window.print();
 
   setTimeout(() => {
     htmx.ajax('POST', `/pos/order/update-status/${safeId}`, {
       values: { type: orderType },
-      target: '#receipt'
+      target: '#receipt',
+      swap: 'innerHTML'
     });
-  }, 5000);
+  }, 1500);
 }
-

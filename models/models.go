@@ -17,7 +17,11 @@ const (
 	Preparing Status = "Preparing"
 	Ready     Status = "Ready"
 	Canceled  Status = "Canceled"
-	Transit   Status = "Transit"
+
+	// all these are the same only considering the order type
+	Transit Status = "Transit" // Delivery
+	Waiting Status = "Waiting" // DineIn
+	PickUp  Status = "PickUp"  // Takeaway
 
 	// all these are the same only considering the order type
 	Delivered Status = "Delivered" // Delivery
@@ -121,7 +125,7 @@ func FetchOrders() []Order {
 		{
 			"#ORD0013",
 			DineIn,
-			Canceled,
+			Waiting,
 			0,
 			0,
 			"Ahmad",
@@ -136,7 +140,7 @@ func FetchOrders() []Order {
 		{
 			"#ORD0014",
 			Delivery,
-			Delivered,
+			Ready,
 			0,
 			0,
 			"Ahmad",
@@ -144,14 +148,14 @@ func FetchOrders() []Order {
 			"Nakasozi, Wakiso",
 			"11-06-2025 09:30",
 			[]OrderItem{
-				{"Pilau Goat", 1, 25000},
+				{"Pilau & Goat", 1, 25000},
 				{"Pineapple Juice", 2, 5000},
 			},
 		},
 		{
 			"#ORD0015",
 			Takeaway,
-			Ready,
+			PickUp,
 			0,
 			0,
 			"Ahmad",
