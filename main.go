@@ -84,6 +84,9 @@ func main() {
 	e.GET("/pos/orders", controllers.RenderOrders)
 
 	// Route for the POS UI orders page
+	e.GET("/pos/products", controllers.RenderProducts)
+
+	// Route for the POS UI orders page
 	e.GET("/pos/tables", controllers.RenderTables)
 
 	e.GET("/pos/order/:id", routes.SelectOrderRoute)

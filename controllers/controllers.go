@@ -33,7 +33,11 @@ func RenderOrders(c *echo.Context) error {
 func RenderProducts(c *echo.Context) error {
 	products := models.FetchProducts()
 
-	return c.Render(http.StatusOK, "products.html", products)
+	data := map[string]any{
+		"products": products,
+	}
+
+	return c.Render(http.StatusOK, "products.html", data)
 }
 
 // tables controllers
@@ -43,5 +47,10 @@ func RenderTables(c *echo.Context) error {
 
 	models.AssignOrderDestination(orders, tables)
 
-	return c.Render(http.StatusOK, "tables.html", tables)
+	data := map[string]any{
+		"orders": orders,
+		"tables": tables,
+	}
+
+	return c.Render(http.StatusOK, "tables.html", data)
 }
