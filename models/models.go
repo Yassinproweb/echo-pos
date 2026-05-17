@@ -449,7 +449,7 @@ func FetchTables() []Table {
 		{
 			Name:      "#TBR002",
 			Capacity:  6,
-			State:     Occupied,
+			State:     Pending,
 			OrderCurr: nil,
 		},
 		{
