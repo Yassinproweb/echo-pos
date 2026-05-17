@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/Yassinproweb/echo-pos/controllers"
+	"github.com/Yassinproweb/echo-pos/db"
 	"github.com/Yassinproweb/echo-pos/models"
 	"github.com/Yassinproweb/echo-pos/routes"
 	"github.com/labstack/echo/v5"
@@ -29,6 +30,7 @@ func (t *TemplateRenderer) Render(c *echo.Context, w io.Writer, name string, dat
 }
 
 func main() {
+	db.ConnectDB()
 	e := echo.New()
 
 	e.Use(middleware.RequestLogger())
@@ -57,11 +59,7 @@ func main() {
 		products := models.FetchProducts()
 		tables := models.FetchTables()
 
-		canDineIn := models.CanAcceptDineIn(tables)
-
 		orders := models.FetchOrders()
-
-		models.AssignOrderDestination(orders, tables)
 
 		for i := range orders {
 			orders[i].CalculateOrderTotal()
@@ -75,7 +73,6 @@ func main() {
 			"orders":        orders,
 			"products":      products,
 			"tables":        tables,
-			"canDineIn":     canDineIn,
 			"selectedOrder": nil,
 		})
 	})

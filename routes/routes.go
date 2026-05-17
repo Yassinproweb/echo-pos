@@ -11,10 +11,6 @@ func SelectOrderRoute(c *echo.Context) error {
 	orderID := c.Param("id")
 
 	orders := models.FetchOrders()
-	tables := models.FetchTables()
-
-	// IMPORTANT
-	models.AssignOrderDestination(orders, tables)
 
 	var so *models.Order
 
@@ -44,8 +40,6 @@ func UpdateStatusAfterPrint(c *echo.Context) error {
 	orderType := models.Type(c.FormValue("type"))
 
 	orders := models.FetchOrders()
-	tables := models.FetchTables()
-	models.AssignOrderDestination(orders, tables)
 	var selectedOrder *models.Order
 
 	for i := range orders {

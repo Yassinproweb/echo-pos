@@ -1,10 +1,18 @@
+// models/models.go
+
 package models
 
 import (
+	"database/sql"
 	"fmt"
+
+	"github.com/Yassinproweb/echo-pos/db"
 )
 
-// Orders model
+// =======================
+// ORDER MODELS
+// =======================
+
 type Type string
 type Status string
 
@@ -18,15 +26,13 @@ const (
 	Ready     Status = "Ready"
 	Canceled  Status = "Canceled"
 
-	// all these are the same only considering the order type
-	Transit Status = "Transit" // Delivery
-	Waiting Status = "Waiting" // DineIn
-	PickUp  Status = "PickUp"  // Takeaway
+	Transit Status = "Transit"
+	Waiting Status = "Waiting"
+	PickUp  Status = "PickUp"
 
-	// all these are the same only considering the order type
-	Delivered Status = "Delivered" // Delivery
-	Taken     Status = "Taken"     // Takeaway
-	Served    Status = "Served"    // DineIn
+	Delivered Status = "Delivered"
+	Taken     Status = "Taken"
+	Served    Status = "Served"
 )
 
 type OrderItem struct {
@@ -48,196 +54,10 @@ type Order struct {
 	OrderCart   []OrderItem
 }
 
-// CalculateOrderTotal computes the total cost and item count for an order
-func (o *Order) CalculateOrderTotal() error {
-	totalCost := 0
-	totalItems := 0
+// =======================
+// PRODUCTS
+// =======================
 
-	// 1. Fetch products to get the current price list
-	products := FetchProducts()
-	productMap := make(map[string]int)
-	for _, p := range products {
-		productMap[p.Name] = p.Price
-	}
-
-	// 2. Iterate through the cart to calculate totals
-	for i := range o.OrderCart {
-		item := &o.OrderCart[i]
-
-		// Look up the price based on the product name
-		price, exists := productMap[item.PdtName]
-		if !exists {
-			return fmt.Errorf("product %s not found in catalog", item.PdtName)
-		}
-
-		// Update UnitPrice if it wasn't already set
-		if item.UnitPrice == 0 {
-			item.UnitPrice = price
-		}
-
-		// Calculate total cost and item count
-		totalCost += item.UnitPrice * item.Quantity
-		totalItems += item.Quantity
-	}
-
-	// 3. Update the Order struct fields
-	o.Cost = totalCost
-	o.Items = totalItems
-
-	return nil
-}
-
-func FetchOrders() []Order {
-	return []Order{
-		{
-			"#ORD0011",
-			DineIn,
-			Placed,
-			0,
-			0,
-			"Ahmad",
-			"0722678837",
-			"",
-			"11-06-2025 09:30",
-			[]OrderItem{
-				{"Tropical Fruitsalad", 6, 15000},
-				{"Pilau & Goat", 4, 25000},
-				{"Ettooke Eriboobedde", 2, 5000},
-				{"Luwombo Chicken", 2, 35000},
-				{"Pineapple Juice", 6, 5000},
-			},
-		},
-		{
-			"#ORD0012",
-			DineIn,
-			Preparing,
-			0,
-			0,
-			"Ahmad",
-			"0722678837",
-			"",
-			"11-06-2025 09:30",
-			[]OrderItem{
-				{"Luwombo Chicken", 2, 35000},
-				{"Pilau & Goat", 4, 25000},
-			},
-		},
-		{
-			"#ORD0013",
-			DineIn,
-			Waiting,
-			0,
-			0,
-			"Ahmad",
-			"0722678837",
-			"",
-			"11-06-2025 09:30",
-			[]OrderItem{
-				{"Tropical Fruitsalad", 1, 15000},
-				{"Pineapple Juice", 2, 5000},
-			},
-		},
-		{
-			"#ORD0014",
-			Delivery,
-			Ready,
-			0,
-			0,
-			"Ahmad",
-			"0722678837",
-			"Nakasozi, Wakiso",
-			"11-06-2025 09:30",
-			[]OrderItem{
-				{"Pilau & Goat", 1, 25000},
-				{"Pineapple Juice", 2, 5000},
-			},
-		},
-		{
-			"#ORD0015",
-			Takeaway,
-			PickUp,
-			0,
-			0,
-			"Ahmad",
-			"0722678837",
-			"Nakasozi, Wakiso",
-			"11-06-2025 09:30",
-			[]OrderItem{
-				{"Pilau & Goat", 3, 25000},
-			},
-		},
-		{
-			"#ORD0016",
-			Delivery,
-			Transit,
-			0,
-			0,
-			"Ahmad",
-			"0722678837",
-			"Nakasozi, Wakiso",
-			"11-06-2025 09:30",
-			[]OrderItem{
-				{"Tropical Fruitsalad", 3, 15000},
-			},
-		},
-		{
-			"#ORD0017",
-			Takeaway,
-			Taken,
-			0,
-			0,
-			"Ahmad",
-			"0722678837",
-			"Nakasozi, Wakiso",
-			"11-06-2025 09:30",
-			[]OrderItem{
-				{"Spicy Rolex", 3, 7000},
-			},
-		},
-		{
-			"#ORD0018",
-			DineIn,
-			Served,
-			0,
-			0,
-			"Ahmad",
-			"0722678837",
-			"",
-			"11-06-2025 09:30",
-			[]OrderItem{
-				{"Pilau & Goat", 4, 25000},
-			},
-		},
-		{
-			"#ORD0019",
-			Delivery,
-			Canceled,
-			0,
-			0,
-			"Ahmad",
-			"0722678837",
-			"Nakasozi, Wakiso",
-			"11-06-2025 09:30",
-			[]OrderItem{
-				{"Luwombo Chicken", 1, 35000},
-				{"Pineapple Juice", 1, 5000},
-				{"Ettooke Eriboobedde", 1, 5000},
-			},
-		},
-	}
-}
-
-// PrepareReceipt updates the order totals and returns the items for rendering
-func (o *Order) PrepareReceipt() ([]OrderItem, error) {
-	err := o.CalculateOrderTotal()
-	if err != nil {
-		return nil, err
-	}
-
-	return o.OrderCart, nil
-}
-
-// Products model
 type Product struct {
 	Name        string
 	Description string
@@ -245,156 +65,10 @@ type Product struct {
 	Image       string
 }
 
-func FetchProducts() []Product {
-	return []Product{
-		{
-			"Delicious Burger",
-			"Prepared from the best wheat and vegetable oil plus eggs from locally bred poultry.",
-			10000,
-			"/assets/imgs/ff-burger.jpeg",
-		},
-		{
-			"Roasted Chapati",
-			"Prepared from the best wheat and vegetable oil plus eggs from locally bred poultry.",
-			1000,
-			"/assets/imgs/ff-chapati.jpg",
-		},
-		{
-			"Vegetable Pizza",
-			"Prepared from the best wheat and vegetable oil plus eggs from locally bred poultry.",
-			32000,
-			"/assets/imgs/ff-pizza.jpeg",
-		},
-		{
-			"Spicy Rolex",
-			"Prepared from the best wheat and vegetable oil plus eggs from locally bred poultry.",
-			7000,
-			"/assets/imgs/ff-rolex.jpeg",
-		},
-		{
-			"Scrumbled Eggs",
-			"Prepared from the best wheat and vegetable oil plus eggs from locally bred poultry.",
-			5000,
-			"/assets/imgs/ff-scrumbled_eggs.jpeg",
-		},
-		{
-			"Tropical Fruitsalad",
-			"A mix of most tropical fruits, citrus fruits, wild berries and grapes.",
-			15000,
-			"/assets/imgs/fr-fruit_salad.jpg",
-		},
-		{
-			"Vegetable Salad",
-			"A mix of most tropical vegetables cultivated here in Uganda fresh and clean for you.",
-			11000,
-			"/assets/imgs/fr-salads.jpg",
-		},
-		{
-			"Apple Juice",
-			"Perfectly blended from organic apples locally grown in Uganda with zero sugar added.",
-			9000,
-			"/assets/imgs/juice-apple.jpg",
-		},
-		{
-			"Coconut Juice",
-			"Perfectly blended from organic coconuts locally grown in Uganda with zero sugar added.",
-			7000,
-			"/assets/imgs/juice-coconut.jpg",
-		},
-		{
-			"Mango Juice",
-			"Perfectly blended from organic mangoes locally grown in Uganda with zero sugar added.",
-			5000,
-			"/assets/imgs/juice-mango.jpg",
-		},
-		{
-			"Pineapple Juice",
-			"Perfectly blended from organic pineapples locally grown in Uganda with zero sugar added.",
-			3000,
-			"/assets/imgs/juice-pineapple.jpg",
-		},
-		{
-			"Strawberry Juice",
-			"Perfectly blended from organic strawberries locally grown in Uganda with zero sugar added.",
-			15000,
-			"/assets/imgs/juice-strawberry.jpg",
-		},
-		{
-			"Luwombo Beef",
-			"Steamed beef with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
-			30000,
-			"/assets/imgs/lw-beef.jpeg",
-		},
-		{
-			"Luwombo Chicken",
-			"Steamed chicken with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
-			35000,
-			"/assets/imgs/lw-chicken.jpeg",
-		},
-		{
-			"Luwombo Fish",
-			"Steamed fish with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
-			32000,
-			"/assets/imgs/lw-fish.jpg",
-		},
-		{
-			"Luwombo Binyebwa",
-			"Steamed g-nuts with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
-			13000,
-			"/assets/imgs/lw-gnuts.jpeg",
-		},
-		{
-			"Luwombo Goat",
-			"Steamed goat's meat with a delicious taste, wrapped in banana leaves to keep the natural aroma.",
-			35000,
-			"/assets/imgs/lw-mbuzi.jpeg",
-		},
-		{
-			"Akatogo Ka Muwogo",
-			"An ancient meal during the times of famine a blend of cassava, beans, and green vegetables.",
-			5000,
-			"/assets/imgs/st-cassava_katogo.jpeg",
-		},
-		{
-			"Deep-fried Chicken",
-			"The taste of Ugandan chicken dipped in hot oil for a crispy taste loved by the locals.",
-			8000,
-			"/assets/imgs/st-chicken.jpg",
-		},
-		{
-			"Deep-fried Fish",
-			"A pure taste of locally farmed Ugandan tilapia deeped in organic cooking oil.",
-			48000,
-			"/assets/imgs/st-fish.jpeg",
-		},
-		{
-			"Breakfast Katogo",
-			"An ancient breakfast meal for wedding which includes matooke, meat, avocado, and green vegetables.",
-			7000,
-			"/assets/imgs/st-katogo.jpeg",
-		},
-		{
-			"Ettooke Eriboobedde",
-			"Steamed matooke/plantain wrapped in banana leaves to keep the natural aroma.",
-			5000,
-			"/assets/imgs/st-matooke.jpeg",
-		},
-		{
-			"Pilau & Goat",
-			"Yummy brown rice with goat's meat. Not Biriyani, it's prepared in a local way.",
-			25000,
-			"/assets/imgs/st-pilau.jpeg",
-		},
-		{
-			"Boiled White Rice",
-			"Boiled white rice with the best vegetable seasoning for a soothing natural aroma.",
-			10000,
-			"/assets/imgs/st-rice_boil.jpeg",
-		},
-	}
-}
+// =======================
+// TABLES
+// =======================
 
-// Tables model
 type State string
 
 const (
@@ -410,139 +84,253 @@ type Table struct {
 	OrderCurr *Order
 }
 
-// AssignOrder ensures only DineIn orders are linked to a table
-func (t *Table) AssignOrder(o *Order) error {
-	if o.Type != DineIn {
-		return fmt.Errorf("invalid order type: tables only accept DineIn orders")
+// =======================
+// ORDER LOGIC
+// =======================
+
+func (o *Order) CalculateOrderTotal() error {
+	totalCost := 0
+	totalItems := 0
+
+	products := FetchProducts()
+
+	productMap := make(map[string]int)
+
+	for _, p := range products {
+		productMap[p.Name] = p.Price
 	}
 
-	t.OrderCurr = o    // Link the order
-	t.State = Occupied // Update table state
+	for i := range o.OrderCart {
+		item := &o.OrderCart[i]
+
+		price, exists := productMap[item.PdtName]
+
+		if !exists {
+			return fmt.Errorf("product %s not found", item.PdtName)
+		}
+
+		if item.UnitPrice == 0 {
+			item.UnitPrice = price
+		}
+
+		totalCost += item.UnitPrice * item.Quantity
+		totalItems += item.Quantity
+	}
+
+	o.Cost = totalCost
+	o.Items = totalItems
+
 	return nil
 }
 
-// CompleteService finalizes the DineIn order and frees up the table
-func (t *Table) CompleteService() error {
-	if t.OrderCurr == nil {
-		return fmt.Errorf("no active order found on this table")
+func (o *Order) PrepareReceipt() ([]OrderItem, error) {
+	err := o.CalculateOrderTotal()
+
+	if err != nil {
+		return nil, err
 	}
 
-	t.OrderCurr.Status = Served
-	t.OrderCurr = nil
-	t.State = Pending
-
-	return nil
+	return o.OrderCart, nil
 }
 
-func (t *Table) ResetTable() {
-	t.State = Available
+// =======================
+// FETCH PRODUCTS
+// =======================
+
+func FetchProducts() []Product {
+	rows, err := db.DB.Query(`
+		SELECT
+			name,
+			description,
+			price,
+			image
+		FROM products
+	`)
+
+	if err != nil {
+		return []Product{}
+	}
+
+	defer rows.Close()
+
+	var products []Product
+
+	for rows.Next() {
+		var p Product
+
+		err := rows.Scan(
+			&p.Name,
+			&p.Description,
+			&p.Price,
+			&p.Image,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		products = append(products, p)
+	}
+
+	return products
 }
+
+// =======================
+// FETCH ORDER ITEMS
+// =======================
+
+func FetchOrderItems(orderName string) []OrderItem {
+	rows, err := db.DB.Query(`
+		SELECT
+			pdt_name,
+			quantity,
+			unit_price
+		FROM order_items
+		WHERE order_name = ?
+	`, orderName)
+
+	if err != nil {
+		return []OrderItem{}
+	}
+
+	defer rows.Close()
+
+	var items []OrderItem
+
+	for rows.Next() {
+		var item OrderItem
+
+		err := rows.Scan(
+			&item.PdtName,
+			&item.Quantity,
+			&item.UnitPrice,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		items = append(items, item)
+	}
+
+	return items
+}
+
+// =======================
+// FETCH ORDERS
+// =======================
+
+func FetchOrders() []Order {
+	rows, err := db.DB.Query(`
+		SELECT
+			name,
+			type,
+			status,
+			items,
+			cost,
+			cust_name,
+			cust_number,
+			destination,
+			date_time
+		FROM orders
+		ORDER BY id DESC
+	`)
+
+	if err != nil {
+		return []Order{}
+	}
+
+	defer rows.Close()
+
+	var orders []Order
+
+	for rows.Next() {
+		var o Order
+
+		err := rows.Scan(
+			&o.Name,
+			&o.Type,
+			&o.Status,
+			&o.Items,
+			&o.Cost,
+			&o.CustName,
+			&o.CustNumber,
+			&o.Destination,
+			&o.DateTime,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		o.OrderCart = FetchOrderItems(o.Name)
+
+		orders = append(orders, o)
+	}
+
+	return orders
+}
+
+// =======================
+// FETCH TABLES
+// =======================
 
 func FetchTables() []Table {
-	return []Table{
-		{
-			Name:      "#TBR001",
-			Capacity:  6,
-			State:     Available,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR002",
-			Capacity:  6,
-			State:     Pending,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR003",
-			Capacity:  2,
-			State:     Available,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR004",
-			Capacity:  2,
-			State:     Available,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR005",
-			Capacity:  2,
-			State:     Available,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR006",
-			Capacity:  6,
-			State:     Available,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR007",
-			Capacity:  4,
-			State:     Available,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR008",
-			Capacity:  4,
-			State:     Available,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR009",
-			Capacity:  4,
-			State:     Available,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR010",
-			Capacity:  4,
-			State:     Available,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR011",
-			Capacity:  4,
-			State:     Available,
-			OrderCurr: nil,
-		},
-		{
-			Name:      "#TBR012",
-			Capacity:  4,
-			State:     Pending,
-			OrderCurr: nil,
-		},
+	rows, err := db.DB.Query(`
+		SELECT
+			name,
+			capacity,
+			state,
+			current_order_name
+		FROM tables
+	`)
+
+	if err != nil {
+		return []Table{}
 	}
+
+	defer rows.Close()
+
+	var tables []Table
+
+	for rows.Next() {
+		var t Table
+		var currentOrder sql.NullString
+
+		err := rows.Scan(
+			&t.Name,
+			&t.Capacity,
+			&t.State,
+			&currentOrder,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		tables = append(tables, t)
+	}
+
+	return tables
 }
 
-// CanAcceptDineIn checks if there is at least one Available table
-func CanAcceptDineIn(tables []Table) bool {
-	for _, t := range tables {
-		if t.State == Available {
-			return true
-		}
-	}
-	return false
-}
+// =======================
+// UPDATE ORDER STATUS
+// =======================
 
-// AssignOrderDestination
-func AssignOrderDestination(orders []Order, tables []Table) {
-	for i := range orders {
-		if orders[i].Type == DineIn && orders[i].Destination == "" {
-			for j := range tables {
-				if tables[j].State == Available {
-					orders[i].Destination = tables[j].Name
-					tables[j].OrderCurr = &orders[i]
-					tables[j].State = Occupied
-					break
-				}
-			}
-		}
-	}
+func UpdateOrderStatus(
+	orderName string,
+	status Status,
+) error {
 
-	for i := range orders {
-		if orders[i].Type == Takeaway {
-			orders[i].Destination = "Pick-Up"
-		}
-	}
+	_, err := db.DB.Exec(`
+		UPDATE orders
+		SET status = ?
+		WHERE name = ?
+	`,
+		status,
+		orderName,
+	)
+
+	return err
 }

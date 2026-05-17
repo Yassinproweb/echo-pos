@@ -11,19 +11,14 @@ import (
 func RenderOrders(c *echo.Context) error {
 	tables := models.FetchTables()
 
-	canDineIn := models.CanAcceptDineIn(tables)
-
 	orders := models.FetchOrders()
 	for i := range orders {
 		orders[i].CalculateOrderTotal()
 	}
 
-	models.AssignOrderDestination(orders, tables)
-
 	data := map[string]any{
-		"orders":    orders,
-		"tables":    tables,
-		"canDineIn": canDineIn,
+		"orders": orders,
+		"tables": tables,
 	}
 
 	return c.Render(http.StatusOK, "orders.html", data)
@@ -44,8 +39,6 @@ func RenderProducts(c *echo.Context) error {
 func RenderTables(c *echo.Context) error {
 	orders := models.FetchOrders()
 	tables := models.FetchTables()
-
-	models.AssignOrderDestination(orders, tables)
 
 	data := map[string]any{
 		"orders": orders,
