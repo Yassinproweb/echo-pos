@@ -5,6 +5,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/Yassinproweb/echo-pos/db"
 )
@@ -50,8 +51,12 @@ type Order struct {
 	CustName    string
 	CustNumber  string
 	Destination string
-	DateTime    string
+	DateTime    time.Time
 	OrderCart   []OrderItem
+}
+
+func (o Order) FormattedDateTime() string {
+	return o.DateTime.Local().Format("02-01-2006 15:04")
 }
 
 // =======================
@@ -78,10 +83,10 @@ const (
 )
 
 type Table struct {
-	Name      string
-	Capacity  int
-	State     State
-	OrderCurr *Order
+	Name             string
+	Capacity         int
+	State            State
+	CurrentOrderName sql.NullString
 }
 
 // =======================
@@ -233,7 +238,7 @@ func FetchOrders() []Order {
 			destination,
 			date_time
 		FROM orders
-		ORDER BY id DESC
+		ORDER BY id ASC
 	`)
 
 	if err != nil {
@@ -295,13 +300,12 @@ func FetchTables() []Table {
 
 	for rows.Next() {
 		var t Table
-		var currentOrder sql.NullString
 
 		err := rows.Scan(
 			&t.Name,
 			&t.Capacity,
 			&t.State,
-			&currentOrder,
+			&t.CurrentOrderName,
 		)
 
 		if err != nil {

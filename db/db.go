@@ -13,7 +13,6 @@ func ConnectDB() {
 	var err error
 
 	DB, err = sql.Open("sqlite3", "./pos.db")
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,6 +36,10 @@ func createTables() {
 
 	query := `
 
+	-- =========================
+	-- PRODUCTS
+	-- =========================
+
 	CREATE TABLE IF NOT EXISTS products (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 
@@ -47,6 +50,10 @@ func createTables() {
 
 		image TEXT NOT NULL
 	);
+
+	-- =========================
+	-- ORDERS
+	-- =========================
 
 	CREATE TABLE IF NOT EXISTS orders (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -87,6 +94,10 @@ func createTables() {
 		date_time DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
 
+	-- =========================
+	-- TABLES
+	-- =========================
+
 	CREATE TABLE IF NOT EXISTS tables (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 
@@ -109,6 +120,10 @@ func createTables() {
 		ON DELETE SET NULL
 	);
 
+	-- =========================
+	-- ORDER ITEMS
+	-- =========================
+
 	CREATE TABLE IF NOT EXISTS order_items (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 
@@ -127,7 +142,7 @@ func createTables() {
 	);
 
 	-- =========================
-	-- ORDER NAME
+	-- GENERATE ORDER NAME
 	-- =========================
 
 	CREATE TRIGGER IF NOT EXISTS generate_order_name
@@ -142,7 +157,7 @@ func createTables() {
 	END;
 
 	-- =========================
-	-- TABLE NAME
+	-- GENERATE TABLE NAME
 	-- =========================
 
 	CREATE TRIGGER IF NOT EXISTS generate_table_name
@@ -152,7 +167,7 @@ func createTables() {
 	BEGIN
 		UPDATE tables
 		SET name =
-			'#TBR' || printf('%03d', NEW.id)
+			'#TBL' || printf('%03d', NEW.id)
 		WHERE id = NEW.id;
 	END;
 
@@ -195,18 +210,33 @@ func createTables() {
 	END;
 
 	-- =========================
-	-- ASSIGN TABLE TO DINEIN
+	-- PREVENT DINEIN WITHOUT TABLES
 	-- =========================
 
-	CREATE TRIGGER IF NOT EXISTS assign_table_to_dinein
+	CREATE TRIGGER IF NOT EXISTS prevent_dinein_without_tables
+	BEFORE INSERT ON orders
+	FOR EACH ROW
+	WHEN NEW.type = 'DineIn'
+		AND (
+			SELECT COUNT(*)
+			FROM tables
+			WHERE state = 'Available'
+		) = 0
+	BEGIN
+		SELECT RAISE(
+			ABORT,
+			'No tables available'
+		);
+	END;
+
+	-- =========================
+	-- AUTO ASSIGN TABLE
+	-- =========================
+
+	CREATE TRIGGER IF NOT EXISTS auto_assign_table_to_dinein
 	AFTER INSERT ON orders
 	FOR EACH ROW
 	WHEN NEW.type = 'DineIn'
-	AND (
-		SELECT COUNT(*)
-		FROM tables
-		WHERE state = 'Available'
-	) > 0
 	BEGIN
 
 		UPDATE orders
@@ -220,8 +250,8 @@ func createTables() {
 
 		UPDATE tables
 		SET
-			state = 'Occupied',
-			current_order_name = NEW.name
+			current_order_name = NEW.name,
+			state = 'Occupied'
 		WHERE name = (
 			SELECT destination
 			FROM orders
@@ -231,43 +261,33 @@ func createTables() {
 	END;
 
 	-- =========================
-	-- PREVENT DINEIN WITHOUT TABLE
+	-- SYNC TABLE STATE
 	-- =========================
 
-	CREATE TRIGGER IF NOT EXISTS prevent_dinein_without_tables
-	BEFORE INSERT ON orders
-	FOR EACH ROW
-	WHEN NEW.type = 'DineIn'
-	AND (
-		SELECT COUNT(*)
-		FROM tables
-		WHERE state = 'Available'
-	) = 0
-	BEGIN
-		SELECT RAISE(
-			ABORT,
-			'No tables available'
-		);
-	END;
-
-	-- =========================
-	-- FREE TABLE AFTER SERVICE
-	-- =========================
-
-	CREATE TRIGGER IF NOT EXISTS free_table_after_completion
+	CREATE TRIGGER IF NOT EXISTS sync_table_state_update
 	AFTER UPDATE OF status ON orders
 	FOR EACH ROW
 	WHEN NEW.type = 'DineIn'
-	AND NEW.status IN (
-		'Served',
-		'Canceled'
-	)
 	BEGIN
 
 		UPDATE tables
 		SET
-			state = 'Available',
-			current_order_name = NULL
+			current_order_name = CASE
+				WHEN NEW.status IN ('Canceled', 'Served')
+				THEN NULL
+				ELSE NEW.name
+			END,
+
+			state = CASE
+				WHEN NEW.status = 'Canceled'
+				THEN 'Available'
+
+				WHEN NEW.status = 'Served'
+				THEN 'Pending'
+
+				ELSE 'Occupied'
+			END
+
 		WHERE name = NEW.destination;
 
 	END;
@@ -469,18 +489,18 @@ func SeedDB() {
 		capacity int
 		state    string
 	}{
-		{"#TBR001", 6, "Available"},
-		{"#TBR002", 6, "Pending"},
-		{"#TBR003", 2, "Available"},
-		{"#TBR004", 2, "Available"},
-		{"#TBR005", 2, "Available"},
-		{"#TBR006", 6, "Available"},
-		{"#TBR007", 4, "Available"},
-		{"#TBR008", 4, "Available"},
-		{"#TBR009", 4, "Available"},
-		{"#TBR010", 4, "Available"},
-		{"#TBR011", 4, "Available"},
-		{"#TBR012", 4, "Pending"},
+		{"#TBL001", 6, "Available"},
+		{"#TBL002", 6, "Available"},
+		{"#TBL003", 2, "Available"},
+		{"#TBL004", 2, "Available"},
+		{"#TBL005", 2, "Available"},
+		{"#TBL006", 6, "Available"},
+		{"#TBL007", 4, "Available"},
+		{"#TBL008", 4, "Available"},
+		{"#TBL009", 4, "Available"},
+		{"#TBL010", 4, "Available"},
+		{"#TBL011", 4, "Available"},
+		{"#TBL012", 4, "Pending"},
 	}
 
 	for _, t := range tables {
@@ -524,6 +544,7 @@ func SeedDB() {
 		{"#ORD0007", "Takeaway", "Taken", "Ibrahim", "0749921638", "Kawempe, Kampala"},
 		{"#ORD0008", "DineIn", "Served", "Zainab", "0783345210", ""},
 		{"#ORD0009", "Delivery", "Canceled", "Mustafa", "0751186492", "Ntinda, Kampala"},
+		{"#ORD0010", "DineIn", "Ready", "Yassin", "0748592974", ""},
 	}
 
 	for _, o := range orders {
@@ -589,6 +610,11 @@ func SeedDB() {
 		{"#ORD0009", "Luwombo Chicken", 1},
 		{"#ORD0009", "Pineapple Juice", 1},
 		{"#ORD0009", "Ettooke Eriboobedde", 1},
+
+		{"#ORD0010", "Vegetable Salad", 1},
+		{"#ORD0010", "Roasted Chapati", 3},
+		{"#ORD0010", "Luwombo Binyebwa", 1},
+		{"#ORD0010", "Strawberry Juice", 1},
 	}
 
 	for _, i := range items {
@@ -611,4 +637,3 @@ func SeedDB() {
 		}
 	}
 }
-

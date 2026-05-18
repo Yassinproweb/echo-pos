@@ -1,7 +1,7 @@
 {{ define "order_row" }}
 <tr class="even:bg-pos_lgh/15">
   <td class="px-4 py-2 text-left text-base scolor font-black">{{ .Name }}</td>
-  <td class="px-4 py-2 text-left text-base text-pos_bla font-medium">{{ .DateTime }}</td>
+  <td class="px-4 py-2 text-left text-base text-pos_bla font-medium">{{ .FormattedDateTime }}</td>
   <td class="px-4 py-2 text-left text-base text-pos_bla font-semibold">{{ .CustName }}</td>
   <td class="px-4 py-2 text-left text-base text-pos_bla font-semibold">{{ .CustNumber }}</td>
   <td class="px-4 py-2 text-left text-sm scolor font-bold uppercase">
@@ -47,8 +47,8 @@
   </td>
 
   <td class="px-4 py-2 text-left text-base scolor font-bold">
-    {{if .OrderCurr}}
-    <span>{{ .OrderCurr.Name }}, {{ .OrderCurr.CustName }}</span>
+    {{if .CurrentOrderName.Valid}}
+    <span>{{ .CurrentOrderName.String }}</span>
     {{else}}
     <span>No Active Order</span>
     {{end}}

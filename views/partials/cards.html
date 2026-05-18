@@ -57,7 +57,7 @@
     </span>
     <span class="w-full flex items-center justify-start gap-2">
       <i class="hgi hgi-stroke hgi-date-time text-2xl scolor leading-none"></i>
-      <span class="text-[13px] text-pos_bla font-medium">{{ .DateTime }}</span>
+      <span class="text-[13px] text-pos_bla font-medium">{{ .FormattedDateTime }}</span>
     </span>
   </div>
 </div>
@@ -79,9 +79,10 @@
           <span class="text-pos_pdg">Cleaning Required</span>
           {{end}}
         </p>
-        <p class="text-lg text-pos_bla">Cur Order:
-          {{if .OrderCurr}}
-          <span>{{ .OrderCurr.Name }}, {{ .OrderCurr.CustName }}</span>
+        <p class="text-lg text-pos_bla">
+          Current Order:
+          {{if .CurrentOrderName.Valid}}
+          <span>{{ .CurrentOrderName.String }}</span>
           {{else}}
           <span>No Active Order</span>
           {{end}}
@@ -99,7 +100,7 @@
 <div class="w-full flex flex-col items-center justify-start text-pos_bla">
   <div class="w-full flex flex-col items-center mb-3">
     <h2 class="text-xl font-bold uppercase">Receipt</h2>
-    <p class="text-base">{{ .DateTime }}</p>
+    <p class="text-base">{{ .FormattedDateTime }}</p>
   </div>
 </div>
 
