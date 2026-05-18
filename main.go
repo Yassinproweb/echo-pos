@@ -69,11 +69,12 @@ func main() {
 		selectedOrder.CalculateOrderTotal()
 
 		return c.Render(http.StatusOK, "main.html", map[string]any{
-			"user":          "Cashier Admin",
-			"orders":        orders,
-			"products":      products,
-			"tables":        tables,
-			"selectedOrder": nil,
+			"user":            "Cashier Admin",
+			"orders":          orders,
+			"products":        products,
+			"tables":          tables,
+			"CanAcceptDineIn": models.CanAcceptDineIn(),
+			"selectedOrder":   nil,
 		})
 	})
 
@@ -89,16 +90,7 @@ func main() {
 	e.GET("/pos/order/:id", routes.SelectOrderRoute)
 	e.POST("/pos/order/update-status/:id", routes.UpdateStatusAfterPrint)
 
-	// Helper function to convert DATETIME to DD-MM-YYYY HH:MM
-	// convertFromSQLiteDateTime := func(sqliteDateTime string) (string, error) {
-	// 	parsed, err := time.Parse("2006-01-02 15:04:05", sqliteDateTime)
-	// 	if err != nil {
-	// 		return "", fmt.Errorf("invalid SQLite date_time: %v", err)
-	// 	}
-	// 	return parsed.Format("02-01-2006 15:04"), nil
-	// }
-
-	if err := e.Start(":3000"); err != nil {
+	if err := e.Start(":4000"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
 	}
 }

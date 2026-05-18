@@ -56,7 +56,12 @@ type Order struct {
 }
 
 func (o Order) FormattedDateTime() string {
-	return o.DateTime.Local().Format("02-01-2006 15:04")
+	loc, err := time.LoadLocation("Africa/Kampala")
+	if err != nil {
+		return o.DateTime.Format("02-01-2006 15:04")
+	}
+
+	return o.DateTime.In(loc).Format("02-01-2006 15:04")
 }
 
 // =======================
@@ -337,4 +342,20 @@ func UpdateOrderStatus(
 	)
 
 	return err
+}
+
+func CanAcceptDineIn() bool {
+	var count int
+
+	err := db.DB.QueryRow(`
+		SELECT COUNT(*)
+		FROM tables
+		WHERE state = 'Available'
+	`).Scan(&count)
+
+	if err != nil {
+		return false
+	}
+
+	return count > 0
 }
