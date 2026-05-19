@@ -26,19 +26,18 @@
 </aside>
 
 <script>
-  // Search functionality
   function searchTable() {
     const input = document.getElementById("searchInput").value.toLowerCase();
-    const rows = document.querySelectorAll(".product_cards div h4");
     const cards = document.querySelectorAll(".product_cards");
 
-    rows.forEach(row => {
-      cards.forEach(card => {
-        const text = row.innerText.toLowerCase();
-        card.style.display = text.includes(input) ? "" : "none";
-      });
+    cards.forEach(card => {
+      const title = card.querySelector("h4");
+      if (!title) return;
+
+      const text = title.innerText.toLowerCase();
+      card.style.display = text.includes(input) ? "" : "none";
     });
-  }
+  };
 </script>
 
 {{ template "foot" . }}
