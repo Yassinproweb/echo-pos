@@ -29,11 +29,14 @@
   // Search functionality
   function searchTable() {
     const input = document.getElementById("searchInput").value.toLowerCase();
-    const rows = document.querySelectorAll("div div h4");
+    const rows = document.querySelectorAll(".product_cards div h4");
+    const cards = document.querySelectorAll(".product_cards");
 
     rows.forEach(row => {
-      const text = row.innerText.toLowerCase();
-      row.style.display = text.includes(input) ? "" : "none";
+      cards.forEach(card => {
+        const text = row.innerText.toLowerCase();
+        card.style.display = text.includes(input) ? "" : "none";
+      });
     });
   }
 </script>
