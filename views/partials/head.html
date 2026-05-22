@@ -40,28 +40,30 @@
           <div class="w-full flex flex-col items-start justify-start gap-3.5">
             <h3 class="text-xl text-pos_whi font-black">Main Menu</h3>
             <div class="w-full flex flex-col items-start justify-start gap-2 pl-2.5">
-              <button hx-get="/pos/orders" hx-target="html" hx-swap="outerHTML"
+              <a href="/" hx-get="/" hx-target="#page" hx-swap="innerHTML" hx-push-url="true"
                 class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-dashboard-square-03 text-3xl"></i>
                 <span>Dashboard</span>
-              </button>
-              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65"
-                hx-get="/orders" hx-trigger="click" hx-target="html" hx-swap="outerHtml">
+              </a>
+              <a href="/pos/orders" hx-get="/pos/orders" hx-target="#page" hx-swap="innerHTML" hx-push-url="true"
+                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-menu-restaurant text-3xl"></i>
                 <span>Orders</span>
-              </button>
-              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+              </a>
+              <a href="/pos/tables" hx-get="/pos/tables" hx-target="#page" hx-swap="innerHTML" hx-push-url="true"
+                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-dining-table text-3xl"></i>
                 <span>Tables</span>
-              </button>
-              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+              </a>
+              <a href="/pos/waitlist" hx-get="/pos/waitlist" hx-target="#page" hx-swap="innerHTML" hx-push-url="true"
+                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-waiters text-3xl"></i>
                 <span>Waitlist</span>
-              </button>
-              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+              </a>
+              <a class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-license-pin text-3xl"></i>
                 <span>Reservations</span>
-              </button>
+              </a>
             </div>
           </div>
           <div class="w-full flex flex-col items-start justify-start gap-3.5">
