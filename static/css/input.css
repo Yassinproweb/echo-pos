@@ -35,6 +35,11 @@ footer {
   display: flex;
 }
 
+input,
+select {
+  outline: none;
+}
+
 /* @media print { */
 /**/
 /*   body * { */
