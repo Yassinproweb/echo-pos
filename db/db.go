@@ -125,20 +125,22 @@ func createTables() {
 	-- =========================
 
 	CREATE TABLE IF NOT EXISTS order_items (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
+	 id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-		order_name TEXT NOT NULL,
-		pdt_name TEXT NOT NULL,
+	 order_name TEXT NOT NULL,
+	 pdt_name TEXT NOT NULL,
 
-		quantity INTEGER NOT NULL,
-		unit_price REAL NOT NULL DEFAULT 0,
+	 quantity INTEGER NOT NULL,
+	 unit_price REAL NOT NULL DEFAULT 0,
 
-		FOREIGN KEY(order_name)
-		REFERENCES orders(name)
-		ON DELETE CASCADE,
+	 UNIQUE(order_name, pdt_name),
 
-		FOREIGN KEY(pdt_name)
-		REFERENCES products(name)
+	 FOREIGN KEY(order_name)
+	 REFERENCES orders(name)
+	 ON DELETE CASCADE,
+
+	 FOREIGN KEY(pdt_name)
+	 REFERENCES products(name)
 	);
 
 	-- =========================
@@ -207,6 +209,64 @@ func createTables() {
 			WHERE order_name = NEW.order_name
 		)
 		WHERE name = NEW.order_name;
+	END;
+
+	-- =========================
+	-- UPDATE ORDER COST
+	-- =========================
+
+	CREATE TRIGGER IF NOT EXISTS update_order_cost
+	AFTER INSERT ON order_items
+	FOR EACH ROW
+	BEGIN
+
+	 UPDATE orders
+	 SET cost = (
+	  SELECT COALESCE(
+	   SUM(quantity * unit_price),
+	   0
+	  )
+	  FROM order_items
+	  WHERE order_name = NEW.order_name
+	 )
+	 WHERE name = NEW.order_name;
+
+	END;
+
+	CREATE TRIGGER IF NOT EXISTS update_order_cost_on_update
+	AFTER UPDATE ON order_items
+	FOR EACH ROW
+	BEGIN
+
+	 UPDATE orders
+	 SET cost = (
+	  SELECT COALESCE(
+	   SUM(quantity * unit_price),
+	   0
+	  )
+	  FROM order_items
+	  WHERE order_name = NEW.order_name
+	 )
+	 WHERE name = NEW.order_name;
+
+	END;
+
+	CREATE TRIGGER IF NOT EXISTS update_order_cost_on_delete
+	AFTER DELETE ON order_items
+	FOR EACH ROW
+	BEGIN
+
+	 UPDATE orders
+	 SET cost = (
+	  SELECT COALESCE(
+	   SUM(quantity * unit_price),
+	   0
+	  )
+	  FROM order_items
+	  WHERE order_name = OLD.order_name
+	 )
+	 WHERE name = OLD.order_name;
+
 	END;
 
 	-- =========================
@@ -500,7 +560,16 @@ func SeedDB() {
 		{"#TBL009", 4, "Available"},
 		{"#TBL010", 4, "Available"},
 		{"#TBL011", 4, "Available"},
-		{"#TBL012", 4, "Pending"},
+		{"#TBL012", 4, "Available"},
+		{"#TBL013", 8, "Available"},
+		{"#TBL014", 4, "Available"},
+		{"#TBL015", 8, "Available"},
+		{"#TBL016", 4, "Available"},
+		{"#TBL017", 4, "Pending"},
+		{"#TBL018", 2, "Pending"},
+		{"#TBL019", 8, "Pending"},
+		{"#TBL020", 4, "Pending"},
+		{"#TBL021", 6, "Pending"},
 	}
 
 	for _, t := range tables {
@@ -535,16 +604,26 @@ func SeedDB() {
 		custNumber  string
 		destination string
 	}{
-		{"#ORD0001", "DineIn", "Placed", "Yusuf", "0704126781", ""},
-		{"#ORD0002", "DineIn", "Preparing", "Amina", "0782459013", ""},
-		{"#ORD0003", "DineIn", "Waiting", "Hamza", "0756312489", ""},
-		{"#ORD0004", "Delivery", "Ready", "Fatimah", "0779023146", "Kira, Wakiso"},
-		{"#ORD0005", "Takeaway", "PickUp", "Abdallah", "0718452390", "Najjera, Wakiso"},
-		{"#ORD0006", "Delivery", "Transit", "Khadijah", "0707784512", "Seeta, Mukono"},
+		{"#ORD0001", "DineIn", "Placed", "Yūsuf", "0704126781", ""},
+		{"#ORD0002", "DineIn", "Preparing", "Amīnah", "0782459013", ""},
+		{"#ORD0003", "DineIn", "Waiting", "Hamzah", "0756312489", ""},
+		{"#ORD0004", "Delivery", "Ready", "Fātimah", "0779023146", "Kira, Wakiso"},
+		{"#ORD0005", "Takeaway", "PickUp", "Abdullah", "0718452390", "Najjera, Wakiso"},
+		{"#ORD0006", "Delivery", "Transit", "Khadījah", "0707784512", "Seeta, Mukono"},
 		{"#ORD0007", "Takeaway", "Taken", "Ibrahim", "0749921638", "Kawempe, Kampala"},
 		{"#ORD0008", "DineIn", "Served", "Zainab", "0783345210", ""},
 		{"#ORD0009", "Delivery", "Canceled", "Mustafa", "0751186492", "Ntinda, Kampala"},
 		{"#ORD0010", "DineIn", "Ready", "Yassin", "0748592974", ""},
+		{"#ORD0011", "DineIn", "Served", "Zubayr", "0700092974", ""},
+		{"#ORD0012", "DineIn", "Served", "Muhsin", "0748111974", ""},
+		{"#ORD0013", "DineIn", "Served", "Hytham", "0748593333", ""},
+		{"#ORD0014", "DineIn", "Ready", "Yāsir", "0748111114", ""},
+		{"#ORD0015", "DineIn", "Served", "Najim", "0740666974", ""},
+		{"#ORD0016", "DineIn", "Placed", "Ruways", "0748882974", ""},
+		{"#ORD0017", "DineIn", "Placed", "Khadīj", "0748999974", ""},
+		{"#ORD0018", "DineIn", "Preparing", "Muhammad", "0788892904", ""},
+		{"#ORD0019", "DineIn", "Placed", "Maryam", "0748590100", ""},
+		{"#ORD0020", "DineIn", "Served", "Akram", "0748592114", ""},
 	}
 
 	for _, o := range orders {
@@ -615,6 +694,52 @@ func SeedDB() {
 		{"#ORD0010", "Roasted Chapati", 3},
 		{"#ORD0010", "Luwombo Binyebwa", 1},
 		{"#ORD0010", "Strawberry Juice", 1},
+
+		{"#ORD0011", "Akatogo Ka Muwogo", 4},
+		{"#ORD0011", "Coconut Juice", 1},
+		{"#ORD0011", "Apple Juice", 1},
+		{"#ORD0011", "Mango Juice", 1},
+
+		{"#ORD0012", "Breakfast Katogo", 1},
+		{"#ORD0012", "Roasted Chapati", 1},
+		{"#ORD0012", "Strawberry Juice", 1},
+
+		{"#ORD0013", "Roasted Chapati", 10},
+		{"#ORD0013", "Luwombo Goat", 5},
+		{"#ORD0013", "Mango Juice", 5},
+
+		{"#ORD0014", "Mango Juice", 1},
+		{"#ORD0014", "Apple Juice", 1},
+		{"#ORD0014", "Tropical Fruitsalad", 1},
+		{"#ORD0014", "Coconut Juice", 1},
+		{"#ORD0014", "Pineapple Juice", 1},
+
+		{"#ORD0015", "Tropical Fruitsalad", 1},
+		{"#ORD0015", "Boiled White Rice", 1},
+		{"#ORD0015", "Luwombo Beef", 1},
+		{"#ORD0015", "Strawberry Juice", 1},
+
+		{"#ORD0016", "Boiled White Rice", 1},
+		{"#ORD0016", "Luwombo Binyebwa", 1},
+		{"#ORD0016", "Apple Juice", 1},
+
+		{"#ORD0017", "Boiled White Rice", 1},
+		{"#ORD0017", "Ettooke Eriboobedde", 1},
+		{"#ORD0017", "Luwombo Chicken", 1},
+		{"#ORD0017", "Strawberry Juice", 1},
+
+		{"#ORD0018", "Vegetable Salad", 1},
+		{"#ORD0018", "Ettooke Eriboobedde", 1},
+		{"#ORD0018", "Luwombo Binyebwa", 1},
+
+		{"#ORD0019", "Roasted Chapati", 1},
+		{"#ORD0019", "Luwombo Binyebwa", 1},
+		{"#ORD0019", "Mango Juice", 1},
+
+		{"#ORD0020", "Vegetable Salad", 1},
+		{"#ORD0020", "Pilau & Goat", 1},
+		{"#ORD0020", "Coconut Juice", 1},
+		{"#ORD0020", "Pineapple Juice", 1},
 	}
 
 	for _, i := range items {

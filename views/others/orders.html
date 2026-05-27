@@ -10,8 +10,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=LINE+Seed+JP&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital,wght@0,300..700;1,300..700&display=swap"
     rel="stylesheet">
+
 
   <!-- icons -->
   <link href="/assets/hugeicons.css" rel="stylesheet">
@@ -26,14 +27,14 @@
 </head>
 
 <body class="bg-pos_bla h-screen flex items-start justify-center">
-  <div class="relative w-screen aspect-[16/10] flex items-start justify-between gap-0 bg-pos_whi">
-    <div id="orders-card" class="w-full flex flex-col items-stretch justify-start gap-2.5">
+  <div class="relative w-screen aspect-[16/10] flex flex-col items-start justify-between gap-0 bg-pos_whi">
+    <div id="orders-card" class="w-full flex flex-col items-stretch justify-start gap-2.5 p-4">
       <section class="w-full flex items-center justify-between">
         <h3 class="text-2xl text-pos_bla font-black">Current Orders</h3>
-        <button class="text-pos_col font-medium underline">See all orders</button>
+        <a href="/pos" class="text-pos_col font-medium underline">Back to Dashboard</a>
       </section>
       <section
-        class="w-full grid grid-flow-col justify-start p-5 gap-3.5 border-2 border-pos_lgh/15 rounded-3xl snap-mandatory snap-x scroll-pl-5 bg-pos_whi overflow-x-scroll">
+        class="w-full grid grid-flow-col justify-start gap-3.5 rounded-3xl snap-mandatory snap-x scroll-pl-5 overflow-x-scroll">
         {{ range .orders }}
         {{ template "order_card" . }}
         {{ end }}

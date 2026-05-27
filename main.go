@@ -90,7 +90,7 @@ func main() {
 	e.GET("/pos/order/:id", routes.SelectOrderRoute)
 	e.POST("/pos/order/update-status/:id", routes.UpdateStatusAfterPrint)
 
-	if err := e.Start(":4000"); err != nil {
+	if err := e.Start(":3000"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
 	}
 }

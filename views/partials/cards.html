@@ -64,35 +64,35 @@
 {{ end }}
 
 {{ define "table_card" }}
-<div id="tables" class="w-full grid grid-cols-3 grid-row-auto gap-5">
-  <div class="table w-full flex-col items-center justify-between p-2.5">
-    <div class="w-full flex-col items-center justify-center gap-1.5">
-      <h3 class="text-3xl text-center scolor font-black">{{ .Name }}</h3>
-      <div class="w-full items-center justify-center gap-1.5 font-bold">
-        <p class="text-xl text-pos_bla">Cap: {{ .Capacity }}</p>
-        <p class="text-lg">State:
-          {{if eq .State "Available"}}
-          <span>Available</span>
-          {{else if eq .State "Occupied"}}
-          <span class="text-pos_dlv">Occupied</span>
-          {{else if eq .State "Pending"}}
-          <span class="text-pos_pdg">Cleaning Required</span>
-          {{end}}
-        </p>
-        <p class="text-lg text-pos_bla">
-          Current Order:
-          {{if .CurrentOrderName.Valid}}
-          <span>{{ .CurrentOrderName.String }}</span>
-          {{else}}
-          <span>No Active Order</span>
-          {{end}}
-        </p>
-      </div>
-    </div>
-    <div class="w-full flex-col items-center justify-between py-3.5 px-3.5 gap-3.5">
-      <i class="hgi hgi-stroke hgi-restaurant-table text-9xl scolor"></i>
+<div
+  class="w-72 snap-center aspect-video flex items-center justify-between p-2.5 gap-2.5 border-2 border-pos_lgh/25 rounded-[inherit]">
+  <div class="w-full flex flex-col items-start justify-center gap-1.5">
+    <h3 class="text-3xl text-center scolor font-black">{{ .Name }}</h3>
+    <div class="w-full flex flex-col items-start justify-center gap-0.5 font-bold">
+      <p class="text-xl text-pos_bla font-bold">Cap: {{ .Capacity }}</p>
+      <p class="text-lg underline text-pos_bla">State:&nbsp;
+        {{if eq .State "Available"}}
+        <span class="state scolor">Available</span>
+        {{else if eq .State "Occupied"}}
+        <span class="state scolor">Occupied</span>
+        {{else if eq .State "Pending"}}
+        <span class="state scolor">Pending</span>
+        {{end}}
+      </p>
+      <p class="text-lg text-pos_bla font-bold">
+        Current Order:&nbsp;
+        {{if .CurrentOrderName.Valid}}
+        <span class="scolor">{{ .CurrentOrderName.String }}</span>
+        {{else if eq .State "Pending"}}
+        <span class="scolor">Cleaning&nbsp;Required</span>
+        {{else}}
+        <span>No&nbsp;Active&nbsp;Order</span>
+        {{end}}
+      </p>
     </div>
   </div>
+
+  <i class="hgi hgi-stroke hgi-restaurant-table block text-5xl font-light scolor"></i>
 </div>
 {{ end }}
 
