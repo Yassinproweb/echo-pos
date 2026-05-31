@@ -143,7 +143,7 @@ func CreateOrder(c *echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Failed to get order name")
 	}
 
-	fmt.Println("Created Order:", orderName)
+	fmt.Println("Created Order:", orderName, orderID)
 
 	// Insert items using the actual order_name
 	for _, item := range cartItems {
@@ -166,10 +166,30 @@ func CreateOrder(c *echo.Context) error {
 
 	committed = true
 
-	c.Response().Header().Set("HX-Trigger", "orderCreated")
+	c.Response().Header().Set("HX-Retarget", "#toast-container")
+	c.Response().Header().Set("HX-Reswap", "beforeend")
+
 	return c.HTML(http.StatusOK, `
-		<div class="p-4 bg-green-600 text-white rounded-lg text-center font-medium">
-			✅ Order <strong>`+orderName+`</strong> created successfully!
+		<div class="toast fixed top-9 right-9 min-w-[320px] bg-pos_dlv text-pos_whi rounded-xl shadow-lg p-4 flex items-start justify-between gap-4 animate-fade-in">
+		  <div class="flex flex-col">
+				<span class="font-bold">Order Created Successfully</span>
+		  	<span class="text-sm opacity-90">`+orderName+` was created successfully</span>
+		  </div>
+		
+		  <button onclick="this.parentElement.remove()" class="text-white text-xl leading-none">×</button>
 		</div>
+		
+		<script>
+		setTimeout(() => {
+		  const toast = document.currentScript.previousElementSibling
+		
+		  if(toast){
+		    toast.style.transition = "opacity .5s ease"
+		    toast.style.opacity = 0
+		
+		    setTimeout(()=>{toast.remove()}, 500)
+		  }
+		},15000)
+		</script>
 	`)
 }
