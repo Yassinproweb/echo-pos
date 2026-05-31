@@ -87,7 +87,7 @@ func createTables() {
 		cost REAL DEFAULT 0,
 
 		cust_name TEXT NOT NULL,
-		cust_number TEXT,
+		cust_number TEXT NOT NULL,
 
 		destination TEXT,
 
@@ -143,19 +143,18 @@ func createTables() {
 	 REFERENCES products(name)
 	);
 
-	-- =========================
-	-- GENERATE ORDER NAME
-	-- =========================
-
 	CREATE TRIGGER IF NOT EXISTS generate_order_name
 	AFTER INSERT ON orders
 	FOR EACH ROW
 	WHEN NEW.name IS NULL
 	BEGIN
-		UPDATE orders
-		SET name =
-			'#ORD' || printf('%04d', NEW.id)
-		WHERE id = NEW.id;
+    UPDATE orders
+    SET name = '#ORD' || printf('%04d', (
+        SELECT COALESCE(MAX(CAST(SUBSTR(name, 5) AS INTEGER)), 0) + 1
+        FROM orders 
+        WHERE name LIKE '#ORD____'
+    ))
+    WHERE id = NEW.id;
 	END;
 
 	-- =========================
@@ -361,7 +360,6 @@ func createTables() {
 }
 
 func SeedDB() {
-
 	// =========================
 	// PRODUCTS
 	// =========================

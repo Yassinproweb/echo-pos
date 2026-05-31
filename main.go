@@ -81,6 +81,8 @@ func main() {
 	// Route for the POS UI orders page
 	e.GET("/pos/orders", controllers.RenderOrders)
 
+	e.POST("/pos/orders/create", routes.CreateOrder)
+
 	// Route for the POS UI orders page
 	e.GET("/pos/products", controllers.RenderProducts)
 
@@ -90,7 +92,7 @@ func main() {
 	e.GET("/pos/order/:id", routes.SelectOrderRoute)
 	e.POST("/pos/order/update-status/:id", routes.UpdateStatusAfterPrint)
 
-	if err := e.Start(":3000"); err != nil {
+	if err := e.Start(":4000"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
 	}
 }

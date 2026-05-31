@@ -13,9 +13,11 @@
     <h4 class="text-lg text-pos_bla font-black">{{ .Name }}</h4>
     <p class="text-sm text-pos_lgh font-medium">{{ .Description }}</p>
     <div class="text-3xl w-full flex items-center justify-between p-1 rounded-full bg-gray-100">
-      <button class="w-10 aspect-square rounded-full text-pos_col bg-pos_whi">-</button>
-      <span class="text-pos_bla text-base font-medium">0</span>
-      <button class="w-10 aspect-square rounded-full text-pos_whi bg-pos_col">+</button>
+      <button type="button" @click="decrease('{{ .Name }}')"
+        class="w-10 aspect-square rounded-full text-pos_col bg-pos_whi">-</button>
+      <span x-text="quantities['{{ .Name }}'] || 0" class="text-pos_bla text-base font-medium"></span>
+      <button type="button" @click="increase('{{ .Name }}', {{ .Price }})"
+        class="w-10 aspect-square rounded-full text-pos_whi bg-pos_col">+</button>
     </div>
   </div>
 </div>
