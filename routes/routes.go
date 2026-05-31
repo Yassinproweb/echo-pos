@@ -96,7 +96,6 @@ func CreateOrder(c *echo.Context) error {
 			return c.String(http.StatusBadRequest, "Invalid items JSON: "+err.Error())
 		}
 	}
-	fmt.Println(req.Items)
 
 	order := models.Order{
 		Type:        models.Type(req.OrderType),
@@ -111,7 +110,6 @@ func CreateOrder(c *echo.Context) error {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	fmt.Println("prints")
 	tx, err := db.DB.Begin()
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "Database error")
@@ -136,7 +134,6 @@ func CreateOrder(c *echo.Context) error {
 	}
 
 	orderID, _ := result.LastInsertId()
-	fmt.Println(orderID)
 
 	// Get the generated order name (after trigger)
 	var orderName string

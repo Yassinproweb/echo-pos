@@ -37,9 +37,9 @@ const (
 )
 
 type OrderItem struct {
-	PdtName   string
-	Quantity  int
-	UnitPrice int
+	PdtName   string `json:"name"`
+	Quantity  int    `json:"quantity"`
+	UnitPrice int    `json:"unitPrice"`
 }
 
 type Order struct {
