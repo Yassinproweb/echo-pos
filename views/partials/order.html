@@ -1,0 +1,128 @@
+{{ define "order_form" }}
+<form id="form" hx-post="/pos/orders/create" hx-swap="none"
+  hx-on::after-request="if(event.detail.successful) { resetOrder(); }"
+  class="w-full h-full flex flex-col items-start justify-start gap-5 text-pos_bla">
+  <h2 class="text-2xl text-pos_bla font-bold capitalize">Enter New Order</h2>
+
+  <div class="w-full flex flex-col items-start justify-start gap-1.5">
+    <label for="customer_name" class="text-base text-pos_col capitalize font-bold">Enter customer name</label>
+    <input type="text" id="customer_name" name="customer_name"
+      class="w-full border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-45" placeholder="" required>
+  </div>
+
+  <div class="w-full flex flex-col items-start justify-start gap-1.5">
+    <label for="customer_number" class="text-base text-pos_col capitalize font-bold">Enter customer number</label>
+    <input type="tel" id="customer_number" name="customer_number"
+      class="w-full border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-45" placeholder="" required>
+  </div>
+
+  <div class="w-full flex flex-col items-start justify-start gap-1.5">
+    <label for="order_type" class="text-base text-pos_col capitalize font-bold">select Order type</label>
+
+    <select id="order_type" name="order_type" x-model="orderType"
+      class="w-full text-pos_whi bg-pos_col border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-45">
+      <option value="Delivery" selected>Delivery</option>
+      <option value="Takeaway">Takeaway</option>
+      <option value="DineIn">DineIn</option>
+    </select>
+  </div>
+
+  <div class="w-full flex flex-col items-start justify-start gap-1.5">
+    <label for="order_dest" class="text-base text-pos_col capitalize font-bold">Order destination</label>
+    <input type="text" id="order_dest" name="order_dest"
+      class="w-full border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-75"
+      :disabled="orderType === 'DineIn' || orderType === 'Takeaway'" :required="orderType === 'Delivery'"
+      :placeholder="orderType === 'Delivery' ? 'Enter delivery destination' : 'Disabled for this order type'">
+  </div>
+
+  <div class="w-full flex flex-col items-start justify-start gap-1.5">
+    <p class="text-base text-pos_col capitalize font-bold">Order status</p>
+    <div class="w-full flex items-center justify-start gap-1.5">
+      <input type="radio" id="placed" name="order_status" value="Placed" class="accent-pos_col checked:accent-pos_col"
+        checked>
+      <label for="placed" class="text-base font-bold">Placed</label>
+    </div>
+  </div>
+
+  <!-- hidden items json -->
+  <input type="hidden" name="items" :value="JSON.stringify(items)">
+
+  <!-- selected items -->
+  <div class="w-full flex flex-col items-start justify-start gap-1.5">
+    <label class="text-base text-pos_col capitalize font-bold">Items (Auto-filled)</label>
+    <div
+      class="w-full min-h-[100px] max-h-[215px] flex flex-col border border-pos_col/50 rounded-md p-3 overflow-y-scroll">
+      <template x-for="item in items" :key="item.name">
+        <div class="flex items-start justify-between py-1">
+          <span class="text-sm text-pos_bla font-medium" x-text="item.name"></span>
+          <span class="text-sm scolor font-bold" x-text="'x' + item.quantity"></span>
+        </div>
+      </template>
+      <div x-show="items.length === 0" class="text-center text-pos_lgh italic py-3">
+        No items selected yet
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" :disabled="items.length === 0" hx-indicator="#loading"
+    class="w-full border-2 border-pos_col/45 px-5 py-1.5 text-base text-pos_whi text-center font-medium rounded-md bg-pos_col disabled:opacity-50 disabled:cursor-not-allowed">
+    <span class="htmx-inverted-indicator">Create Order</span>
+    <span class="htmx-indicator" id="loading">...</span>
+  </button>
+</form>
+{{ end }}
+
+{{ define "toast" }}
+<div id="toast-container" hx-swap-oob="beforeend">
+  <div
+    class="toast w-[320px] bg-pos_col text-pos_whi rounded-xl shadow-lg p-4 flex items-start justify-between gap-4 animate-fade-in">
+    <div class="flex flex-col">
+      <span class="font-bold">Order {{ .OrderName }} Created Successfully</span>
+    </div>
+
+    <button type="button" class="text-white text-xl leading-none" onclick="this.closest('.toast').remove()">×</button>
+  </div>
+</div>
+{{ end }}
+
+{{ define "receipt" }}
+<div class="w-full h-full flex flex-col items-start justify-start gap-2.5 bg-pos_whi">
+  <h2 class="text-xl text-pos_bla font-bold">Order Details</h2>
+
+  <div class="w-full flex items-center justify-between">
+    <h3 class="text-2xl text-pos_bla font-black">{{ .Name }}</h3>
+    <h5 class="text-base text-pos_bla font-semibold">{{ .Status }}</h5>
+  </div>
+
+  <div id="receipt_card"
+    class="w-full h-max flex flex-col items-start justify-start gap-1.5 p-3 border-2 border-pos_lgh/15 mono">
+    {{ template "receipt_card" .}}
+  </div>
+
+  <div class="w-full flex flex-col items-start justify-start gap-5">
+    {{ $isCanceled := eq .Status "Canceled" }}
+    {{ $isNotReady := ne .Status "Ready" }}
+
+    {{ if eq .Status "Canceled" }}
+    <button disabled
+      class="w-full flex items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col/55 cursor-not-allowed hover:bg-pos_col/65">
+      Print Receipt</button>
+    {{ else }}
+    <button onclick="handlePrint('{{ .Name | urlquery }}', '{{ .Type }}')"
+      class="w-full flex items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col transition-all hover:bg-pos_col/85">
+      Print Receipt</button>
+    {{ end }}
+  </div>
+</div>
+{{ end }}
+
+{{ define "receipt_panel" }}
+<div id="order-panel" hx-swap-oob="innerHTML">
+  {{ template "receipt" . }}
+</div>
+{{ end }}
+
+{{ define "order_created" }}
+{{ template "toast" .Toast }}
+{{ template "receipt_panel" .Receipt }}
+{{ end }}

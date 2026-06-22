@@ -18,93 +18,23 @@
   </main>
 
   <aside class="w-[30%] h-full flex flex-col items-start justify-start p-5 border-l-2 border-l-pos_lgh/25 bg-pos_whi">
-    <form id="form" hx-post="/pos/orders/create" hx-swap="none"
-      hx-on::after-request="if(event.detail.successful) { resetOrder(); }"
-      class="w-full h-full flex flex-col items-start justify-start gap-5 text-pos_bla">
-      <h2 class="text-2xl text-pos_bla font-bold capitalize">Enter New Order</h2>
-
-      <div class="w-full flex flex-col items-start justify-start gap-1.5">
-        <label for="customer_name" class="text-base text-pos_col capitalize font-bold">Enter customer name</label>
-        <input type="text" id="customer_name" name="customer_name"
-          class="w-full border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-45" placeholder=""
-          required>
-      </div>
-
-      <div class="w-full flex flex-col items-start justify-start gap-1.5">
-        <label for="customer_number" class="text-base text-pos_col capitalize font-bold">Enter customer number</label>
-        <input type="tel" id="customer_number" name="customer_number"
-          class="w-full border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-45" placeholder=""
-          required>
-      </div>
-
-      <div class="w-full flex flex-col items-start justify-start gap-1.5">
-        <label for="order_type" class="text-base text-pos_col capitalize font-bold">select Order type</label>
-
-        <select id="order_type" name="order_type" x-model="orderType"
-          class="w-full text-pos_whi bg-pos_col border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-45">
-          <option value="Delivery" selected>Delivery</option>
-          <option value="Takeaway">Takeaway</option>
-          <option value="DineIn">DineIn</option>
-        </select>
-      </div>
-
-      <div class="w-full flex flex-col items-start justify-start gap-1.5">
-        <label for="order_dest" class="text-base text-pos_col capitalize font-bold">Order destination</label>
-        <input type="text" id="order_dest" name="order_dest"
-          class="w-full border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-75"
-          :disabled="orderType === 'DineIn' || orderType === 'Takeaway'" :required="orderType === 'Delivery'"
-          :placeholder="orderType === 'Delivery' ? 'Enter delivery destination' : 'Disabled for this order type'">
-      </div>
-
-      <div class="w-full flex flex-col items-start justify-start gap-1.5">
-        <p class="text-base text-pos_col capitalize font-bold">Order status</p>
-        <div class="w-full flex items-center justify-start gap-1.5">
-          <input type="radio" id="placed" name="order_status" value="Placed"
-            class="accent-pos_col checked:accent-pos_col" checked>
-          <label for="placed" class="text-base font-bold">Placed</label>
-        </div>
-      </div>
-
-      <!-- hidden items json -->
-      <input type="hidden" name="items" :value="JSON.stringify(items)">
-
-      <!-- selected items -->
-      <div class="w-full flex flex-col items-start justify-start gap-1.5">
-        <label class="text-base text-pos_col capitalize font-bold">Items (Auto-filled)</label>
-        <div class="w-full min-h-[100px] flex flex-col border border-pos_col/50 rounded-md p-3">
-          <template x-for="item in items" :key="item.name">
-            <div class="flex items-start justify-between py-1">
-              <span class="text-sm text-pos_bla font-medium" x-text="item.name"></span>
-              <span class="text-sm scolor font-bold" x-text="'x' + item.quantity"></span>
-            </div>
-          </template>
-          <div x-show="items.length === 0" class="text-center text-pos_lgh italic py-3">
-            No items selected yet
-          </div>
-        </div>
-      </div>
-
-      <button type="submit" :disabled="items.length === 0" hx-indicator="#loading"
-        class="w-full border-2 border-pos_col/45 px-5 py-1.5 text-base text-pos_whi text-center font-medium rounded-md bg-pos_col disabled:opacity-50 disabled:cursor-not-allowed">
-        <span class="htmx-inverted-indicator">Create Order</span>
-        <span class="htmx-indicator" id="loading">...</span>
-      </button>
-    </form>
-
-    <!-- aside for viewing receipt -->
-    <!-- <section id="receipt" class="w-full h-full flex-col items-start justify-between"> -->
-    <!--   {{ if .selectedOrder }} -->
-    <!--   {{ template "receipt" .selectedOrder }} -->
-    <!--   {{ else }} -->
-    <!--   <h3 class="text-2xl text-pos_bla font-bold">Please Select An Order To See Details...</h3> -->
-    <!--   {{ end }} -->
-    <!-- </section> -->
+    <div id="order-panel" class="w-full h-full">
+      {{ template "order_form" . }}
+    </div>
   </aside>
 </div>
 
-<div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3"></div>
+<div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-1.5"></div>
 
 <script>
+  document.body.addEventListener('htmx:oobAfterSwap', (e) => {
+    e.detail.target.querySelectorAll('.toast').forEach((toast) => {
+      if (toast.dataset.timerSet) return;
+      toast.dataset.timerSet = "true";
+      setTimeout(() => toast.remove(), 4000);
+    });
+  });
+
   function searchTable() {
     const input = document.getElementById("searchInput").value.toLowerCase();
     const cards = document.querySelectorAll(".product_cards");

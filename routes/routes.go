@@ -39,39 +39,11 @@ func SelectOrderRoute(c *echo.Context) error {
 func UpdateStatusAfterPrint(c *echo.Context) error {
 	orderID := c.Param("id")
 
-	// READ THE TYPE FROM HTMX
-	orderType := models.Type(c.FormValue("type"))
-
-	orders := models.FetchOrders()
-	var selectedOrder *models.Order
-
-	for i := range orders {
-		if orders[i].Name == orderID {
-
-			switch orderType {
-			case models.DineIn:
-				orders[i].Status = models.Waiting
-
-			case models.Takeaway:
-				orders[i].Status = models.PickUp
-
-			case models.Delivery:
-				orders[i].Status = models.Transit
-			}
-
-			selectedOrder = &orders[i]
-			break
-		}
+	if err := models.UpdateOrderStatus(orderID, models.Preparing); err != nil {
+		return c.String(http.StatusInternalServerError, "Failed to update status")
 	}
 
-	if selectedOrder == nil {
-		return c.String(http.StatusNotFound, "Order not found")
-	}
-
-	// recalculate totals
-	selectedOrder.CalculateOrderTotal()
-
-	return c.Render(http.StatusOK, "receipt", selectedOrder)
+	return c.Render(http.StatusOK, "order_form", nil)
 }
 
 type CreateOrderRequest struct {
@@ -166,30 +138,10 @@ func CreateOrder(c *echo.Context) error {
 
 	committed = true
 
-	c.Response().Header().Set("HX-Retarget", "#toast-container")
-	c.Response().Header().Set("HX-Reswap", "beforeend")
+	order.Name = orderName
 
-	return c.HTML(http.StatusOK, `
-		<div class="toast fixed top-9 right-9 min-w-[320px] bg-pos_dlv text-pos_whi rounded-xl shadow-lg p-4 flex items-start justify-between gap-4 animate-fade-in">
-		  <div class="flex flex-col">
-				<span class="font-bold">Order Created Successfully</span>
-		  	<span class="text-sm opacity-90">`+orderName+` was created successfully</span>
-		  </div>
-		
-		  <button onclick="this.parentElement.remove()" class="text-white text-xl leading-none">×</button>
-		</div>
-		
-		<script>
-		setTimeout(() => {
-		  const toast = document.currentScript.previousElementSibling
-		
-		  if(toast){
-		    toast.style.transition = "opacity .5s ease"
-		    toast.style.opacity = 0
-		
-		    setTimeout(()=>{toast.remove()}, 500)
-		  }
-		},15000)
-		</script>
-	`)
+	return c.Render(http.StatusCreated, "order_created", map[string]any{
+		"Toast":   map[string]any{"OrderName": orderName},
+		"Receipt": order,
+	})
 }

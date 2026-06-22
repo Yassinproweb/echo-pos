@@ -53,21 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// // changing order status after print
-// function handlePrint(orderId, orderType) {
-//   window.print();
-//
-//   const safeId = encodeURIComponent(orderId);
-//
-//   window.onafterprint = () => {
-//     htmx.ajax('POST', `/pos/order/update-status/${safeId}`, {
-//       values: { type: orderType },
-//       target: '#receipt',
-//       swap: 'innerHTML'
-//     });
-//   };
-// }
-
 function handlePrint(orderId, orderType) {
   const safeId = encodeURIComponent(orderId);
 
@@ -75,8 +60,7 @@ function handlePrint(orderId, orderType) {
 
   setTimeout(() => {
     htmx.ajax('POST', `/pos/order/update-status/${safeId}`, {
-      values: { type: orderType },
-      target: '#receipt',
+      target: '#order-panel',
       swap: 'innerHTML'
     });
   }, 1500);

@@ -2,7 +2,8 @@
 module.exports = {
   content: [
     "./views/**/*.html",
-    "./views/partials/**/*.html"
+    "./views/partials/**/*.html",
+    "./views/others/**/*.html"
   ],
   theme: {
     extend: {
