@@ -99,71 +99,70 @@
 {{ end }}
 
 {{ define "receipt_card" }}
-<div class="w-[80mm] flex flex-col items-center justify-start text-pos_bla">
+<div class="relative w-full max-w-[80mm] flex flex-col items-center justify-start text-pos_bla">
   <div class="w-full flex flex-col items-center mb-3">
     <h2 class="text-xl font-bold uppercase">Receipt</h2>
     <p class="text-base">{{ .FormattedDateTime }}</p>
   </div>
-</div>
 
-<div class="w-full flex flex-col items-center gap-1 mb-3">
-  <div class="w-full flex justify-between">
-    <span class="font-bold">Order ID:</span>
-    <span>{{ .Name }}</span>
-  </div>
-  <div class="w-full flex justify-between">
-    <span class="font-bold">Customer:</span>
-    <span>{{ .CustName }}</span>
-  </div>
-  <div class="w-full flex justify-between">
-    <span class="font-bold">Contact:</span>
-    <span>{{ .CustNumber }}</span>
-  </div>
-  <div class="w-full flex justify-between">
-    <span class="font-bold">Type:</span>
-    <span>{{ .Type }}</span>
-  </div>
-  {{ if .Destination }}
-  <div class="w-full flex justify-between">
-    <span class="font-bold">Table/Dest:</span>
-    <span>{{ .Destination }}</span>
-  </div>
-  {{ end }}
-</div>
-
-<table class="w-full text-base mb-3">
-  <thead>
-    <tr class="border-b border-pos_bla">
-      <th class="text-left py-3">Item</th>
-      <th class="text-center py-3">Qty</th>
-      <th class="text-right py-3">Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{ range .OrderCart }}
-    <tr class="border-b border-pos_lgh/10">
-      <td class="py-0.5">{{ .PdtName }}</td>
-      <td class="text-center">x{{ .Quantity }}</td>
-      <td class="text-right">{{ .UnitPrice }}</td>
-    </tr>
+  <div class="w-full flex flex-col items-center gap-1 mb-3">
+    <div class="w-full flex justify-between">
+      <span class="font-bold">Order ID:</span>
+      <span>{{ .Name }}</span>
+    </div>
+    <div class="w-full flex justify-between">
+      <span class="font-bold">Customer:</span>
+      <span>{{ .CustName }}</span>
+    </div>
+    <div class="w-full flex justify-between">
+      <span class="font-bold">Contact:</span>
+      <span>{{ .CustNumber }}</span>
+    </div>
+    <div class="w-full flex justify-between">
+      <span class="font-bold">Type:</span>
+      <span>{{ .Type }}</span>
+    </div>
+    {{ if .Destination }}
+    <div class="w-full flex justify-between">
+      <span class="font-bold">Table/Dest:</span>
+      <span>{{ .Destination }}</span>
+    </div>
     {{ end }}
-  </tbody>
-</table>
-
-<div class="w-full flex flex-col pt-3 space-y-1 border-t border-dashed border-pos_bla">
-  <div class="flex justify-between text-base">
-    <span>Total Items:</span>
-    <span>{{ .Items }}</span>
   </div>
-  <div class="w-full flex justify-between text-base font-black">
-    <span>GRAND TOTAL:</span>
-    <span>Ugx {{ .Cost }}</span>
-  </div>
-</div>
 
-<div class="w-full flex flex-col text-center mt-6 text-base uppercase">
-  <p>*** Thank you ***</p>
-  <p>Powered by POS RESTO</p>
-</div>
+  <table class="w-full text-base mb-3">
+    <thead>
+      <tr class="border-b border-pos_bla">
+        <th class="text-left py-3">Item</th>
+        <th class="text-center py-3">Qty</th>
+        <th class="text-right py-3">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range .OrderCart }}
+      <tr class="border-b border-pos_lgh/10">
+        <td class="py-0.5">{{ .PdtName }}</td>
+        <td class="text-center">x{{ .Quantity }}</td>
+        <td class="text-right">{{ .UnitPrice }}</td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+
+  <div class="w-full flex flex-col pt-3 space-y-1 border-t border-dashed border-pos_bla">
+    <div class="flex justify-between text-base">
+      <span>Total Items:</span>
+      <span>{{ .Items }}</span>
+    </div>
+    <div class="w-full flex justify-between text-base font-black">
+      <span>GRAND TOTAL:</span>
+      <span>Ugx {{ .Cost }}</span>
+    </div>
+  </div>
+
+  <div class="w-full flex flex-col text-center mt-6 text-base uppercase">
+    <p>*** Thank you ***</p>
+    <p>Powered by POS RESTO</p>
+  </div>
 </div>
 {{ end }}

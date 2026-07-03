@@ -31,7 +31,7 @@
     e.detail.target.querySelectorAll('.toast').forEach((toast) => {
       if (toast.dataset.timerSet) return;
       toast.dataset.timerSet = "true";
-      setTimeout(() => toast.remove(), 4000);
+      setTimeout(() => toast.remove(), 5000);
     });
   });
 
