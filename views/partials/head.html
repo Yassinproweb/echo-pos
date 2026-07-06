@@ -42,8 +42,7 @@
           <div class="w-full flex flex-col items-start justify-start gap-3.5">
             <h3 class="text-xl text-pos_whi font-black">Main Menu</h3>
             <div class="w-full flex flex-col items-start justify-start gap-2 pl-2.5">
-              <a href="/" hx-get="/" hx-target="#page" hx-swap="innerHTML" hx-push-url="true"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+              <a href="/" class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-dashboard-square-03 text-3xl"></i>
                 <span>Dashboard</span>
               </a>
@@ -57,12 +56,13 @@
                 <i class="hgi hgi-stroke hgi-dining-table text-3xl"></i>
                 <span>Tables</span>
               </a>
-              <a href="/pos/waitlist" hx-get="/pos/waitlist" hx-target="#page" hx-swap="innerHTML" hx-push-url="true"
+              <a href="/pos/waitlist"
                 class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-waiters text-3xl"></i>
                 <span>Waitlist</span>
               </a>
-              <a class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+              <a href="/pos/reservations"
+                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-license-pin text-3xl"></i>
                 <span>Reservations</span>
               </a>
@@ -71,14 +71,16 @@
           <div class="w-full flex flex-col items-start justify-start gap-3.5">
             <h3 class="text-xl text-pos_whi font-semibold">Company</h3>
             <div class="w-full flex flex-col items-start justify-start gap-2 pl-2.5">
-              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+              <a href="/pos/analytics"
+                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-analytics-02 text-3xl"></i>
                 <span>Analytics</span>
-              </button>
-              <button class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+              </a>
+              <a href="/pos/management"
+                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-store-management-02 text-3xl"></i>
                 <span>Manage</span>
-              </button>
+              </a>
             </div>
           </div>
         </nav>

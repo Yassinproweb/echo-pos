@@ -88,6 +88,7 @@ func main() {
 
 	// Route for the POS UI orders page
 	e.GET("/pos/tables", controllers.RenderTables)
+	e.GET("/pos/analytics", controllers.RenderAnalytics)
 
 	e.GET("/pos/order/:id", routes.SelectOrderRoute)
 	e.POST("/pos/order/update-status/:id", routes.UpdateStatusAfterPrint)
