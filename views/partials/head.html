@@ -38,7 +38,7 @@
           <p class="text-pos_whi">{{ .user }}</p>
         </div>
 
-        <nav class="w-full flex flex-col items-start justify-start gap-9">
+        <nav class="w-full flex flex-col items-start justify-between gap-9">
           <div class="w-full flex flex-col items-start justify-start gap-3.5">
             <h3 class="text-xl text-pos_whi font-black">Main Menu</h3>
             <div class="w-full flex flex-col items-start justify-start gap-2 pl-2.5">
@@ -56,21 +56,6 @@
                 <i class="hgi hgi-stroke hgi-dining-table text-3xl"></i>
                 <span>Tables</span>
               </a>
-              <a href="/pos/waitlist"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-waiters text-3xl"></i>
-                <span>Waitlist</span>
-              </a>
-              <a href="/pos/reservations"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-license-pin text-3xl"></i>
-                <span>Reservations</span>
-              </a>
-            </div>
-          </div>
-          <div class="w-full flex flex-col items-start justify-start gap-3.5">
-            <h3 class="text-xl text-pos_whi font-semibold">Company</h3>
-            <div class="w-full flex flex-col items-start justify-start gap-2 pl-2.5">
               <a href="/pos/analytics"
                 class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-analytics-02 text-3xl"></i>
@@ -80,6 +65,17 @@
                 class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
                 <i class="hgi hgi-stroke hgi-store-management-02 text-3xl"></i>
                 <span>Manage</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="w-full flex flex-col items-start justify-start gap-3.5">
+            <h3 class="text-xl text-pos_whi font-semibold">Company</h3>
+            <div class="w-full flex flex-col items-start justify-start gap-2 pl-2.5">
+              <a href="/pos/logout"
+                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
+                <i class="hgi hgi-stroke hgi-logout-02 text-3xl"></i>
+                <span>Logout</span>
               </a>
             </div>
           </div>

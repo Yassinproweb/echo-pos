@@ -1,20 +1,17 @@
 {{ template "head" . }}
 
-<div class="relative w-[85%] h-full flex flex-col items-start justify-start mt-[70px] overflow-y-auto bg-[#f5f6fa]">
-
+<div class="relative w-[85%] h-full flex flex-col items-start justify-start py-5 overflow-y-auto bg-[#f5f6fa]">
   <!-- ── Page header ── -->
-  <div class="w-full flex items-center justify-between px-8 pt-6 pb-2">
+  <div class="w-full flex items-center justify-between px-5">
     <h1 class="text-2xl font-black text-pos_bla">Analytics</h1>
-    <span class="text-sm text-pos_lgh">{{ .GeneratedAt }}</span>
+    <span class="text-sm text-pos_col font-semibold">{{ .GeneratedAt }}</span>
   </div>
 
-  <div class="w-full flex flex-col gap-5 px-8 pb-8 pt-3">
-
+  <div class="w-full flex flex-col gap-5 px-5 pt-5">
     <!-- ════════════════════════════════════
          ROW 1 · KPI summary cards
     ════════════════════════════════════ -->
-    <div class="w-full grid grid-cols-4 gap-4">
-
+    <div class="w-full grid grid-cols-4 gap-5">
       <div class="bg-pos_whi rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-pos_bla/5">
         <div class="w-12 h-12 rounded-xl bg-pos_col/15 flex items-center justify-center shrink-0">
           <i class="hgi hgi-stroke hgi-menu-restaurant text-2xl text-pos_col"></i>
@@ -22,104 +19,109 @@
         <div class="flex flex-col">
           <span class="text-xs text-pos_lgh font-medium uppercase tracking-wide">Total Orders</span>
           <span class="text-3xl font-black text-pos_bla leading-tight">{{ .TotalOrders }}</span>
-          <span class="text-xs text-pos_lgh mt-0.5">All time</span>
+          <span class="text-xs text-pos_col mt-0.5">All time</span>
         </div>
       </div>
 
       <div class="bg-pos_whi rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-pos_bla/5">
         <div class="w-12 h-12 rounded-xl bg-pos_dlv/15 flex items-center justify-center shrink-0">
-          <i class="hgi hgi-stroke hgi-delivery-box-01 text-2xl text-green-500"></i>
+          <i class="hgi hgi-stroke hgi-delivery-box-01 text-2xl text-pos_dlv"></i>
         </div>
         <div class="flex flex-col">
           <span class="text-xs text-pos_lgh font-medium uppercase tracking-wide">Completed</span>
           <span class="text-3xl font-black text-pos_bla leading-tight">{{ .TotalDelivered }}</span>
-          <span class="text-xs text-green-500 mt-0.5">Served &amp; Taken</span>
+          <span class="text-xs text-pos_dlv mt-0.5">Served, Delivered &amp; Taken</span>
         </div>
       </div>
 
-      <div class="bg-pos_whi rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-pos_bla/5">
+      <div class="bg-pos_whi rounded-2xl p-5 flex items-center gap-3 shadow-sm border border-pos_bla/5">
         <div class="w-12 h-12 rounded-xl bg-pos_cld/15 flex items-center justify-center shrink-0">
-          <i class="hgi hgi-stroke hgi-cancel-01 text-2xl text-red-500"></i>
+          <i class="hgi hgi-stroke hgi-cancel-01 text-2xl text-pos_cld"></i>
         </div>
         <div class="flex flex-col">
           <span class="text-xs text-pos_lgh font-medium uppercase tracking-wide">Total Canceled</span>
           <span class="text-3xl font-black text-pos_bla leading-tight">{{ .TotalCanceled }}</span>
-          <span class="text-xs text-red-400 mt-0.5">Needs follow-up</span>
+          <span class="text-xs text-pos_cld mt-0.5">Needs follow-up</span>
         </div>
       </div>
 
-      <div class="bg-pos_whi rounded-2xl p-5 flex items-center gap-4 shadow-sm border border-pos_bla/5">
-        <div class="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center shrink-0">
-          <i class="hgi hgi-stroke hgi-coins-01 text-2xl text-cyan-500"></i>
+      <div class="bg-pos_whi rounded-2xl p-5 flex items-center gap-3 shadow-sm border border-pos_bla/5">
+        <div class="w-12 h-12 rounded-xl bg-pos_col/15 flex items-center justify-center shrink-0">
+          <i class="hgi hgi-stroke hgi-coins-01 text-2xl text-pos_col"></i>
         </div>
         <div class="flex flex-col">
           <span class="text-xs text-pos_lgh font-medium uppercase tracking-wide">Total Revenue</span>
           <span class="text-2xl font-black text-pos_bla leading-tight">{{ .TotalRevenueFormatted }}</span>
-          <span class="text-xs text-pos_lgh mt-0.5">UGX · all orders</span>
+          <span class="text-xs text-pos_col mt-0.5">All Orders</span>
         </div>
       </div>
-
     </div>
-
 
     <!-- ════════════════════════════════════
-         ROW 2 · Revenue chart + Sales history
+         ROW 2 · Revenue / Volume charts + Sales history
     ════════════════════════════════════ -->
-    <div class="w-full grid grid-cols-[1fr_320px] gap-4">
-
-      <div class="bg-pos_whi rounded-2xl p-6 shadow-sm border border-pos_bla/5">
+    <div class="w-full grid grid-cols-1 gap-4">
+      <div class="w-full flex flex-col gap-5 bg-pos_whi rounded-2xl p-6 shadow-sm border border-pos_bla/5">
         <div class="flex items-center justify-between mb-5">
-          <h2 class="text-base font-black text-pos_bla">Revenue per Order</h2>
-          <span class="text-xs px-3 py-1 rounded-full bg-[#f0f4ff] text-pos_col font-medium">All orders</span>
-        </div>
-        <div class="relative" style="height:200px;">
-          <canvas id="revenueChart" role="img" aria-label="Bar chart of revenue per order"></canvas>
-        </div>
-      </div>
-
-      <div class="bg-pos_whi rounded-2xl p-5 shadow-sm border border-pos_bla/5 flex flex-col">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-base font-black text-pos_bla">Sales History</h2>
-          <a href="/pos/orders" class="text-xs text-pos_col font-medium hover:underline">View All</a>
-        </div>
-        {{ range .RecentOrders }}
-        <div class="flex items-center justify-between py-3 border-b border-pos_bla/5 last:border-0">
-          <div class="flex flex-col gap-0.5">
-            <span class="text-sm font-bold text-pos_bla">{{ .CustName }}</span>
-            <span class="text-xs text-pos_lgh">{{ .Name }} · {{ .FormattedDateTime }}</span>
+          <h2 class="text-base font-black text-pos_bla">Performance Over Time</h2>
+          <div id="periodFilters" class="flex items-center gap-1 bg-[#f0f4ff] rounded-full p-1">
+            <button type="button" data-period="weekly"
+              class="period-btn text-xs px-3 py-1 rounded-full font-medium text-pos_col transition-colors">Weekly</button>
+            <button type="button" data-period="monthly"
+              class="period-btn text-xs px-3 py-1 rounded-full font-medium text-pos_col transition-colors">Monthly</button>
+            <button type="button" data-period="yearly"
+              class="period-btn text-xs px-3 py-1 rounded-full font-medium text-pos_col transition-colors">Yearly</button>
           </div>
-          <span class="text-sm font-black text-pos_bla">{{ .CostFormatted }}</span>
         </div>
-        {{ end }}
+
+        <div class="w-full grid grid-cols-2 gap-1">
+          <div>
+            <p class="text-xs text-pos_bla font-bold uppercase" style="writing-mode:vertical-lr">
+              Revenue</p>
+            <div class="relative">
+              <canvas id="revenueChart" class="h-[245px]" role="img"
+                aria-label="Line chart of revenue per period"></canvas>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs text-pos_bla font-bold uppercase" style="writing-mode:vertical-rl">
+              Order&nbsp;Volume</p>
+            <div class="relative">
+              <canvas id="volumeChart" class="h-[245px]" role="img"
+                aria-label="Line chart of order volume per period"></canvas>
+            </div>
+          </div>
+        </div>
       </div>
-
     </div>
-
 
     <!-- ════════════════════════════════════
          ROW 3 · Store info + Trending dishes
     ════════════════════════════════════ -->
-    <div class="w-full grid grid-cols-[380px_1fr] grid-rows-[275px] gap-5">
+    <div class="w-full grid grid-cols-[380px_1fr_320px] grid-rows-1 gap-5">
       <div
-        class="w-full flex flex-col items-stretch justify-start gap-5 rounded-2xl p-5 shadow-sm border border-pos_bla/5 bg-pos_whi">
+        class="w-full flex flex-col items-stretch justify-start gap-5 rounded-2xl p-3 shadow-sm border border-pos_bla/5 bg-pos_whi">
         <h2 class="text-base font-black text-pos_bla mb-5">Restaurant Overview</h2>
 
-        <div class="flex items-center justify-start gap-5 mb-5">
+        <div class="flex flex-col items-start justify-center gap-5 mb-5">
           <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_whi">
-            <span class="text-xs text-pos_bla uppercase tracking-wide font-medium">Tables</span>
-            <span class="text-xl font-black text-pos_bla">{{ .TotalTables }}</span>
+            <span class="text-base text-pos_bla uppercase tracking-wide font-medium">Tables</span>
+            <span class="text-4xl font-black text-pos_bla">{{ .TotalTables }}</span>
           </div>
-          <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_pdg/5">
-            <span class="text-xs text-pos_pdg uppercase tracking-wide font-medium">Available</span>
-            <span class="text-xl font-black text-pos_pdg">{{ .AvailableTables }}</span>
-          </div>
-          <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_dlv/5">
-            <span class="text-xs text-pos_dlv uppercase tracking-wide font-medium">Occupied</span>
-            <span class="text-xl font-black text-pos_dlv">{{ .OccupiedTables }}</span>
-          </div>
-          <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_cld/5">
-            <span class="text-xs text-pos_cld uppercase tracking-wide font-medium">Pending</span>
-            <span class="text-xl font-black text-pos_cld">{{ .PendingTables }}</span>
+
+          <div class="flex items-center justify-start gap-5">
+            <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_pdg/5">
+              <span class="text-xs text-pos_pdg uppercase tracking-wide font-medium">Available</span>
+              <span class="text-xl font-black text-pos_pdg">{{ .AvailableTables }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_dlv/5">
+              <span class="text-xs text-pos_dlv uppercase tracking-wide font-medium">Occupied</span>
+              <span class="text-xl font-black text-pos_dlv">{{ .OccupiedTables }}</span>
+            </div>
+            <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_cld/5">
+              <span class="text-xs text-pos_cld uppercase tracking-wide font-medium">Pending</span>
+              <span class="text-xl font-black text-pos_cld">{{ .PendingTables }}</span>
+            </div>
           </div>
         </div>
 
@@ -148,116 +150,140 @@
       </div>
 
       <div
-        class="w-full flex flex-col items-stretch justify-start gap-5 rounded-2xl p-5 shadow-sm border border-pos_bla/5 bg-pos_whi">
-        <div class="flex items-center justify-between mb-3">
+        class="w-full flex flex-col items-stretch justify-start gap-5 rounded-2xl p-3 pb-0 shadow-sm border border-pos_bla/5 bg-pos_whi">
+        <div class="w-full flex items-center justify-between">
           <h2 class="text-base font-black text-pos_bla">Trending Dishes</h2>
           <a href="/pos/products" class="text-xs text-pos_col font-medium hover:underline">See All</a>
         </div>
 
-        <div class="flex items-center justify-between gap-5 mb-3">
+        <div class="w-full flex flex-col items-center justify-start gap-1">
           {{ range .TopProducts }}
-          <div class="flex flex-col items-start gap-1 py-3 border-b border-pos_bla/5 last:border-0">
+          <div class="w-full flex items-center justify-between py-1.5 border-b border-pos_bla/5 last:border-0">
             <img src="{{ .Image }}" alt="{{ .Name }}"
-              class="size-14 rounded-lg object-cover object-center shrink-0 bg-pos_plc/15">
-            <div class="flex flex-col items-start justify-center min-w-0">
-              <p class="text-sm text-pos_bla">{{ .Name }}</p>
-              <p class="text-xs font-bold text-pos_lgh">{{ .TotalQty }} sold · {{ .OrderCount }} orders</p>
+              class="size-7 rounded-lg object-cover object-center shrink-0 bg-pos_plc/15">
+            <div class="flex flex-col items-center justify-center min-w-0">
+              <p class="text-sm text-pos_bla font-semibold">{{ .Name }}</p>
+              <p class="text-xs font-medium text-pos_bla">{{ .TotalQty }} sold · {{ .OrderCount }} orders</p>
             </div>
-            <span class="text-xs font-black text-pos_bla shrink-0 whitespace-nowrap">{{ .RevenueFormatted }}</span>
+            <span class="text-base font-bold text-pos_bla shrink-0 whitespace-nowrap">{{ .RevenueFormatted }}</span>
+          </div>
+          {{ end }}
+        </div>
+      </div>
+
+      <div
+        class="w-full flex flex-col items-stretch justify-start gap-5 rounded-2xl p-3 pb-0 shadow-sm border border-pos_bla/5 bg-pos_whi">
+        <div class="w-full flex items-center justify-between">
+          <h2 class="text-base font-black text-pos_bla">Sales History</h2>
+          <a href="/pos/orders" class="text-xs text-pos_col font-medium hover:underline">View All</a>
+        </div>
+
+        <div class="w-full flex flex-col items-center justify-start gap-1">
+          {{ range .RecentOrders }}
+          <div class="w-full flex items-center justify-between py-1.5 border-b border-pos_bla/5 last:border-0">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-sm font-bold text-pos_bla">{{ .CustName }}</span>
+              <span class="text-xs text-pos_lgh">{{ .Name }} · {{ .FormattedDateTime }}</span>
+            </div>
+            <span class="text-base font-black text-pos_bla">{{ .CostFormatted }}</span>
           </div>
           {{ end }}
         </div>
       </div>
     </div>
-
-
-    <!-- ════════════════════════════════════
-         ROW 4 · Orders table + Status donut
-    ════════════════════════════════════ -->
-    <div class="w-full grid grid-cols-[1fr_320px] grid-rows-[320px] gap-5 overflow-y-scroll pb-5">
-      <div
-        class="w-full max-h-[85%] flex flex-col items-stretch justify-start gap-5 rounded-2xl py-3 px-5 shadow-sm border border-pos_bla/5 bg-pos_whi">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-black text-pos_bla">Total Orders</h2>
-          <a href="/pos/orders" class="text-xs text-pos_col font-medium hover:underline">View All</a>
-        </div>
-        <div class="w-full overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="text-xs text-pos_lgh uppercase border-b border-pos_bla/10">
-                <th class="text-left pb-3 font-medium pr-4">Order</th>
-                <th class="text-left pb-3 font-medium pr-4">Customer</th>
-                <th class="text-left pb-3 font-medium pr-4">Type</th>
-                <th class="text-left pb-3 font-medium pr-4">Items</th>
-                <th class="text-left pb-3 font-medium pr-4">Status</th>
-                <th class="text-right pb-3 font-medium">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {{ range .AllOrders }}
-              <tr class="border-b border-pos_bla/5 last:border-0 hover:bg-[#f5f6fa] transition-colors">
-                <td class="py-2.5 pr-4 text-xs font-bold text-pos_bla">{{ .Name }}</td>
-                <td class="py-2.5 pr-4 font-semibold text-pos_bla">{{ .CustName }}</td>
-                <td class="py-2.5 pr-4">
-                  <span class="text-xs px-2 py-0.5 rounded-full font-medium bg-pos_col/15 text-pos_col">{{ .Type
-                    }}</span>
-                </td>
-                <td class="py-2.5 pr-4 text-pos_bla">{{ .Items }}</td>
-                <td class="py-2.5 pr-4">
-                  <span class="text-xs px-2 py-0.5 rounded-full font-medium
-                    {{ if or (eq .Status `Served`) (eq .Status `Taken` ) (eq .Status `Delivered` ) }}bg-pos_dlv/15
-                    text-pos_dlv {{ else if eq .Status `Canceled` }}bg-pos_cld/15 text-pos_cld {{ else if eq
-                    .Status `Preparing` }}bg-pos_pdg/15 text-pos_pdg {{ else if eq .Status `Ready` }}bg-pos_rdy/15
-                    text-pos_rdy {{ else if or (eq .Status `Transit` ) (eq .Status `Waiting` ) (eq .Status `PickUp` )
-                    }}bg-pos_trs/15 text-pos_trs {{ else }}bg-pos_plc/15 text-pos_plc{{ end }}">
-                    {{ .Status }}
-                  </span>
-                </td>
-                <td class="py-2.5 text-right font-black text-pos_bla">{{ .CostFormatted }}</td>
-              </tr>
-              {{ end }}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="w-full max-h-[85%] flex flex-col rounded-2xl p-5 shadow-sm border border-pos_bla/5 bg-pos_whi">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-base font-black text-pos_bla">Order Status</h2>
-          <span class="text-xs text-pos_lgh">All time</span>
-        </div>
-        <div class="relative size-[235px]">
-          <canvas id="statusChart" role="img" aria-label="Doughnut chart of order statuses"></canvas>
-        </div>
-        <div class="flex flex-col gap-2 mt-4 overflow-y-auto" id="status-legend"></div>
-      </div>
-
-    </div>
-
   </div>
 </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-  const orderNames = {{ .OrderNamesJSON}};
-  const orderCosts = {{ .OrderCostsJSON}};
   const statusLabels = {{ .StatusLabelsJSON}};
   const statusCounts = {{ .StatusCountsJSON}};
 
-  // ── Revenue per order bar chart ──────────────────────────────────────────
-  new Chart(document.getElementById('revenueChart'), {
-    type: 'bar',
+  let weeklyLabelsJSON = {{.WeeklyLabelsJSON}},
+  weeklyRevenueJSON = {{.WeeklyRevenueJSON}},
+  weeklyVolumeJSON = {{.WeeklyVolumeJSON}};
+
+  let monthlyLabelsJSON = {{.MonthlyLabelsJSON}},
+  monthlyRevenueJSON = {{.MonthlyRevenueJSON}},
+  monthlyVolumeJSON = {{.MonthlyVolumeJSON}};
+
+  let yearlyLabelsJSON = {{.YearlyLabelsJSON}},
+  yearlyRevenueJSON = {{.YearlyRevenueJSON}},
+  yearlyVolumeJSON = {{.YearlyVolumeJSON}};
+
+  // ── Revenue / Volume series, keyed by period ─────────────────────────────
+  const periodData = {
+    weekly: {
+      labels: weeklyLabelsJSON,
+      revenue: weeklyRevenueJSON,
+      volume: weeklyVolumeJSON,
+    },
+    monthly: {
+      labels: monthlyLabelsJSON,
+      revenue: monthlyRevenueJSON,
+      volume: monthlyVolumeJSON,
+    },
+    yearly: {
+      labels: yearlyLabelsJSON,
+      revenue: yearlyRevenueJSON,
+      volume: yearlyVolumeJSON,
+    },
+  };
+
+  // Shared "smooth curve, no dots" line styling.
+  const smoothLineOpts = {
+    tension: 0.4,
+    cubicInterpolationMode: 'monotone',
+    pointRadius: 0,
+    pointHoverRadius: 4,
+    borderWidth: 2,
+    fill: true,
+  };
+
+  const baseScales = (yFormatter) => ({
+    x: {
+      grid: {
+        display: false
+      },
+      ticks: {
+        font: {
+          size: 10,
+          family: 'Inclusive Sans',
+          weight: 500
+        },
+        color: '#9ca3af',
+        maxRotation: 45,
+        autoSkip: false
+      }
+    },
+    y: {
+      grid: {
+        color: '#f3f4f6'
+      },
+      beginAtZero: true,
+      ticks: {
+        font: {
+          size: 10,
+          family: 'Inclusive Sans',
+          weight: 400
+        },
+        color: '#9ca3af',
+        callback: yFormatter
+      }
+    }
+  });
+
+  const revenueChart = new Chart(document.getElementById('revenueChart'), {
+    type: 'line',
     data: {
-      labels: orderNames,
+      labels: periodData.weekly.labels,
       datasets: [{
         label: 'Revenue (UGX)',
-        data: orderCosts,
+        data: periodData.weekly.revenue,
         backgroundColor: 'rgba(7,182,224,0.15)',
         borderColor: '#07b6e0',
-        borderWidth: 2,
-        borderRadius: 6,
-        borderSkipped: false,
+        ...smoothLineOpts,
       }]
     },
     options: {
@@ -266,55 +292,58 @@
         legend: {display: false},
         tooltip: {callbacks: {label: ctx => ' UGX ' + ctx.parsed.y.toLocaleString()}}
       },
-      scales: {
-        x: {grid: {display: false}, ticks: {font: {size: 10}, color: '#9ca3af', maxRotation: 45}},
-        y: {
-          grid: {color: '#f3f4f6'}, beginAtZero: true,
-          ticks: {font: {size: 10}, color: '#9ca3af', callback: v => v >= 1000 ? (v / 1000) + 'k' : v}
-        }
-      }
+      scales: baseScales(v => v >= 1000 ? (v / 1000_000) + 'M' : v)
     }
   });
 
-  // ── Status doughnut ──────────────────────────────────────────────────────
-  const statusColorMap = {
-    'Served': '#16a34a', 'Taken': '#16a34a', 'Delivered': '#16a34a',
-    'Placed': '#3b82f6', 'Preparing': '#f97316', 'Ready': '#eab308',
-    'Waiting': '#6366f1', 'PickUp': '#6366f1', 'Transit': '#6366f1',
-    'Canceled': '#ef4444',
-  };
-  const colors = statusLabels.map(l => statusColorMap[l] || '#d1d5db');
-
-  new Chart(document.getElementById('statusChart'), {
-    type: 'doughnut',
+  const volumeChart = new Chart(document.getElementById('volumeChart'), {
+    type: 'line',
     data: {
-      labels: statusLabels,
-      datasets: [{data: statusCounts, backgroundColor: colors, borderWidth: 3, borderColor: '#fff', hoverOffset: 6}]
+      labels: periodData.weekly.labels,
+      datasets: [{
+        label: 'Order Volume',
+        data: periodData.weekly.volume,
+        backgroundColor: 'rgba(124,92,255,0.15)',
+        borderColor: '#7c5cff',
+        ...smoothLineOpts,
+      }]
     },
     options: {
-      cutout: '65%', responsive: true, maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: {display: false},
-        tooltip: {callbacks: {label: ctx => ` ${ctx.label}: ${ctx.parsed} orders`}}
-      }
+        tooltip: {callbacks: {label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' orders'}}
+      },
+      scales: baseScales(v => Number.isInteger(v) ? v : '')
     }
   });
 
-  const legendEl = document.getElementById('status-legend');
-  const total = statusCounts.reduce((a, b) => a + b, 0);
-  statusLabels.forEach((label, i) => {
-    const pct = Math.round(statusCounts[i] / total * 100);
-    const row = document.createElement('div');
-    row.className = 'flex items-center justify-between text-xs';
-    row.innerHTML = `
-      <span class="flex items-center gap-1.5">
-        <span class="inline-block w-2 h-2 rounded-full shrink-0" style="background:${colors[i]}"></span>
-        <span class="text-gray-500">${label}</span>
-      </span>
-      <span class="font-bold text-gray-800">${statusCounts[i]}&nbsp;<span class="text-gray-400 font-normal">(${pct}%)</span></span>
-    `;
-    legendEl.appendChild(row);
+  // ── Period filter buttons ─────────────────────────────────────────────────
+  function setActivePeriod(period) {
+    const data = periodData[period];
+    if (!data) return;
+
+    revenueChart.data.labels = data.labels;
+    revenueChart.data.datasets[0].data = data.revenue;
+    revenueChart.update();
+
+    volumeChart.data.labels = data.labels;
+    volumeChart.data.datasets[0].data = data.volume;
+    volumeChart.update();
+
+    document.querySelectorAll('.period-btn').forEach(btn => {
+      const active = btn.dataset.period === period;
+      btn.classList.toggle('bg-pos_col', active);
+      btn.classList.toggle('text-pos_whi', active);
+      btn.classList.toggle('text-pos_col', !active);
+    });
+  }
+
+  document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.addEventListener('click', () => setActivePeriod(btn.dataset.period));
   });
+
+  setActivePeriod('weekly');
 </script>
 
 {{ template "foot" . }}

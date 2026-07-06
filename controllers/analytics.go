@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
 	"sort"
 	"time"
@@ -94,10 +95,10 @@ func RenderAnalytics(c *echo.Context) error {
 		})
 	}
 
-	// ── 5 most recent for sales history panel ───────────────────────────────
+	// ── 6 most recent for sales history panel ───────────────────────────────
 	recentOrders := allOrderViews
-	if len(recentOrders) > 5 {
-		recentOrders = recentOrders[:5]
+	if len(recentOrders) > 6 {
+		recentOrders = recentOrders[:6]
 	}
 
 	// ── Revenue chart data (all orders, original order) ─────────────────────
@@ -107,6 +108,11 @@ func RenderAnalytics(c *echo.Context) error {
 		orderNames = append(orderNames, o.Name)
 		orderCosts = append(orderCosts, o.Cost)
 	}
+
+	// ── Period series: Weekly / Monthly / Yearly (revenue + order volume) ───
+	weeklyLabels, weeklyRevenue, weeklyVolume := buildWeeklySeries(orders, now, loc)
+	monthlyLabels, monthlyRevenue, monthlyVolume := buildMonthlySeries(orders, now, loc)
+	yearlyLabels, yearlyRevenue, yearlyVolume := buildYearlySeries(orders, now, loc)
 
 	// ── Status distribution for doughnut ────────────────────────────────────
 	// Defined order so the chart is always consistent
@@ -125,7 +131,7 @@ func RenderAnalytics(c *echo.Context) error {
 		}
 	}
 
-	// ── Top 5 products ───────────────────────────────────────────────────────
+	// ── Top 6 products ───────────────────────────────────────────────────────
 	type pdtAgg struct {
 		qty        int
 		orderCount int
@@ -171,8 +177,8 @@ func RenderAnalytics(c *echo.Context) error {
 	sort.Slice(allPdts, func(i, j int) bool {
 		return allPdts[i].agg.qty > allPdts[j].agg.qty
 	})
-	if len(allPdts) > 5 {
-		allPdts = allPdts[:5]
+	if len(allPdts) > 6 {
+		allPdts = allPdts[:6]
 	}
 
 	topProducts := make([]ProductStat, 0, len(allPdts))
@@ -214,6 +220,18 @@ func RenderAnalytics(c *echo.Context) error {
 	statusLabelsJSON, _ := json.Marshal(statusLabels)
 	statusCountsJSON, _ := json.Marshal(statusCounts)
 
+	weeklyLabelsJSON, _ := json.Marshal(weeklyLabels)
+	weeklyRevenueJSON, _ := json.Marshal(weeklyRevenue)
+	weeklyVolumeJSON, _ := json.Marshal(weeklyVolume)
+
+	monthlyLabelsJSON, _ := json.Marshal(monthlyLabels)
+	monthlyRevenueJSON, _ := json.Marshal(monthlyRevenue)
+	monthlyVolumeJSON, _ := json.Marshal(monthlyVolume)
+
+	yearlyLabelsJSON, _ := json.Marshal(yearlyLabels)
+	yearlyRevenueJSON, _ := json.Marshal(yearlyRevenue)
+	yearlyVolumeJSON, _ := json.Marshal(yearlyVolume)
+
 	return c.Render(http.StatusOK, "analytics.html", map[string]any{
 		// head.html requires these two keys
 		"user":            "Cashier Admin",
@@ -249,10 +267,22 @@ func RenderAnalytics(c *echo.Context) error {
 		"TotalProducts":   totalProducts,
 
 		// Chart.js JSON blobs (template injects them as JS literals)
-		"OrderNamesJSON":   string(orderNamesJSON),
-		"OrderCostsJSON":   string(orderCostsJSON),
-		"StatusLabelsJSON": string(statusLabelsJSON),
-		"StatusCountsJSON": string(statusCountsJSON),
+		"OrderNamesJSON":   template.JS(string(orderNamesJSON)),
+		"OrderCostsJSON":   template.JS(string(orderCostsJSON)),
+		"StatusLabelsJSON": template.JS(string(statusLabelsJSON)),
+		"StatusCountsJSON": template.JS(string(statusCountsJSON)),
+
+		"WeeklyLabelsJSON":  template.JS(string(weeklyLabelsJSON)),
+		"WeeklyRevenueJSON": template.JS(string(weeklyRevenueJSON)),
+		"WeeklyVolumeJSON":  template.JS(string(weeklyVolumeJSON)),
+
+		"MonthlyLabelsJSON":  template.JS(string(monthlyLabelsJSON)),
+		"MonthlyRevenueJSON": template.JS(string(monthlyRevenueJSON)),
+		"MonthlyVolumeJSON":  template.JS(string(monthlyVolumeJSON)),
+
+		"YearlyLabelsJSON":  template.JS(string(yearlyLabelsJSON)),
+		"YearlyRevenueJSON": template.JS(string(yearlyRevenueJSON)),
+		"YearlyVolumeJSON":  template.JS(string(yearlyVolumeJSON)),
 	})
 }
 
@@ -269,6 +299,84 @@ func formatCommas(n int) string {
 		out += string(ch)
 	}
 	return out
+}
+
+// buildWeeklySeries buckets orders into the current week (Sun..Sat),
+// returning 3-letter day labels, revenue totals and order-volume totals per day.
+func buildWeeklySeries(orders []models.Order, now time.Time, loc *time.Location) ([]string, []int, []int) {
+	dayLabels := []string{"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"}
+
+	// Find the Sunday that starts the current week.
+	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, loc)
+	offset := int(today.Weekday()) // Sunday = 0
+	weekStart := today.AddDate(0, 0, -offset)
+
+	revenue := make([]int, 7)
+	volume := make([]int, 7)
+
+	for _, o := range orders {
+		dt := o.DateTime.In(loc)
+		// Derive the bucket from the calendar day (avoids DST half-day rounding issues).
+		dtDay := time.Date(dt.Year(), dt.Month(), dt.Day(), 0, 0, 0, 0, loc)
+		idx := int(dtDay.Sub(weekStart).Hours() / 24)
+		if idx < 0 || idx > 6 {
+			continue
+		}
+		revenue[idx] += o.Cost
+		volume[idx]++
+	}
+
+	return dayLabels, revenue, volume
+}
+
+// buildMonthlySeries buckets orders into the current month, day-by-day,
+// correctly sizing February for leap vs. non-leap years.
+func buildMonthlySeries(orders []models.Order, now time.Time, loc *time.Location) ([]string, []int, []int) {
+	year, month, _ := now.Date()
+	daysInMonth := time.Date(year, month+1, 0, 0, 0, 0, 0, loc).Day()
+
+	labels := make([]string, daysInMonth)
+	revenue := make([]int, daysInMonth)
+	volume := make([]int, daysInMonth)
+	for i := 0; i < daysInMonth; i++ {
+		labels[i] = fmt.Sprintf("%d", i+1)
+	}
+
+	for _, o := range orders {
+		dt := o.DateTime.In(loc)
+		if dt.Year() != year || dt.Month() != month {
+			continue
+		}
+		idx := dt.Day() - 1
+		if idx < 0 || idx >= daysInMonth {
+			continue
+		}
+		revenue[idx] += o.Cost
+		volume[idx]++
+	}
+
+	return labels, revenue, volume
+}
+
+// buildYearlySeries buckets orders into the current year, month-by-month.
+func buildYearlySeries(orders []models.Order, now time.Time, loc *time.Location) ([]string, []int, []int) {
+	monthLabels := []string{"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"}
+	year := now.Year()
+
+	revenue := make([]int, 12)
+	volume := make([]int, 12)
+
+	for _, o := range orders {
+		dt := o.DateTime.In(loc)
+		if dt.Year() != year {
+			continue
+		}
+		idx := int(dt.Month()) - 1
+		revenue[idx] += o.Cost
+		volume[idx]++
+	}
+
+	return monthLabels, revenue, volume
 }
 
 // buildProductImageMap returns a name→image-path map from the products table.
