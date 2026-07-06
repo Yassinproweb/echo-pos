@@ -69,7 +69,7 @@ func main() {
 		selectedOrder.CalculateOrderTotal()
 
 		return c.Render(http.StatusOK, "main.html", map[string]any{
-			"user":            "Cashier Admin",
+			"location":        "Nakasozi Buddo",
 			"orders":          orders,
 			"products":        products,
 			"tables":          tables,

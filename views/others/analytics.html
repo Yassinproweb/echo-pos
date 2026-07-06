@@ -60,8 +60,8 @@
     <!-- ════════════════════════════════════
          ROW 2 · Revenue / Volume charts + Sales history
     ════════════════════════════════════ -->
-    <div class="w-full grid grid-cols-1 gap-4">
-      <div class="w-full flex flex-col gap-5 bg-pos_whi rounded-2xl p-6 shadow-sm border border-pos_bla/5">
+    <div class="w-full grid grid-cols-1 gap-5">
+      <div class="w-full flex flex-col gap-5 bg-pos_whi rounded-2xl p-3 shadow-sm border border-pos_bla/5">
         <div class="flex items-center justify-between mb-5">
           <h2 class="text-base font-black text-pos_bla">Performance Over Time</h2>
           <div id="periodFilters" class="flex items-center gap-1 bg-[#f0f4ff] rounded-full p-1">
@@ -79,7 +79,7 @@
             <p class="text-xs text-pos_bla font-bold uppercase" style="writing-mode:vertical-lr">
               Revenue</p>
             <div class="relative">
-              <canvas id="revenueChart" class="h-[245px]" role="img"
+              <canvas id="revenueChart" class="h-[265px]" role="img"
                 aria-label="Line chart of revenue per period"></canvas>
             </div>
           </div>
@@ -87,7 +87,7 @@
             <p class="text-xs text-pos_bla font-bold uppercase" style="writing-mode:vertical-rl">
               Order&nbsp;Volume</p>
             <div class="relative">
-              <canvas id="volumeChart" class="h-[245px]" role="img"
+              <canvas id="volumeChart" class="h-[265px]" role="img"
                 aria-label="Line chart of order volume per period"></canvas>
             </div>
           </div>
@@ -253,7 +253,7 @@
           weight: 500
         },
         color: '#9ca3af',
-        maxRotation: 45,
+        maxRotation: 90,
         autoSkip: false
       }
     },
