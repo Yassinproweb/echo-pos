@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/Yassinproweb/echo-pos/auth"
 	"github.com/Yassinproweb/echo-pos/controllers"
 	"github.com/Yassinproweb/echo-pos/db"
 	"github.com/Yassinproweb/echo-pos/models"
@@ -54,8 +55,27 @@ func main() {
 		return c.Render(http.StatusOK, "index.html", nil)
 	})
 
-	// Route for the POS UI
-	e.GET("/pos", func(c *echo.Context) error {
+	// =======================
+	// BUSINESS REGISTRATION (one-time)
+	// =======================
+	e.GET("/register", controllers.RenderRegister)
+	e.POST("/register", routes.RegisterBusinessRoute)
+
+	// =======================
+	// LOGIN (cashier sign-up/login tab + admin tab)
+	// =======================
+	e.GET("/login", controllers.RenderLogin)
+	e.POST("/login", routes.CashierAuthRoute)
+	e.POST("/login/admin", routes.AdminLoginRoute)
+
+	// =======================
+	// POS UI — everything below requires a valid session (admin or cashier)
+	// =======================
+	pos := e.Group("/pos", auth.RequireLogin)
+
+	pos.GET("/logout", routes.LogoutRoute)
+
+	pos.GET("", func(c *echo.Context) error {
 		products := models.FetchProducts()
 		tables := models.FetchTables()
 
@@ -65,33 +85,51 @@ func main() {
 			orders[i].CalculateOrderTotal()
 		}
 
-		selectedOrder := orders[0]
-		selectedOrder.CalculateOrderTotal()
+		business, _ := models.GetBusiness()
 
 		return c.Render(http.StatusOK, "main.html", map[string]any{
-			"location":        "Nakasozi Buddo",
 			"orders":          orders,
 			"products":        products,
 			"tables":          tables,
 			"CanAcceptDineIn": models.CanAcceptDineIn(),
 			"selectedOrder":   nil,
+			"Business":        business,
+			"IsAdmin":         auth.IsAdminSession(c),
+			"ActorName":       auth.ActorName(c),
 		})
 	})
 
-	// Route for the POS UI orders page
-	e.GET("/pos/orders", controllers.RenderOrders)
+	// Orders
+	pos.GET("/orders", controllers.RenderOrders)
+	pos.POST("/orders/create", routes.CreateOrder)
+	pos.GET("/order/:id", routes.SelectOrderRoute)
+	pos.POST("/order/update-status/:id", routes.UpdateStatusAfterPrint)
+	// Deleting an order is only ever allowed if it's Canceled (enforced in
+	// models.DeleteCanceledOrder), and only the admin may do it at all.
+	pos.POST("/orders/:id/delete", routes.DeleteOrderRoute, auth.RequireAdmin)
 
-	e.POST("/pos/orders/create", routes.CreateOrder)
+	// Products
+	pos.GET("/products", controllers.RenderProducts)
+	pos.GET("/products/new", controllers.RenderNewProduct)
+	pos.POST("/products/new", routes.CreateProductRoute)
 
-	// Route for the POS UI orders page
-	e.GET("/pos/products", controllers.RenderProducts)
+	// Tables
+	pos.GET("/tables", controllers.RenderTables)
+	pos.GET("/tables/new", controllers.RenderNewTable)
+	pos.POST("/tables/new", routes.CreateTableRoute)
 
-	// Route for the POS UI orders page
-	e.GET("/pos/tables", controllers.RenderTables)
-	e.GET("/pos/analytics", controllers.RenderAnalytics)
+	// Analytics
+	pos.GET("/analytics", controllers.RenderAnalytics)
 
-	e.GET("/pos/order/:id", routes.SelectOrderRoute)
-	e.POST("/pos/order/update-status/:id", routes.UpdateStatusAfterPrint)
+	// Reservations (birthdays, weddings, conferences, etc.)
+	pos.GET("/reservations", controllers.RenderReservations)
+	pos.GET("/reservations/new", controllers.RenderNewReservation)
+	pos.POST("/reservations", routes.CreateReservationRoute)
+	pos.POST("/reservations/:name/cancel", routes.CancelReservationRoute)
+
+	// Admin-only: business details + admin/cashier passwords
+	pos.GET("/admin", controllers.RenderAdmin, auth.RequireAdmin)
+	pos.POST("/admin", routes.UpdateBusinessRoute, auth.RequireAdmin)
 
 	if err := e.Start(":4000"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)

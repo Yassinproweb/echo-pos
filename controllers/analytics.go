@@ -8,6 +8,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/Yassinproweb/echo-pos/auth"
 	"github.com/Yassinproweb/echo-pos/db"
 	"github.com/Yassinproweb/echo-pos/models"
 	"github.com/labstack/echo/v5"
@@ -232,10 +233,14 @@ func RenderAnalytics(c *echo.Context) error {
 	yearlyRevenueJSON, _ := json.Marshal(yearlyRevenue)
 	yearlyVolumeJSON, _ := json.Marshal(yearlyVolume)
 
+	business, _ := models.GetBusiness()
+
 	return c.Render(http.StatusOK, "analytics.html", map[string]any{
-		// head.html requires these two keys
-		"user":            "Cashier Admin",
+		// head.html requires these keys
 		"CanAcceptDineIn": models.CanAcceptDineIn(),
+		"Business":        business,
+		"IsAdmin":         auth.IsAdminSession(c),
+		"ActorName":       auth.ActorName(c),
 
 		// Page header
 		"GeneratedAt": now.Format("Mon, 02 Jan 2006 · 15:04"),

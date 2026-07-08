@@ -1,10 +1,12 @@
 package routes
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
+	"github.com/Yassinproweb/echo-pos/auth"
 	"github.com/Yassinproweb/echo-pos/db"
 	"github.com/Yassinproweb/echo-pos/models"
 	"github.com/labstack/echo/v5"
@@ -69,6 +71,8 @@ func CreateOrder(c *echo.Context) error {
 		}
 	}
 
+	cashierName := auth.ActorName(c)
+
 	order := models.Order{
 		Type:        models.Type(req.OrderType),
 		Status:      models.Status(req.OrderStatus),
@@ -96,9 +100,9 @@ func CreateOrder(c *echo.Context) error {
 
 	// Insert order
 	result, err := tx.Exec(`
-		INSERT INTO orders (type, status, cust_name, cust_number, destination)
-		VALUES (?, ?, ?, ?, ?)
-	`, order.Type, order.Status, order.CustName, order.CustNumber, order.Destination)
+		INSERT INTO orders (type, status, cust_name, cust_number, destination, cashier_name)
+		VALUES (?, ?, ?, ?, ?, ?)
+	`, order.Type, order.Status, order.CustName, order.CustNumber, order.Destination, cashierName)
 
 	if err != nil {
 		fmt.Println("Order insert error:")
@@ -139,6 +143,7 @@ func CreateOrder(c *echo.Context) error {
 	committed = true
 
 	order.Name = orderName
+	order.CashierName = sql.NullString{String: cashierName, Valid: cashierName != ""}
 
 	return c.Render(http.StatusCreated, "order_created", map[string]any{
 		"Toast":   map[string]any{"OrderName": orderName},

@@ -121,3 +121,188 @@ select {
     margin: 0;
   }
 }
+
+
+/* CSS for the newly added pages */
+.ext-tab.tactive {
+  color: var(--pos-col);
+  border-bottom-color: var(--pos-col);
+}
+
+.ext-btn--ghost {
+  background: transparent;
+  color: var(--pos-bla);
+  border: 2px solid rgba(0, 0, 0, 0.12);
+}
+
+.ext-btn--sm {
+  width: auto;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+.ext-error {
+  background: rgba(240, 30, 30, 0.08);
+  border: 1px solid var(--pos-cld);
+  color: var(--pos-cld);
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ext-success {
+  background: rgba(0, 170, 90, 0.08);
+  border: 1px solid var(--pos-dlv);
+  color: var(--pos-dlv);
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ext-link {
+  color: var(--pos-col);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* -------------------------------------------------------------------- */
+/* Shell used by internal management pages (Admin, Reservations, etc.)  */
+/* -------------------------------------------------------------------- */
+
+.ext-shell {
+  width: 100vw;
+  min-height: 100vh;
+  background: var(--pos-bla);
+  padding: 1.75rem;
+  box-sizing: border-box;
+  font-family: "Inclusive Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+.ext-shell-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--pos-whi);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.ext-shell-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.ext-shell-header h2 {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: var(--pos-bla);
+  margin: 0;
+}
+
+.ext-shell-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ext-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+}
+
+.ext-badge--confirmed {
+  background: rgba(0, 170, 90, 0.12);
+  color: var(--pos-dlv);
+}
+
+.ext-badge--cancelled {
+  background: rgba(240, 30, 30, 0.1);
+  color: var(--pos-cld);
+}
+
+.ext-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 0.75rem;
+}
+
+.ext-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.ext-table thead {
+  background: var(--pos-bla);
+}
+
+.ext-table thead th {
+  color: var(--pos-whi);
+  text-align: left;
+  padding: 0.65rem 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ext-table tbody td {
+  padding: 0.65rem 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--pos-bla);
+}
+
+.ext-table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.ext-empty {
+  padding: 2rem;
+  text-align: center;
+  color: var(--pos-lgh);
+  font-style: italic;
+}
+
+.ext-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 760px) {
+  .ext-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ext-panel {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.ext-suggestion {
+  border: 2px dashed rgba(3, 176, 232, 0.4);
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
+  font-size: 0.85rem;
+  color: var(--pos-bla);
+  background: rgba(3, 176, 232, 0.05);
+}
+
+.ext-suggestion strong {
+  color: var(--pos-col);
+}

@@ -1,4 +1,3 @@
-{{ define "head" }}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=1367">
-  <title>Point Of Sale</title>
+  <title>Point Of Sale - New Reservation</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,15 +16,9 @@
     href="https://fonts.googleapis.com/css2?family=Estedad:wght@100..900&family=Inclusive+Sans:ital,wght@0,300..700;1,300..700&family=Momo+Trust+Sans:wght@200..800&family=Science+Gothic:wght@100..900&display=swap"
     rel="stylesheet">
 
-  <!-- icons -->
   <link href="/assets/hugeicons.css" rel="stylesheet">
   <link href="/assets/card.png" rel="shortcut icon" type="image/x-icon" />
-
   <link href="/css/output.min.css" rel="stylesheet">
-
-  <script src="/js/alpine.min.js" defer></script>
-  <script src="/js/htmx.min.js" defer></script>
-  <script src="/js/main.js" defer></script>
 </head>
 
 <body class="bg-pos_bla w-screen aspect-[16/10] flex items-start justify-center">
@@ -96,7 +89,7 @@
     </header>
 
     <menu
-      class="absolute w-[60%] h-[4.5rem] px-7 py-3.5 flex items-center justify-between top-0 right-[25%] border-b-2 border-b-pos_lgh/25 bg-pos_whi">
+      class="absolute w-[85%] h-[4.5rem] right-0 px-7 py-3.5 flex items-center justify-between top-0 border-b-2 border-b-pos_lgh/25 bg-pos_whi">
       <h1 class="w-full flex flex-col items-start justify-center gap-0 text-2xl font-bold mono">
         {{if .CanAcceptDineIn}}
         <span class="text-pos_dlv">We are accepting DineIn orders.</span>
@@ -105,11 +98,95 @@
         {{end}}
       </h1>
     </menu>
-    {{ end }}
 
-    {{ define "foot" }}
-  </div>
+    <div class="w-[85%] flex flex-col items-start justify-start gap-5 pt-[85px] pb-5 px-5">
+      <div class="ext-shell-inner">
+        <div class="ext-shell-header">
+          <h2>New Reservation</h2>
+          <nav class="ext-shell-nav">
+            <a href="/pos/reservations" class="ext-btn ext-btn--ghost ext-btn--sm">Back to Reservations</a>
+            <a href="/pos" class="ext-btn ext-btn--ghost ext-btn--sm">Dashboard</a>
+          </nav>
+        </div>
+
+        {{ if .Error }}
+        <div class="ext-error" style="margin-bottom:1.25rem">{{ .Error }}</div>
+        {{ end }}
+
+        <div class="ext-grid-2">
+          <form class="ext-form" method="POST" action="/pos/reservations">
+            <div class="ext-row">
+              <div class="ext-field">
+                <label for="cust_name">Customer name</label>
+                <input type="text" id="cust_name" name="cust_name" required>
+              </div>
+              <div class="ext-field">
+                <label for="cust_number">Customer number</label>
+                <input type="tel" id="cust_number" name="cust_number" required>
+              </div>
+            </div>
+
+            <div class="ext-field">
+              <label for="event_type">Event type</label>
+              <select id="event_type" name="event_type" required>
+                {{ range .eventTypes }}
+                <option value="{{ . }}">{{ . }}</option>
+                {{ end }}
+              </select>
+            </div>
+
+            <div class="ext-field">
+              <label for="num_people">Number of people</label>
+              <input type="number" id="num_people" name="num_people" min="1" required>
+              <span class="ext-hint">We'll work out how many tables — and which ones — are needed to seat this many
+                guests.</span>
+            </div>
+
+            <div class="ext-row">
+              <div class="ext-field">
+                <label for="reservation_date">Date</label>
+                <input type="date" id="reservation_date" name="reservation_date" required>
+              </div>
+              <div class="ext-field">
+                <label for="reservation_time">Time</label>
+                <input type="time" id="reservation_time" name="reservation_time" required>
+              </div>
+            </div>
+
+            <div class="ext-suggestion">
+              Tables are assigned automatically from what's currently <strong>Available</strong> — smallest single
+              table that fits the party, or several combined if needed.
+            </div>
+
+            <button type="submit" class="ext-btn">Book Reservation</button>
+          </form>
+
+          <div class="ext-panel">
+            <p class="ext-section-title" style="margin-top:0">Current Tables</p>
+            <div class="ext-table-wrap">
+              <table class="ext-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Capacity</th>
+                    <th>State</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{ range .tables }}
+                  <tr>
+                    <td>{{ .Name }}</td>
+                    <td>{{ .Capacity }}</td>
+                    <td>{{ .State }}</td>
+                  </tr>
+                  {{ end }}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 </body>
 
 </html>
-{{ end }}

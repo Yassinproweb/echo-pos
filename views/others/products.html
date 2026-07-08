@@ -27,11 +27,21 @@
   <div class="relative w-screen aspect-[16/10] flex items-start justify-between gap-0 bg-pos_whi">
     <div class="w-full h-full flex flex-col gap-12">
       <div class="w-full h-full flex-col mx-auto bg-white p-4 rounded shadow">
-        <input type="search" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
-          class="mb-4 w-full p-2 border border-pos_bla/25 rounded outline-none">
+        <div class="w-full flex items-center justify-between mb-4">
+          <input type="search" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
+            class="w-full p-2 border border-pos_bla/25 rounded outline-none">
+        </div>
 
         <div class="w-full h-[93%] flex flex-col gap-0.5">
-          <h2 class="text-pos_bla text-3xl font-bold mb-3">Products List</h2>
+          <div class="w-full flex items-center justify-between mb-3">
+            <h2 class="text-pos_bla text-3xl font-bold">Products List</h2>
+            <div class="flex items-center justify-end gap-3.5 shrink-0">
+              <a href="/pos/products/new" class="text-pos_col font-medium underline">Add Product</a>
+              <a href="/pos/reservations" class="text-pos_col font-medium underline">Reservations</a>
+              <a href="/pos" class="text-pos_col font-medium underline">Back to Dashboard</a>
+              <a href="/pos/logout" class="text-pos_col font-medium underline">Logout</a>
+            </div>
+          </div>
 
           <div class="w-full max-h-[93%] overflow-y-scroll">
             <table class="w-full divide-y divide-pos_bla border border-pos_lgh">

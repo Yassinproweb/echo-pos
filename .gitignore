@@ -5,3 +5,4 @@ tmp
 pos.db
 pos.db-shm
 pos.db-wal
+*.key

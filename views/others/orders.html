@@ -30,7 +30,11 @@
     <div id="orders-card" class="w-full flex flex-col items-stretch justify-start gap-2.5 p-4">
       <section class="w-full flex items-center justify-between">
         <h3 class="text-2xl text-pos_bla font-black">Current Orders</h3>
-        <a href="/pos" class="text-pos_col font-medium underline">Back to Dashboard</a>
+        <div class="flex items-center justify-end gap-3.5">
+          <a href="/pos/reservations" class="text-pos_col font-medium underline">Reservations</a>
+          <a href="/pos" class="text-pos_col font-medium underline">Back to Dashboard</a>
+          <a href="/pos/logout" class="text-pos_col font-medium underline">Logout</a>
+        </div>
       </section>
       <section
         class="w-full grid grid-flow-col justify-start gap-3.5 rounded-3xl snap-mandatory snap-x scroll-pl-5 overflow-x-scroll">
@@ -61,6 +65,8 @@
                   <th onclick="sortTable(6)" class="px-4 py-2 text-left cursor-pointer">Items Quantity</th>
                   <th onclick="sortTable(7)" class="px-4 py-2 text-left cursor-pointer">Status</th>
                   <th onclick="sortTable(8)" class="px-4 py-2 text-left cursor-pointer">Total Amount</th>
+                  <th onclick="sortTable(9)" class="px-4 py-2 text-left cursor-pointer">Cashier</th>
+                  <th class="px-4 py-2 text-left">Action</th>
                 </tr>
               </thead>
               <tbody id="orders" class="divide-y divide-gray-200">

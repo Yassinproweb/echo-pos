@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=1367">
+  <title>Point Of Sale - Register Your Business</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Iosevka+Charon+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=M+PLUS+1+Code:wght@100..700&display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Estedad:wght@100..900&family=Inclusive+Sans:ital,wght@0,300..700;1,300..700&family=Momo+Trust+Sans:wght@200..800&family=Science+Gothic:wght@100..900&display=swap"
+    rel="stylesheet">
+
+  <link href="/assets/hugeicons.css" rel="stylesheet">
+  <link href="/assets/card.png" rel="shortcut icon" type="image/x-icon" />
+  <link href="/css/output.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-pos_bla w-screen aspect-[16/10] flex items-start justify-center">
+  <div class="relative w-screen h-full flex items-start justify-between gap-0 overflow-clip bg-pos_whi">
+    <div class="w-[85%] flex flex-col items-start justify-start gap-5 pt-[85px] pb-5 px-5">
+      <div class="w-full flex flex-col items-start justify-start gap-2.5">
+        <h1 class="text-2xl text-pos_bla font-bold">Register Your Business</h1>
+        <p class="text-base text-pos_lgh">This is a one-time setup. Once registered, staff will sign in from the login
+          page.</p>
+      </div>
+
+      {{ if .Error }}
+      <div class="ext-error">{{ .Error }}</div>
+      {{ end }}
+
+      <form class="w-[55%] flex flex-col items-start justify-start gap-5" method="POST" action="/register">
+        <h3 class="text-xl text-pos_bla font-bold">Business Details</h3>
+
+        <div class="w-full grid grid-cols-2 gap-5">
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label for="business_name" class="text-base text-pos_col font-medium">Business name</label>
+            <input type="text" id="business_name" name="business_name"
+              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              placeholder="e.g. Oasis Group Ltd" required>
+          </div>
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label for="restaurant_name" class="text-base text-pos_col font-medium">Restaurant name</label>
+            <input type="text" id="restaurant_name" name="restaurant_name"
+              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              placeholder="e.g. Oasis Restaurant" required>
+          </div>
+        </div>
+
+        <div class="w-full flex flex-col items-start justify-start gap-2.5">
+          <label for="location" class="text-base text-pos_col font-medium">Location</label>
+          <input type="text" id="location" name="location"
+            class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+            placeholder="e.g. Nakasozi, Buddo" required>
+        </div>
+
+        <div class="w-full flex flex-col items-start gap-0.5">
+          <h3 class="text-xl text-pos_bla font-bold">Admin Account</h3>
+          <p class="text-base text-pos_lgh">This password gives full control: changing business details and both
+            passwords, and
+            deleting canceled orders.</p>
+          <div class="w-full grid grid-cols-2 gap-5">
+            <div class="w-full flex flex-col items-start justify-start gap-2.5">
+              <label for="admin_password" class="text-base text-pos_col font-medium">Admin password</label>
+              <input type="password" id="admin_password" name="admin_password"
+                class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+                minlength="4" required>
+            </div>
+            <div class="w-full flex flex-col items-start justify-start gap-2.5">
+              <label for="admin_password_confirm" class="text-base text-pos_col font-medium">Confirm admin
+                password</label>
+              <input type="password" id="admin_password_confirm" name="admin_password_confirm"
+                class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+                minlength="4" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full flex flex-col items-start gap-0.5">
+          <h3 class="text-xl text-pos_bla font-bold">Cashier Access</h3>
+          <p class="text-base text-pos_lgh">Every cashier signs up with their own name, but shares this one
+            password. Only the admin
+            can change it later.</p>
+          <div class="w-full grid grid-cols-2 gap-5">
+            <div class="w-full flex flex-col items-start justify-start gap-2.5">
+              <label for="cashier_password" class="text-base text-pos_col font-medium">Cashier password</label>
+              <input type="password" id="cashier_password" name="cashier_password"
+                class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+                minlength="4" required>
+            </div>
+            <div class="w-full flex flex-col items-start justify-start gap-2.5">
+              <label for="cashier_password_confirm" class="text-base text-pos_col font-medium">Confirm cashier
+                password</label>
+              <input type="password" id="cashier_password_confirm" name="cashier_password_confirm"
+                class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+                minlength="4" required>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full text-base text-pos_whi font-medium px-7 py-3 rounded-lg bg-pos_col">Register
+          Business</button>
+      </form>
+    </div>
+  </div>
+</body>
+
+</html>

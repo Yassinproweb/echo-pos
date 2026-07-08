@@ -160,7 +160,7 @@
           {{ range .TopProducts }}
           <div class="w-full flex items-center justify-between py-1.5 border-b border-pos_bla/5 last:border-0">
             <img src="{{ .Image }}" alt="{{ .Name }}"
-              class="size-7 rounded-lg object-cover object-center shrink-0 bg-pos_plc/15">
+              class="size-9 rounded-lg object-cover object-center shrink-0 bg-pos_plc/15">
             <div class="flex flex-col items-center justify-center min-w-0">
               <p class="text-sm text-pos_bla font-semibold">{{ .Name }}</p>
               <p class="text-xs font-medium text-pos_bla">{{ .TotalQty }} sold · {{ .OrderCount }} orders</p>
@@ -181,7 +181,7 @@
         <div class="w-full flex flex-col items-center justify-start gap-1">
           {{ range .RecentOrders }}
           <div class="w-full flex items-center justify-between py-1.5 border-b border-pos_bla/5 last:border-0">
-            <div class="flex flex-col gap-0.5">
+            <div class="flex flex-col">
               <span class="text-sm font-bold text-pos_bla">{{ .CustName }}</span>
               <span class="text-xs text-pos_lgh">{{ .Name }} · {{ .FormattedDateTime }}</span>
             </div>

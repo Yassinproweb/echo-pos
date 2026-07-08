@@ -19,6 +19,15 @@
   <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .Items }}</td>
   <td class="px-4 py-2 text-left text-sm scolor font-bold uppercase status">{{ .Status }}</td>
   <td class="px-4 py-2 text-left text-base text-pos_bla font-semibold">{{ .Cost }}</td>
+  <td class="px-4 py-2 text-left text-base text-pos_bla font-medium">{{ .CashierDisplay }}</td>
+  <td class="px-4 py-2 text-left text-base">
+    {{ if and .IsAdmin (eq .Status "Canceled") }}
+    <form method="POST" action="/pos/orders/{{ .Name | urlquery }}/delete"
+      onsubmit="return confirm('Permanently delete this canceled order? This cannot be undone.');">
+      <button type="submit" class="text-pos_cld font-bold underline">Delete</button>
+    </form>
+    {{ end }}
+  </td>
 </tr>
 {{ end }}
 

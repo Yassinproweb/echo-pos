@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=1367">
+  <title>Point Of Sale - Login</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Iosevka+Charon+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=M+PLUS+1+Code:wght@100..700&display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Estedad:wght@100..900&family=Inclusive+Sans:ital,wght@0,300..700;1,300..700&family=Momo+Trust+Sans:wght@200..800&family=Science+Gothic:wght@100..900&display=swap"
+    rel="stylesheet">
+
+  <link href="/assets/hugeicons.css" rel="stylesheet">
+  <link href="/assets/card.png" rel="shortcut icon" type="image/x-icon" />
+  <link href="/css/output.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-pos_bla w-screen aspect-[16/10] flex items-start justify-center">
+  <div class="relative w-screen h-full flex items-center justify-center gap-0 overflow-clip bg-pos_whi">
+    <div class="w-[85%] flex flex-col items-center justify-center gap-5 py-20 px-5">
+      <div class="w-full flex flex-col items-center justify-center gap-5">
+        <div class="w-full flex flex-col items-center justify-center gap-2">
+          <h1 class="text-4xl text-pos_bla font-bold">Welcome Back</h1>
+          <p class="text-base text-pos_lgh">Sign in to access the POS.</p>
+        </div>
+
+        {{ if .Error }}
+        <div class="ext-error">{{ .Error }}</div>
+        {{ end }}
+
+        <div class="flex items-center justify-center gap-2 mb-5 border-b-2 border-pos_bla/15">
+          <button type="button" id="tab-cashier"
+            class="ext-tab flex-1 text-base text-center text-pos_lgh font-bold cursor-pointer border-b-2 border-transparent -mb-0.5 tactive"
+            onclick="showTab('cashier')">Cashier</button>
+          <button type="button" id="tab-admin"
+            class="ext-tab flex-1 text-base text-center text-pos_lgh font-bold cursor-pointer border-b-2 border-transparent -mb-0.5"
+            onclick="showTab('admin')">Admin</button>
+        </div>
+
+        <form id="form-cashier" class="w-[55%] flex flex-col items-center justify-center gap-5" method="POST"
+          action="/login">
+          <p class="text-base text-center text-pos_lgh">New here? Just enter your name and the cashier password given to
+            you by the
+            admin — we'll
+            sign you up automatically. Already signed up? Same form logs you in.</p>
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label for="cashier_name" class="text-base text-pos_col font-medium">Your name</label>
+            <input type="text" id="cashier_name" name="cashier_name"
+              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              placeholder="e.g. Amina" required>
+          </div>
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label for="cashier_password_field" class="text-base text-pos_col font-medium">Cashier password</label>
+            <input type="password" id="cashier_password_field" name="password"
+              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              required>
+          </div>
+          <button type="submit"
+            class="w-full text-base text-pos_whi font-medium px-7 py-3 rounded-lg bg-pos_col">Continue</button>
+        </form>
+
+        <form id="form-admin" class="w-[55%] flex flex-col items-center justify-center gap-5" method="POST"
+          action="/login/admin" style="display:none">
+          <p class="text-base text-center text-pos_lgh">Enter the admin password to manage business details and
+            passwords.</p>
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label for="admin_password_field" class="text-base text-pos_col font-medium">Admin password</label>
+            <input type="password" id="admin_password_field" name="admin_password"
+              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              required>
+          </div>
+          <button type="submit"
+            class="w-full text-base text-pos_whi font-medium px-7 py-3 rounded-lg bg-pos_col ext-btn--dark">Sign In As
+            Admin</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      function showTab(tab) {
+        const isCashier = tab === 'cashier';
+
+        document.getElementById('tab-cashier').classList.toggle('tactive', isCashier);
+        document.getElementById('tab-admin').classList.toggle('tactive', !isCashier);
+
+        document.getElementById('form-cashier').style.display = isCashier ? 'flex' : 'none';
+        document.getElementById('form-admin').style.display = isCashier ? 'none' : 'flex';
+      }
+    </script>
+</body>
+
+</html>

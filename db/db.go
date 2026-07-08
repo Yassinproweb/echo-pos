@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"log"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -27,9 +28,101 @@ func ConnectDB() {
 	}
 
 	createTables()
+	migrateSchema()
 	SeedDB()
 
 	log.Println("SQLite Connected")
+}
+
+// =========================
+// MIGRATIONS (for databases created before this feature set existed)
+// =========================
+//
+// createTables() only uses `CREATE TABLE IF NOT EXISTS`, so it will never
+// upgrade a table that already exists. migrateSchema() runs on every boot
+// and brings older pos.db files up to date without touching fresh ones.
+func columnExists(table, column string) bool {
+	rows, err := DB.Query(`PRAGMA table_info(` + table + `)`)
+	if err != nil {
+		return false
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var cid int
+		var name, ctype string
+		var notnull int
+		var dflt sql.NullString
+		var pk int
+
+		if err := rows.Scan(&cid, &name, &ctype, &notnull, &dflt, &pk); err != nil {
+			continue
+		}
+
+		if name == column {
+			return true
+		}
+	}
+
+	return false
+}
+
+func migrateSchema() {
+	// orders.cashier_name — records which cashier (or admin) created the order
+	if !columnExists("orders", "cashier_name") {
+		if _, err := DB.Exec(`ALTER TABLE orders ADD COLUMN cashier_name TEXT`); err != nil {
+			log.Println("migration error (orders.cashier_name):", err)
+		}
+	}
+
+	// tables — add the 'Reserved' state + reserved_for column for the
+	// reservations feature. SQLite can't ALTER a CHECK constraint, so the
+	// table has to be rebuilt if it predates this feature.
+	var tablesSQL string
+	err := DB.QueryRow(`
+		SELECT sql FROM sqlite_master
+		WHERE type = 'table' AND name = 'tables'
+	`).Scan(&tablesSQL)
+
+	if err == nil && tablesSQL != "" && !strings.Contains(tablesSQL, "Reserved") {
+		_, err := DB.Exec(`
+			ALTER TABLE tables RENAME TO tables_old;
+
+			CREATE TABLE tables (
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+				name TEXT UNIQUE,
+
+				capacity INTEGER NOT NULL,
+
+				state TEXT NOT NULL CHECK(
+					state IN (
+						'Available',
+						'Occupied',
+						'Pending',
+						'Reserved'
+					)
+				) DEFAULT 'Available',
+
+				current_order_name TEXT,
+				reserved_for TEXT,
+
+				FOREIGN KEY(current_order_name)
+				REFERENCES orders(name)
+				ON DELETE SET NULL
+			);
+
+			INSERT INTO tables (id, name, capacity, state, current_order_name)
+			SELECT id, name, capacity, state, current_order_name
+			FROM tables_old;
+
+			DROP TABLE tables_old;
+		`)
+
+		if err != nil {
+			log.Println("migration error (tables.Reserved/reserved_for):", err)
+		}
+	}
 }
 
 func createTables() {
@@ -91,6 +184,8 @@ func createTables() {
 
 		destination TEXT,
 
+		cashier_name TEXT,
+
 		date_time DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
 
@@ -109,16 +204,111 @@ func createTables() {
 			state IN (
 				'Available',
 				'Occupied',
-				'Pending'
+				'Pending',
+				'Reserved'
 			)
 		) DEFAULT 'Available',
 
 		current_order_name TEXT,
+		reserved_for TEXT,
 
 		FOREIGN KEY(current_order_name)
 		REFERENCES orders(name)
 		ON DELETE SET NULL
 	);
+
+	-- =========================
+	-- BUSINESS (single-tenant: exactly one row, id is always 1)
+	-- =========================
+
+	CREATE TABLE IF NOT EXISTS business (
+		id INTEGER PRIMARY KEY CHECK(id = 1),
+
+		business_name TEXT NOT NULL,
+		restaurant_name TEXT NOT NULL,
+		location TEXT NOT NULL,
+
+		admin_password_hash TEXT NOT NULL,
+		admin_password_salt TEXT NOT NULL,
+
+		cashier_password_hash TEXT NOT NULL,
+		cashier_password_salt TEXT NOT NULL,
+
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	);
+
+	-- =========================
+	-- CASHIERS
+	-- =========================
+	-- Cashiers don't have their own individual password: they all sign in
+	-- with the single shared cashier password that only the admin can set
+	-- (business.cashier_password_hash). This table just remembers which
+	-- names have already "signed up" vs need to sign up on first use, and
+	-- lets us stamp a cashier's name onto orders/receipts.
+
+	CREATE TABLE IF NOT EXISTS cashiers (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+		name TEXT UNIQUE NOT NULL,
+
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	);
+
+	-- =========================
+	-- RESERVATIONS
+	-- =========================
+
+	CREATE TABLE IF NOT EXISTS reservations (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+		name TEXT UNIQUE,
+
+		event_type TEXT NOT NULL CHECK(
+			event_type IN (
+				'Birthday',
+				'Wedding',
+				'Conference',
+				'Anniversary',
+				'Corporate Meeting',
+				'Graduation',
+				'Baby Shower',
+				'Other'
+			)
+		),
+
+		num_people INTEGER NOT NULL CHECK(num_people > 0),
+
+		cust_name TEXT NOT NULL,
+		cust_number TEXT NOT NULL,
+
+		reservation_datetime DATETIME NOT NULL,
+
+		tables_needed INTEGER NOT NULL DEFAULT 1,
+		tables_assigned TEXT,
+
+		status TEXT NOT NULL CHECK(
+			status IN ('Confirmed', 'Cancelled')
+		) DEFAULT 'Confirmed',
+
+		created_by TEXT,
+
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	);
+
+	CREATE TRIGGER IF NOT EXISTS generate_reservation_name
+	AFTER INSERT ON reservations
+	FOR EACH ROW
+	WHEN NEW.name IS NULL
+	BEGIN
+		UPDATE reservations
+		SET name = '#RES' || printf('%04d', (
+			SELECT COALESCE(MAX(CAST(SUBSTR(name, 5) AS INTEGER)), 0) + 1
+			FROM reservations
+			WHERE name LIKE '#RES____'
+		))
+		WHERE id = NEW.id;
+	END;
 
 	-- =========================
 	-- ORDER ITEMS

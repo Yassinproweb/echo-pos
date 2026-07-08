@@ -29,7 +29,12 @@
     <div class="w-full flex flex-col items-stretch justify-start gap-2.5 p-4">
       <section class="w-full flex items-center justify-between">
         <h3 class="text-2xl text-pos_bla font-black">Current Tables</h3>
-        <a href="/pos" class="text-pos_col font-medium underline">Back to Dashboard</a>
+        <div class="flex items-center justify-end gap-3.5">
+          <a href="/pos/tables/new" class="text-pos_col font-medium underline">Add Table</a>
+          <a href="/pos/reservations" class="text-pos_col font-medium underline">Reservations</a>
+          <a href="/pos" class="text-pos_col font-medium underline">Back to Dashboard</a>
+          <a href="/pos/logout" class="text-pos_col font-medium underline">Logout</a>
+        </div>
       </section>
       <section id="tables-card"
         class="w-full grid grid-flow-col justify-start p-5 gap-3.5 border-2 border-pos_lgh/15 rounded-3xl snap-mandatory snap-x scroll-pl-5 bg-pos_whi overflow-x-scroll">
