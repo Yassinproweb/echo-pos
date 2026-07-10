@@ -69,6 +69,10 @@ func (o Order) CashierDisplay() string {
 	return "—"
 }
 
+func (o Order) IsEditable() bool {
+	return o.Status == Placed || o.Status == Preparing
+}
+
 func (o Order) FormattedDateTime() string {
 	loc, err := time.LoadLocation("Africa/Kampala")
 	if err != nil {
@@ -340,6 +344,85 @@ func DeleteCanceledOrder(orderName string) error {
 
 	_, err = db.DB.Exec(`DELETE FROM orders WHERE name = ?`, orderName)
 	return err
+}
+
+// UpdateOrderItems replaces an order's cart, but only while it's still
+// Placed or Preparing (i.e. before it reaches Ready).
+func UpdateOrderItems(orderName string, items []OrderItem) error {
+	var status string
+	err := db.DB.QueryRow(`SELECT status FROM orders WHERE name = ?`, orderName).Scan(&status)
+	if err == sql.ErrNoRows {
+		return fmt.Errorf("order %s not found", orderName)
+	}
+	if err != nil {
+		return err
+	}
+	if status != string(Placed) && status != string(Preparing) {
+		return fmt.Errorf("order can no longer be edited (status: %s)", status)
+	}
+
+	valid := 0
+	for _, it := range items {
+		if it.Quantity > 0 {
+			valid++
+		}
+	}
+	if valid == 0 {
+		return fmt.Errorf("an order must have at least one item")
+	}
+
+	tx, err := db.DB.Begin()
+	if err != nil {
+		return err
+	}
+	committed := false
+	defer func() {
+		if !committed {
+			_ = tx.Rollback()
+		}
+	}()
+
+	if _, err := tx.Exec(`DELETE FROM order_items WHERE order_name = ?`, orderName); err != nil {
+		return err
+	}
+
+	for _, it := range items {
+		if it.Quantity <= 0 {
+			continue
+		}
+		if _, err := tx.Exec(`
+			INSERT INTO order_items (order_name, pdt_name, quantity)
+			VALUES (?, ?, ?)
+		`, orderName, it.PdtName, it.Quantity); err != nil {
+			return err
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+	committed = true
+	return nil
+}
+
+// CancelOrder marks an order Canceled — used once an order has passed the
+// point where items can still be swapped (Ready or later).
+func CancelOrder(orderName string) error {
+	res, err := db.DB.Exec(`
+		UPDATE orders SET status = 'Canceled'
+		WHERE name = ? AND status NOT IN ('Canceled','Delivered','Taken','Served')
+	`, orderName)
+	if err != nil {
+		return err
+	}
+	n, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if n == 0 {
+		return fmt.Errorf("order %s cannot be canceled (already completed or not found)", orderName)
+	}
+	return nil
 }
 
 // =======================

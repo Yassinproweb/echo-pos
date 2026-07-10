@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"net/http"
 
 	"github.com/Yassinproweb/echo-pos/auth"
@@ -44,6 +46,45 @@ func RenderProducts(c *echo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, "products.html", data)
+}
+
+// RenderEditOrder shows the item-swap page for one order (only usable
+// while the order is Placed or Preparing).
+func RenderEditOrder(c *echo.Context) error {
+	orderID := c.Param("id")
+
+	orders := models.FetchOrders()
+	var order *models.Order
+	for i := range orders {
+		if orders[i].Name == orderID {
+			order = &orders[i]
+			break
+		}
+	}
+	if order == nil {
+		return c.String(http.StatusNotFound, "Order Not Found")
+	}
+	order.CalculateOrderTotal()
+
+	quantities := make(map[string]int)
+	for _, it := range order.OrderCart {
+		quantities[it.PdtName] = it.Quantity
+	}
+
+	itemsJSON, _ := json.Marshal(order.OrderCart)
+
+	products := models.FetchProducts()
+
+	data := map[string]any{
+		"Order":            order,
+		"products":         products,
+		"quantities":       quantities,
+		"InitialItemsB64":  base64.StdEncoding.EncodeToString(itemsJSON),
+		"IsAdmin":          auth.IsAdminSession(c),
+		"ActorName":        auth.ActorName(c),
+	}
+
+	return c.Render(http.StatusOK, "edit_order.html", data)
 }
 
 // tables controllers

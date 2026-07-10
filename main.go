@@ -103,6 +103,9 @@ func main() {
 	pos.GET("/orders", controllers.RenderOrders)
 	pos.POST("/orders/create", routes.CreateOrder)
 	pos.GET("/order/:id", routes.SelectOrderRoute)
+	pos.GET("/order/:id/edit", controllers.RenderEditOrder)
+	pos.POST("/order/:id/items", routes.UpdateOrderItemsRoute)
+	pos.POST("/order/:id/cancel", routes.CancelOrderRoute)
 	pos.POST("/order/update-status/:id", routes.UpdateStatusAfterPrint)
 	// Deleting an order is only ever allowed if it's Canceled (enforced in
 	// models.DeleteCanceledOrder), and only the admin may do it at all.

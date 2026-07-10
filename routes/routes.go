@@ -150,3 +150,31 @@ func CreateOrder(c *echo.Context) error {
 		"Receipt": order,
 	})
 }
+
+// UpdateOrderItemsRoute lets the cashier swap items in an order that hasn't
+// reached Ready yet.
+func UpdateOrderItemsRoute(c *echo.Context) error {
+	orderID := c.Param("id")
+	itemsJSON := c.FormValue("items")
+
+	var items []models.OrderItem
+	if err := json.Unmarshal([]byte(itemsJSON), &items); err != nil {
+		return c.String(http.StatusBadRequest, "Invalid items JSON: "+err.Error())
+	}
+
+	if err := models.UpdateOrderItems(orderID, items); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	return c.Redirect(http.StatusSeeOther, "/pos/orders")
+}
+
+// CancelOrderRoute cancels an order that can no longer have its items
+// swapped (already Ready or beyond).
+func CancelOrderRoute(c *echo.Context) error {
+	orderID := c.Param("id")
+	if err := models.CancelOrder(orderID); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	return c.Redirect(http.StatusSeeOther, "/pos/orders")
+}

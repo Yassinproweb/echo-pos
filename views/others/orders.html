@@ -158,6 +158,29 @@
       }
     }
   </script>
+
+  <div id="order-modal" onclick="if(event.target===this) closeOrderModal()"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;">
+    <div
+      style="width:50vw;height:80vh;background:#fff;border-radius:12px;overflow-y:auto;padding:1.5rem;position:relative;">
+      <button onclick="closeOrderModal()"
+        style="position:absolute;top:1rem;right:1rem;font-size:1.5rem;background:none;border:none;cursor:pointer;line-height:1;">×</button>
+      <div id="order-modal-body">Loading…</div>
+    </div>
+  </div>
+  <script>
+    function openOrderModal(name) {
+      document.getElementById('order-modal').style.display = 'flex';
+      document.getElementById('order-modal-body').innerHTML = 'Loading…';
+      fetch('/pos/order/' + name)
+        .then(r => r.text())
+        .then(html => document.getElementById('order-modal-body').innerHTML = html)
+        .catch(() => document.getElementById('order-modal-body').innerHTML = 'Could not load order.');
+    }
+    function closeOrderModal() {
+      document.getElementById('order-modal').style.display = 'none';
+    }
+  </script>
 </body>
 
 </html>
