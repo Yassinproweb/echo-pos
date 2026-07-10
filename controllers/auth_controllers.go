@@ -12,6 +12,10 @@ import (
 // business already exists, registration is closed and we send the visitor
 // to the login page instead.
 func RenderRegister(c *echo.Context) error {
+	if models.BusinessExists() {
+		return c.Redirect(http.StatusSeeOther, "/login")
+	}
+
 	return c.Render(http.StatusOK, "register.html", map[string]any{
 		"Error": "",
 	})
@@ -21,6 +25,10 @@ func RenderRegister(c *echo.Context) error {
 // no business has been registered yet there's nothing to log into, so we
 // send visitors to register first.
 func RenderLogin(c *echo.Context) error {
+	if !models.BusinessExists() {
+		return c.Redirect(http.StatusSeeOther, "/register")
+	}
+
 	return c.Render(http.StatusOK, "login.html", map[string]any{
 		"Error": "",
 	})
