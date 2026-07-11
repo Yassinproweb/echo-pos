@@ -67,12 +67,12 @@ func VerifyPassword(password, hash, salt string) bool {
 
 type Business struct {
 	BusinessName        string
-	RestaurantName       string
-	Location             string
-	AdminPasswordHash    string
-	AdminPasswordSalt    string
-	CashierPasswordHash  string
-	CashierPasswordSalt  string
+	RestaurantName      string
+	Location            string
+	AdminPasswordHash   string
+	AdminPasswordSalt   string
+	CashierPasswordHash string
+	CashierPasswordSalt string
 }
 
 // BusinessExists reports whether the business has already been registered.
@@ -271,14 +271,15 @@ func VerifyCashierPassword(password string) (bool, error) {
 // =======================
 
 type Cashier struct {
-	Name string
+	Name    string
+	Contact string
 }
 
 // CashierExists reports whether a cashier with this name has already signed
 // up (case-sensitive match on the exact name).
-func CashierExists(name string) (bool, error) {
+func CashierExists(contact string) (bool, error) {
 	var count int
-	err := db.DB.QueryRow(`SELECT COUNT(*) FROM cashiers WHERE name = ?`, name).Scan(&count)
+	err := db.DB.QueryRow(`SELECT COUNT(*) FROM cashiers WHERE contact = ?`, contact).Scan(&count)
 	if err != nil {
 		return false, err
 	}
@@ -288,21 +289,24 @@ func CashierExists(name string) (bool, error) {
 // RegisterCashier records a brand-new cashier name the first time they sign
 // up. It does not store a per-cashier password — all cashiers share the one
 // cashier password set by the admin.
-func RegisterCashier(name string) error {
+func RegisterCashier(name, contact string) error {
 	if name == "" {
 		return fmt.Errorf("cashier name is required")
 	}
+	if contact == "" {
+		return fmt.Errorf("cashier contact is required")
+	}
 
 	_, err := db.DB.Exec(`
-		INSERT INTO cashiers (name) VALUES (?)
-	`, name)
+		INSERT INTO cashiers (name, contact) VALUES (?, ?)
+	`, name, contact)
 
 	return err
 }
 
 // FetchCashiers returns every registered cashier name.
 func FetchCashiers() []Cashier {
-	rows, err := db.DB.Query(`SELECT name FROM cashiers ORDER BY name ASC`)
+	rows, err := db.DB.Query(`SELECT contact FROM cashiers ORDER BY name ASC`)
 	if err != nil {
 		return []Cashier{}
 	}
@@ -311,7 +315,7 @@ func FetchCashiers() []Cashier {
 	var cashiers []Cashier
 	for rows.Next() {
 		var c Cashier
-		if err := rows.Scan(&c.Name); err != nil {
+		if err := rows.Scan(&c.Contact); err != nil {
 			continue
 		}
 		cashiers = append(cashiers, c)

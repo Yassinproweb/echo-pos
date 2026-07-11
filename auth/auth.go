@@ -59,8 +59,9 @@ func loadOrCreateSecret() []byte {
 // Session represents a logged-in user: either the single admin, or a named
 // cashier.
 type Session struct {
-	Role    string
-	Cashier string
+	Role           string
+	CashierName    string
+	CashierContact string
 }
 
 func (s Session) IsAdmin() bool {
@@ -74,9 +75,9 @@ func sign(payload string) string {
 }
 
 // IssueSession sets a signed cookie identifying the logged-in role/cashier.
-func IssueSession(c *echo.Context, role, cashierName string) {
+func IssueSession(c *echo.Context, role, cashierName string, cashierContact string) {
 	expires := time.Now().Add(sessionDuration).Unix()
-	payload := fmt.Sprintf("%s|%s|%d", role, cashierName, expires)
+	payload := fmt.Sprintf("%s|%s|%s|%d", role, cashierName, cashierContact, expires)
 	sig := sign(payload)
 	value := base64.URLEncoding.EncodeToString([]byte(payload)) + "." + sig
 
@@ -127,8 +128,8 @@ func ReadSession(c *echo.Context) *Session {
 		return nil
 	}
 
-	fields := strings.SplitN(payload, "|", 3)
-	if len(fields) != 3 {
+	fields := strings.SplitN(payload, "|", 4)
+	if len(fields) != 4 {
 		return nil
 	}
 
@@ -137,7 +138,7 @@ func ReadSession(c *echo.Context) *Session {
 		return nil
 	}
 
-	return &Session{Role: fields[0], Cashier: fields[1]}
+	return &Session{Role: fields[0], CashierContact: fields[2]}
 }
 
 // GetSession retrieves the session that RequireLogin/RequireAdmin already
@@ -170,7 +171,7 @@ func ActorName(c *echo.Context) string {
 	if sess.IsAdmin() {
 		return "Admin"
 	}
-	return sess.Cashier
+	return sess.CashierName
 }
 
 // =======================
@@ -198,7 +199,7 @@ func RequireAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c *echo.Context) error {
 		sess := ReadSession(c)
 		if sess == nil {
-			return c.Redirect(http.StatusSeeOther, "/login")
+			return c.Redirect(http.StatusSeeOther, "/register")
 		}
 		if !sess.IsAdmin() {
 			return c.String(http.StatusForbidden, "Only the admin can perform this action.")

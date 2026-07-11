@@ -60,7 +60,7 @@ func RegisterBusinessRoute(c *echo.Context) error {
 		return renderRegisterError(c, err.Error())
 	}
 
-	auth.IssueSession(c, auth.RoleAdmin, "")
+	auth.IssueSession(c, auth.RoleAdmin, "", "")
 
 	return c.Redirect(http.StatusSeeOther, "/pos")
 }
@@ -70,8 +70,9 @@ func RegisterBusinessRoute(c *echo.Context) error {
 // =======================
 
 type CashierAuthRequest struct {
-	CashierName string `form:"cashier_name"`
-	Password    string `form:"password"`
+	CashierName    string `form:"cashier_name"`
+	CashierContact string `form:"cashier_contact"`
+	Password       string `form:"password"`
 }
 
 func renderLoginError(c *echo.Context, message string) error {
@@ -95,8 +96,8 @@ func CashierAuthRoute(c *echo.Context) error {
 		return renderLoginError(c, "Invalid form data. Please try again.")
 	}
 
-	if req.CashierName == "" || req.Password == "" {
-		return renderLoginError(c, "Name and password are required.")
+	if req.CashierName == "" || req.CashierContact == "" || req.Password == "" {
+		return renderLoginError(c, "Name, contact and password are required.")
 	}
 
 	ok, err := models.VerifyCashierPassword(req.Password)
@@ -107,18 +108,18 @@ func CashierAuthRoute(c *echo.Context) error {
 		return renderLoginError(c, "Incorrect cashier password.")
 	}
 
-	exists, err := models.CashierExists(req.CashierName)
+	exists, err := models.CashierExists(req.CashierContact)
 	if err != nil {
 		return renderLoginError(c, "Something went wrong. Please try again.")
 	}
 
 	if !exists {
-		if err := models.RegisterCashier(req.CashierName); err != nil {
+		if err := models.RegisterCashier(req.CashierName, req.CashierContact); err != nil {
 			return renderLoginError(c, "Could not sign you up: "+err.Error())
 		}
 	}
 
-	auth.IssueSession(c, auth.RoleCashier, req.CashierName)
+	auth.IssueSession(c, auth.RoleCashier, req.CashierName, req.CashierContact)
 
 	return c.Redirect(http.StatusSeeOther, "/pos")
 }
@@ -156,7 +157,7 @@ func AdminLoginRoute(c *echo.Context) error {
 		return renderLoginError(c, "Incorrect admin password.")
 	}
 
-	auth.IssueSession(c, auth.RoleAdmin, "")
+	auth.IssueSession(c, auth.RoleAdmin, "", "")
 
 	return c.Redirect(http.StatusSeeOther, "/pos")
 }

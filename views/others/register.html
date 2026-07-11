@@ -22,19 +22,20 @@
 </head>
 
 <body class="bg-pos_bla w-screen aspect-[16/10] flex items-start justify-center">
-  <div class="relative w-screen h-full flex items-start justify-between gap-0 overflow-clip bg-pos_whi">
-    <div class="w-[85%] flex flex-col items-start justify-start gap-5 pt-[85px] pb-5 px-5">
-      <div class="w-full flex flex-col items-start justify-start gap-2.5">
+  <div class="relative w-screen h-full flex items-center justify-center gap-0 overflow-clip bg-pos_whi">
+    <div class="w-[55%] flex flex-col items-center justify-start gap-5 p-5">
+      <div class="w-full flex flex-col items-center justify-start gap-1.5">
         <h1 class="text-2xl text-pos_bla font-bold">Register Your Business</h1>
-        <p class="text-base text-pos_lgh">This is a one-time setup. Once registered, staff will sign in from the login
-          page.</p>
+        <p class="text-base text-pos_lgh text-center">This is a one-time setup. Once registered, staff will sign in from
+          the login page. Or click to <a href="/login"
+            class="text-pos_col font-medium underline underline-offset-2">Login here</a>.</p>
       </div>
 
       {{ if .Error }}
       <div class="ext-error">{{ .Error }}</div>
       {{ end }}
 
-      <form class="w-[55%] flex flex-col items-start justify-start gap-5" method="POST" action="/register">
+      <form class="w-full flex flex-col items-start justify-start gap-5" method="POST" action="/register">
         <h3 class="text-xl text-pos_bla font-bold">Business Details</h3>
 
         <div class="w-full grid grid-cols-2 gap-5">

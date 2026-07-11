@@ -27,7 +27,8 @@
       <div class="w-full flex flex-col items-center justify-center gap-5">
         <div class="w-full flex flex-col items-center justify-center gap-2">
           <h1 class="text-4xl text-pos_bla font-bold">Welcome Back</h1>
-          <p class="text-base text-pos_lgh">Sign in to access the POS.</p>
+          <p class="text-base text-pos_lgh">Sign in to access the POS. Or click to <a href="/register"
+              class="text-pos_col font-medium underline underline-offset-2">Register here</a>.</p>
         </div>
 
         {{ if .Error }}
@@ -54,6 +55,12 @@
             <input type="text" id="cashier_name" name="cashier_name"
               class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
               placeholder="e.g. Amina" required>
+          </div>
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label for="cashier_contact" class="text-base text-pos_col font-medium">Cashier Contact</label>
+            <input type="tel" id="cashier_contact" name="cashier_contact"
+              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              minlength="10" required>
           </div>
           <div class="w-full flex flex-col items-start justify-start gap-2.5">
             <label for="cashier_password_field" class="text-base text-pos_col font-medium">Cashier password</label>
