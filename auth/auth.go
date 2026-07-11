@@ -133,7 +133,7 @@ func ReadSession(c *echo.Context) *Session {
 		return nil
 	}
 
-	expires, err := strconv.ParseInt(fields[2], 10, 64)
+	expires, err := strconv.ParseInt(fields[3], 10, 64)
 	if err != nil || time.Now().Unix() > expires {
 		return nil
 	}
