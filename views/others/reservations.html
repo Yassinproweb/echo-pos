@@ -88,19 +88,8 @@
       </div>
     </header>
 
-    <menu
-      class="absolute w-[85%] h-[4.5rem] right-0 px-7 py-3.5 flex items-center justify-between top-0 border-b-2 border-b-pos_lgh/25 bg-pos_whi">
-      <h1 class="w-full flex flex-col items-start justify-center gap-0 text-2xl font-bold mono">
-        {{if .CanAcceptDineIn}}
-        <span class="text-pos_dlv">We are accepting DineIn orders.</span>
-        {{else}}
-        <span class="text-pos_rdy">Restaurant is Full. DineIn is currently disabled.</span>
-        {{end}}
-      </h1>
-    </menu>
-
-    <div class="w-[85%] flex flex-col items-start justify-start gap-5 pt-[85px] pb-5 px-5">
-      <div class="ext-shell-inner">
+    <div class="w-[85%] flex flex-col items-center justify-center gap-5 py-5 px-5">
+      <div class="w-full flex flex-col items-center justify-center gap-5">
         <div class="ext-shell-header">
           <h2>Reservations</h2>
           <nav class="ext-shell-nav">

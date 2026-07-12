@@ -6,3 +6,4 @@ pos.db
 pos.db-shm
 pos.db-wal
 *.key
+static/assets/uploads

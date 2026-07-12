@@ -19,6 +19,8 @@
   <link href="/assets/hugeicons.css" rel="stylesheet">
   <link href="/assets/card.png" rel="shortcut icon" type="image/x-icon" />
   <link href="/css/output.min.css" rel="stylesheet">
+
+  <script src="/js/alpine.min.js" defer></script>
 </head>
 
 <body class="bg-pos_bla w-screen aspect-[16/10] flex items-start justify-center">
@@ -88,60 +90,58 @@
       </div>
     </header>
 
-    <menu
-      class="absolute w-[85%] h-[4.5rem] right-0 px-7 py-3.5 flex items-center justify-between top-0 border-b-2 border-b-pos_lgh/25 bg-pos_whi">
-      <h1 class="w-full flex flex-col items-start justify-center gap-0 text-2xl font-bold mono">
-        {{if .CanAcceptDineIn}}
-        <span class="text-pos_dlv">We are accepting DineIn orders.</span>
-        {{else}}
-        <span class="text-pos_rdy">Restaurant is Full. DineIn is currently disabled.</span>
-        {{end}}
-      </h1>
-    </menu>
-
-    <div class="w-[85%] flex flex-col items-start justify-start gap-5 pt-[85px] pb-5 px-5">
-      <div class="ext-card">
-        <div class="ext-brand">
-          <h1>Add Product</h1>
-          <p>Add a new item to the menu.</p>
+    <div class="w-[85%] flex flex-col items-center justify-center gap-5 py-5 px-5">
+      <div class="w-[55%] flex flex-col items-center justify-center gap-5">
+        <div class="w-full flex flex-col items-center justify-center gap-2.5">
+          <h1 class="text-2xl text-pos_bla font-bold">Add Product</h1>
+          <p class="text-base text-pos_lgh text-center">Add a new item to the menu.</p>
         </div>
 
         {{ if .Error }}
         <div class="ext-error">{{ .Error }}</div>
         {{ end }}
 
-        <form class="ext-form" method="POST" action="/pos/products/new" enctype="multipart/form-data">
-          <div class="ext-field">
-            <label for="name">Product name</label>
-            <input type="text" id="name" name="name" placeholder="e.g. Vegetable Pizza" required>
+        <form class="w-full flex flex-col items-start justify-start gap-5" method="POST" action="/pos/products/new"
+          enctype="multipart/form-data">
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label class="text-base text-pos_col font-medium" for="name">Product name</label>
+            <input class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              type="text" id="name" name="name" placeholder="e.g. Vegetable Pizza" required>
           </div>
 
-          <div class="ext-field">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" rows="3" required></textarea>
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label class="text-base text-pos_col font-medium" for="description">Description</label>
+            <textarea id="description" name="description" rows="3"
+              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              required></textarea>
           </div>
 
-          <div class="ext-field">
-            <label for="price">Price (UGX)</label>
-            <input type="number" id="price" name="price" min="0" step="1" required>
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label class="text-base text-pos_col font-medium" for="price">Price (UGX)</label>
+            <input class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              type="number" id="price" name="price" min="0" step="500" required>
           </div>
 
-          <div class="ext-field">
-            <label for="image_file">Upload image</label>
-            <input type="file" id="image_file" name="image_file" accept="image/*">
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label class="text-base text-pos_col font-medium" for="image_file">Upload image</label>
+            <input class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              type="file" id="image_file" name="image_file" accept="image/*">
           </div>
 
-          <div class="ext-field">
-            <label for="image">...or image path/URL</label>
-            <input type="text" id="image" name="image" placeholder="/assets/imgs/my-dish.jpg">
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label class="text-base text-pos_col font-medium" for="image">...or image path/URL</label>
+            <input class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              type="text" id="image" name="image" placeholder="/assets/imgs/my-dish.jpg">
             <span class="ext-hint">Only needed if you didn't upload a file above.</span>
           </div>
 
-          <button type="submit" class="ext-btn">Add Product</button>
+          <button type="submit" class="w-full text-base text-pos_whi font-medium px-7 py-3 rounded-lg bg-pos_col">Add
+            Product</button>
         </form>
 
-        <p class="ext-note" style="margin-top:1rem">
-          <a href="/pos/products" class="ext-link">Back to Products</a>
+        <p class="text-base text-pos_col font-medium" style="margin-top:1rem">
+          <a href="/pos/products" class="text-base text-pos_col font-medium underline underline-offset-2">Back to
+            Products</a>
         </p>
       </div>
     </div>

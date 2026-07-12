@@ -138,7 +138,7 @@ func ReadSession(c *echo.Context) *Session {
 		return nil
 	}
 
-	return &Session{Role: fields[0], CashierContact: fields[2]}
+	return &Session{Role: fields[0], CashierName: fields[1], CashierContact: fields[2]}
 }
 
 // GetSession retrieves the session that RequireLogin/RequireAdmin already
