@@ -11,6 +11,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital,wght@0,300..700;1,300..700&display=swap"
     rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Iosevka+Charon+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=M+PLUS+1+Code:wght@100..700&display=swap"
+    rel="stylesheet">
 
 
   <!-- icons -->
@@ -81,6 +84,16 @@
     </div>
   </div>
 
+  <div id="order-modal" onclick="if(event.target===this) closeOrderModal()"
+    style="display:none;position:fixed;width:100vw;aspect-ratio:16/10;top:0;left:0;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;">
+    <div class="flex flex-col items-center justify-center gap-5"
+      style="width:35%;height:max-content;max-height:90%;background:#fff;border-radius:12px;overflow-y:auto;padding:1.25rem;position:relative;">
+      <button onclick="closeOrderModal()" class="text-pos_whi rounded-full size-11 bg-pos_col"
+        style="position:absolute;top:1rem;right:1rem;font-size:1.5rem;cursor:pointer;line-height:1;">×</button>
+      <div id="order-modal-body">Loading…</div>
+    </div>
+  </div>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const statusColors = {
@@ -135,8 +148,8 @@
         const rows = table.rows;
         for (let i = 1; i < rows.length - 1; i++) {
           let shouldSwitch = false;
-          const x = rows[i].getElementsByTagName("TD")[n];
-          const y = rows[i + 1].getElementsByTagName("TD")[n];
+          const x = rows[i].getElementsByTagName("td")[n];
+          const y = rows[i + 1].getElementsByTagName("td")[n];
           if (dir === "asc" && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
             shouldSwitch = true;
             break;
@@ -157,18 +170,7 @@
         }
       }
     }
-  </script>
 
-  <div id="order-modal" onclick="if(event.target===this) closeOrderModal()"
-    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;">
-    <div
-      style="width:50vw;height:80vh;background:#fff;border-radius:12px;overflow-y:auto;padding:1.5rem;position:relative;">
-      <button onclick="closeOrderModal()"
-        style="position:absolute;top:1rem;right:1rem;font-size:1.5rem;background:none;border:none;cursor:pointer;line-height:1;">×</button>
-      <div id="order-modal-body">Loading…</div>
-    </div>
-  </div>
-  <script>
     function openOrderModal(name) {
       document.getElementById('order-modal').style.display = 'flex';
       document.getElementById('order-modal-body').innerHTML = 'Loading…';

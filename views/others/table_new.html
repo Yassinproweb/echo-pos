@@ -88,40 +88,31 @@
       </div>
     </header>
 
-    <menu
-      class="absolute w-[85%] h-[4.5rem] right-0 px-7 py-3.5 flex items-center justify-between top-0 border-b-2 border-b-pos_lgh/25 bg-pos_whi">
-      <h1 class="w-full flex flex-col items-start justify-center gap-0 text-2xl font-bold mono">
-        {{if .CanAcceptDineIn}}
-        <span class="text-pos_dlv">We are accepting DineIn orders.</span>
-        {{else}}
-        <span class="text-pos_rdy">Restaurant is Full. DineIn is currently disabled.</span>
-        {{end}}
-      </h1>
-    </menu>
-
-    <div class="w-[85%] flex flex-col items-start justify-start gap-5 pt-[85px] pb-5 px-5">
-      <div class="ext-card">
-        <div class="ext-brand">
-          <h1>Add Table</h1>
+    <div class="w-[85%] h-full flex flex-col items-center justify-center gap-5 p-5">
+      <div class="w-[50] h-full flex flex-col items-center justify-center gap-5">
+        <div class="w-full flex flex-col items-center justify-between gap-2.5">
+          <h1 class="text-3xl text-pos_bla font-bold">Add Table</h1>
           <p>Its name (e.g. #TBL022) is generated automatically.</p>
         </div>
 
         {{ if .Error }}
-        <div class="ext-error">{{ .Error }}</div>
+        <div class="text-base text-pos_cld font-medium p-1 py-0.5 border-2 border-pos_cld/45 rounded bg-pos_cld/5">{{
+          .Error }}</div>
         {{ end }}
 
-        <form class="ext-form" method="POST" action="/pos/tables/new">
-          <div class="ext-field">
-            <label for="capacity">Seating capacity</label>
-            <input type="number" id="capacity" name="capacity" min="1" step="1" required>
+        <form class="w-full flex flex-col items-start justify-start gap-5" method="POST" action="/pos/tables/new">
+          <div class="w-full flex flex-col items-start justify-start gap-2.5">
+            <label for="capacity" class="text-base text-pos_col font-medium">Seating capacity</label>
+            <input type="number" id="capacity" name="capacity"
+              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              min="1" step="1" required>
           </div>
 
-          <button type="submit" class="ext-btn">Add Table</button>
+          <button type="submit" class="w-full text-base text-pos_whi font-medium px-7 py-3 rounded-lg bg-pos_col">Add
+            Table</button>
         </form>
 
-        <p class="ext-note" style="margin-top:1rem">
-          <a href="/pos/tables" class="ext-link">Back to Tables</a>
-        </p>
+        <a href="/pos/tables" class="text-base text-pos_col font-medium underline">Back to Tables</a>
       </div>
     </div>
 </body>

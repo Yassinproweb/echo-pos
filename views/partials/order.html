@@ -55,7 +55,8 @@
       <template x-for="item in items" :key="item.name">
         <div class="flex items-start justify-between py-1">
           <span class="text-sm text-pos_bla font-medium" x-text="item.name"></span>
-          <span class="text-sm scolor font-bold" x-text="'x' + item.quantity"></span>
+          <span class="text-sm font-bold" x-text="'x' + item.quantity"></span>
+          <span class="text-sm font-bold" x-text="item.unitPrice"></span>
         </div>
       </template>
       <div x-show="items.length === 0" class="text-center text-pos_lgh italic py-3">

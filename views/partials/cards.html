@@ -142,12 +142,12 @@
         <th class="text-right py-3">Price</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="max-h-[211px] overflow-y-auto">
       {{ range .OrderCart }}
       <tr class="border-b border-pos_lgh/10">
-        <td class="py-0.5">{{ .PdtName }}</td>
-        <td class="text-center">x{{ .Quantity }}</td>
-        <td class="text-right">{{ .UnitPrice }}</td>
+        <td class="text-sm text-left">{{ .PdtName }}</td>
+        <td class="text-sm text-center">x{{ .Quantity }}</td>
+        <td class="text-sm text-right">{{ .UnitPrice }}</td>
       </tr>
       {{ end }}
     </tbody>
