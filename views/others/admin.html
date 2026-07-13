@@ -88,29 +88,22 @@
       </div>
     </header>
 
-    <menu
-      class="absolute w-[85%] h-[4.5rem] right-0 px-7 py-3.5 flex items-center justify-between top-0 border-b-2 border-b-pos_lgh/25 bg-pos_whi">
-      <h1 class="w-full flex flex-col items-start justify-center gap-0 text-2xl font-bold mono">
-        {{if .CanAcceptDineIn}}
-        <span class="text-pos_dlv">We are accepting DineIn orders.</span>
-        {{else}}
-        <span class="text-pos_rdy">Restaurant is Full. DineIn is currently disabled.</span>
-        {{end}}
-      </h1>
-    </menu>
+    <div class="w-[85%] h-full flex flex-col items-center justify-center gap-5 p-5">
+      <div class="w-full flex flex-col items-center justify-start gap-2.5">
+        <h2 class="text-xl text-pos_col font-medium">Business/ Store Management</h2>
 
-    <div class="w-[85%] flex flex-col items-start justify-start gap-5 pt-[85px] pb-5 px-5">
-      <h2 class="text-base text-pos_col font-medium">Business/ Store Management</h2>
+        {{ if .Error }}
+        <p class="text-base text-pos_cld font-medium p-1 py-0.5 border-2 border-pos_cld/45 rounded bg-pos_cld/5">{{
+          .Error }}</p>
+        {{ end }}
+        {{ if .Success }}
+        <p class="text-base text-pos_dlv font-medium p-1 py-0.5 border-2 border-pos_dlv/45 rounded bg-pos_dlv/5">{{
+          .Success }}</p>
+        {{ end }}
+      </div>
 
-      {{ if .Error }}
-      <div class="ext-error" style="margin-bottom:1.25rem">{{ .Error }}</div>
-      {{ end }}
-      {{ if .Success }}
-      <div class="ext-success" style="margin-bottom:1.25rem">{{ .Success }}</div>
-      {{ end }}
-
-      <form class="w-[55%] flex flex-col items-start justify-start gap-5" method="POST" action="/pos/admin">
-        <h2 class="text-3xl text-pos_bla font-bold">Business Details</h2>
+      <form class="w-[55%] flex flex-col items-start justify-center gap-5" method="POST" action="/pos/admin">
+        <h2 class="text-2xl text-pos_bla font-bold">Business Details</h2>
 
         <div class="w-full grid grid-cols-2 gap-5">
           <div class="w-full flex flex-col items-start justify-start gap-2.5">

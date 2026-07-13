@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=1367">
   <title>Point Of Sale - Swap Items</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital,wght@0,300..700;1,300..700&display=swap"
@@ -16,7 +17,7 @@
 </head>
 
 <body class="bg-pos_bla h-screen flex items-start justify-center">
-  <div class="relative w-screen aspect-[16/10] flex items-start justify-between gap-0 bg-pos_whi overflow-clip">
+  <div class="relative w-screen aspect-[16/10] flex items-start justify-between gap-0 bg-pos_whi overflow-y-scroll">
     <div x-data="editOrderApp()" class="w-full h-full flex flex-col p-5 gap-3.5">
       <section class="w-full flex items-center justify-between">
         <h3 class="text-2xl text-pos_bla font-black">Swap Items — {{ .Order.Name }}</h3>
@@ -24,14 +25,14 @@
       </section>
 
       {{ if not .Order.IsEditable }}
-      <div class="ext-error">This order can no longer be edited (status: {{ .Order.Status }}).</div>
+      <div class="text-base text-pos_cld font-medium p-1 py-0.5 border-2 border-pos_cld/45 rounded bg-pos_cld/5">This
+        order can no longer be edited (status: {{ .Order.Status }}).</div>
       {{ else }}
       <form id="form" method="POST" action="/pos/order/{{ .Order.Name | urlquery }}/items"
-        class="w-full h-full flex flex-col gap-3.5">
+        class="w-full h-[95%] flex flex-col items-center justify-start gap-5">
         <input type="hidden" name="items" :value="JSON.stringify(items)">
 
-        <section
-          class="w-full flex-1 grid grid-cols-3 gap-3 snap-mandatory snap-y scroll-pb-9 overflow-y-scroll">
+        <section class="w-full flex-1 grid grid-cols-3 gap-5 snap-mandatory snap-y scroll-pb-5 overflow-y-scroll">
           {{ range .products }}
           {{ template "product_card" . }}
           {{ end }}
@@ -51,7 +52,7 @@
       const initial = JSON.parse(atob("{{ .InitialItemsB64 }}")) || [];
 
       return {
-        items: initial.map(i => ({ name: i.name, quantity: i.quantity, unitPrice: i.unitPrice })),
+        items: initial.map(i => ({name: i.name, quantity: i.quantity, unitPrice: i.unitPrice})),
         quantities: Object.fromEntries(initial.map(i => [i.name, i.quantity])),
 
         increase(name, price) {
@@ -62,7 +63,7 @@
           if (existing) {
             existing.quantity++;
           } else {
-            this.items.push({ name: name, quantity: 1, unitPrice: price });
+            this.items.push({name: name, quantity: 1, unitPrice: price});
           }
         },
 

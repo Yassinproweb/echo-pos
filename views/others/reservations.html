@@ -90,55 +90,56 @@
 
     <div class="w-[85%] flex flex-col items-center justify-center gap-5 py-5 px-5">
       <div class="w-full flex flex-col items-center justify-center gap-5">
-        <div class="ext-shell-header">
-          <h2>Reservations</h2>
-          <nav class="ext-shell-nav">
-            <a href="/pos/reservations/new" class="ext-btn ext-btn--sm">New Reservation</a>
-            <a href="/pos" class="ext-btn ext-btn--ghost ext-btn--sm">Back to Dashboard</a>
-            <a href="/pos/logout" class="ext-btn ext-btn--ghost ext-btn--sm">Logout</a>
+        <div class="w-full flex items-center justify-between gap-2.5">
+          <h1 class="text-3xl text-pos_bla font-bold">Reservations</h1>
+          <nav class="flex items-center justify-end gap-3.5 shrink-0">
+            <a href="/pos/reservations/new" class="text-base text-pos_col font-medium underline">New Reservation</a>
+            <a href="/pos" class="text-base text-pos_col font-medium underline">Back to Dashboard</a>
+            <a href="/pos/logout" class="text-base text-pos_col font-medium underline">Logout</a>
           </nav>
         </div>
 
         {{ if .reservations }}
-        <div class="ext-table-wrap">
-          <table class="ext-table">
-            <thead>
-              <tr>
-                <th>Ref</th>
-                <th>Event</th>
-                <th>Guests</th>
-                <th>Customer</th>
-                <th>Contact</th>
-                <th>Date &amp; Time</th>
-                <th>Tables</th>
-                <th>Status</th>
-                <th>Booked By</th>
-                <th>Action</th>
+        <div
+          class="w-full max-h-full flex flex-col items-end justify-start border border-pos_lgh rounded-xl overflow-y-auto">
+          <table class="w-full h-full divide-y divide-pos_bla rounded-xl">
+            <thead class="sticky top-0 bg-pos_bla">
+              <tr class="text-xl text-pos_whi font-bold">
+                <th class="px-4 py-2 text-left">Ref</th>
+                <th class="px-4 py-2 text-left">Event</th>
+                <th class="px-4 py-2 text-left">Guests</th>
+                <th class="px-4 py-2 text-left">Customer</th>
+                <th class="px-4 py-2 text-left">Contact</th>
+                <th class="px-4 py-2 text-left">Date &amp; Time</th>
+                <th class="px-4 py-2 text-left">Tables</th>
+                <th class="px-4 py-2 text-left">Status</th>
+                <th class="px-4 py-2 text-left">Booked By</th>
+                <th class="px-4 py-2 text-left">Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-pos_lgh/35">
               {{ range .reservations }}
-              <tr>
-                <td>{{ .Name }}</td>
-                <td>{{ .EventType }}</td>
-                <td>{{ .NumPeople }}</td>
-                <td>{{ .CustName }}</td>
-                <td>{{ .CustNumber }}</td>
-                <td>{{ .FormattedDateTime }}</td>
-                <td>{{ .TablesAssignedDisplay }}</td>
-                <td>
+              <tr class="even:bg-pos_lgh/25">
+                <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .Name }}</td>
+                <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .EventType }}</td>
+                <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .NumPeople }}</td>
+                <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .CustName }}</td>
+                <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .CustNumber }}</td>
+                <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .FormattedDateTime }}</td>
+                <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .TablesAssignedDisplay }}</td>
+                <td class="px-4 py-2 text-left text-base font-normal">
                   {{ if eq .Status "Confirmed" }}
-                  <span class="ext-badge ext-badge--confirmed">Confirmed</span>
+                  <span class="text-pos_col">Confirmed</span>
                   {{ else }}
-                  <span class="ext-badge ext-badge--cancelled">Cancelled</span>
+                  <span class="text-pos_cld">Cancelled</span>
                   {{ end }}
                 </td>
-                <td>{{ .CreatedByDisplay }}</td>
-                <td>
+                <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .CreatedByDisplay }}</td>
+                <td class="px-4 py-2 text-center text-base font-normal">
                   {{ if eq .Status "Confirmed" }}
                   <form method="POST" action="/pos/reservations/{{ .Name | urlquery }}/cancel"
                     onsubmit="return confirm('Cancel this reservation and free its tables?');">
-                    <button type="submit" class="ext-btn ext-btn--danger ext-btn--sm">Cancel</button>
+                    <button type="submit" class="text-pos_col">Cancel</button>
                   </form>
                   {{ end }}
                 </td>
@@ -148,7 +149,8 @@
           </table>
         </div>
         {{ else }}
-        <div class="ext-empty">No reservations yet. Click "New Reservation" to book one.</div>
+        <div class="text-base text-pos_lgh font-medium italic">No reservations yet. Click "New Reservation" to book one.
+        </div>
         {{ end }}
       </div>
     </div>

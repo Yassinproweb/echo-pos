@@ -357,7 +357,7 @@ func UpdateOrderItems(orderName string, items []OrderItem) error {
 	if err != nil {
 		return err
 	}
-	if status != string(Placed) && status != string(Preparing) {
+	if status != string(Placed) {
 		return fmt.Errorf("order can no longer be edited (status: %s)", status)
 	}
 

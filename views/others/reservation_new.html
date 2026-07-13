@@ -90,10 +90,10 @@
       </div>
     </header>
 
-    <div class="w-[85%] flex flex-col items-start justify-start gap-5 py-5 px-5">
-      <div class="w-full h-full flex flex-col items-center justify-center gap-5">
-        <div class="w-full flex flex-col items-center justify-center gap-2.5">
-          <h1 class="text-2xl text-pos_bla font-bold">New Reservation</h1>
+    <div class="w-[85%] h-full flex flex-col items-center justify-center gap-5 py-5 px-5">
+      <div class="w-full h-[57%] flex flex-col items-center justify-center gap-5">
+        <div class="w-full flex items-center justify-between gap-2.5">
+          <h1 class="text-3xl text-pos_bla font-bold">New Reservation</h1>
           <nav class="flex items-center justify-end gap-3.5 shrink-0">
             <a href="/pos/reservations" class="text-base text-pos_col font-medium underline">Back to Reservations</a>
             <a href="/pos" class="text-base text-pos_col font-medium underline">Dashboard</a>
@@ -101,11 +101,13 @@
         </div>
 
         {{ if .Error }}
-        <div class="text-base text-pos_cld font-medium border-2 border-pos_cld/45 bg-pos_cld/15">{{ .Error }}</div>
+        <div class="text-base text-pos_cld font-medium p-1 py-0.5 border-2 border-pos_cld/45 rounded bg-pos_cld/5">{{
+          .Error }}</div>
         {{ end }}
 
-        <div class="w-full grid grid-cols-[1fr_350px] grid-rows-[75%] gap-10">
+        <div class="w-full grid grid-cols-[1fr_350px] grid-rows-1 gap-10">
           <form class="w-full flex flex-col items-start justify-start gap-5" method="POST" action="/pos/reservations">
+            <h2 class="text-2xl text-pos_bla font-bold">Reservation Form</h2>
             <div class="w-full grid grid-cols-2 gap-5">
               <div class="w-full flex flex-col items-start justify-start gap-2.5">
                 <label for="cust_name" class="text-base text-pos_col font-medium">Customer name</label>
@@ -160,8 +162,8 @@
             </div>
 
             <div class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45">
-              Tables are assigned automatically from what's currently <strong>Available</strong> — smallest single
-              table that fits the party, or several combined if needed.
+              <p>Tables are assigned automatically from what's currently <strong>Available</strong> — smallest single
+                table that fits the party, or several combined if needed.</p>
             </div>
 
             <button type="submit" class="w-full text-base text-pos_whi font-medium px-7 py-3 rounded-lg bg-pos_col">Book
@@ -170,21 +172,22 @@
 
           <div class="w-full flex flex-col items-center justify-center gap-2.5">
             <h2 class="text-2xl text-pos_bla font-bold">Current Tables</h2>
-            <div class="ext-table-wrap">
-              <table class="w-full divide-y divide-pos_bla border border-pos_lgh overflow-y-auto">
+            <div
+              class="w-full max-h-[497px] flex flex-col items-end justify-start border border-pos_lgh rounded-xl overflow-y-auto">
+              <table class="w-full h-full divide-y divide-pos_bla rounded-xl">
                 <thead class="sticky top-0 bg-pos_bla">
                   <tr class="text-xl text-pos_whi font-bold">
                     <th class="px-4 py-2 text-left">Name</th>
-                    <th class="px-4 py-2 text-left">Capacity</th>
-                    <th class="px-4 py-2 text-left">State</th>
+                    <th class="px-4 py-2 text-center">Capacity</th>
+                    <th class="px-4 py-2 text-right">State</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200">
+                <tbody class="divide-y divide-pos_lgh/35">
                   {{ range .tables }}
-                  <tr class="even:bg-pos_lgh/15">
+                  <tr class="even:bg-pos_lgh/25">
                     <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .Name }}</td>
-                    <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .Capacity }}</td>
-                    <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .State }}</td>
+                    <td class="px-4 py-2 text-center text-base text-pos_bla font-normal">{{ .Capacity }}</td>
+                    <td class="px-4 py-2 text-right text-base text-pos_bla font-normal">{{ .State }}</td>
                   </tr>
                   {{ end }}
                 </tbody>

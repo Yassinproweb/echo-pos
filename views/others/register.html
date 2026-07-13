@@ -22,7 +22,7 @@
 </head>
 
 <body class="bg-pos_bla w-screen aspect-[16/10] flex items-start justify-center">
-  <div class="relative w-screen h-full flex items-center justify-center gap-0 overflow-clip bg-pos_whi">
+  <div class="relative w-screen h-full flex items-center justify-center gap-0 overflow-y-scroll bg-pos_whi">
     <div class="w-[55%] flex flex-col items-center justify-start gap-5 p-5">
       <div class="w-full flex flex-col items-center justify-start gap-1.5">
         <h1 class="text-2xl text-pos_bla font-bold">Register Your Business</h1>
@@ -32,7 +32,7 @@
       </div>
 
       {{ if .Error }}
-      <div class="ext-error">{{ .Error }}</div>
+      <div class="text-base text-pos_cld font-medium border-2 border-pos_cld/45 bg-pos_cld/5">{{ .Error }}</div>
       {{ end }}
 
       <form class="w-full flex flex-col items-start justify-start gap-5" method="POST" action="/register">
