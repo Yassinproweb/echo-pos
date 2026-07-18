@@ -38,6 +38,9 @@ func SelectOrderRoute(c *echo.Context) error {
 	return c.Render(http.StatusOK, "receipt", so)
 }
 
+// UpdateStatusAfterPrint handles the FIRST print of a receipt (the kitchen
+// ticket), done right after an order is created (still Placed). Printing it
+// automatically moves the order into the kitchen queue: Placed -> Preparing.
 func UpdateStatusAfterPrint(c *echo.Context) error {
 	orderID := c.Param("id")
 
@@ -46,6 +49,107 @@ func UpdateStatusAfterPrint(c *echo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, "order_form", nil)
+}
+
+// UpdateStatusAfterViewPrint renders the actual customer receipt while
+// VIEWING an order that is already Ready. It does NOT change status itself
+// — the order is already Ready by the time this button is shown. The 15s
+// auto-advance (Ready -> Waiting/PickUp/Transit) is triggered separately by
+// AdvanceStatusAfterViewPrint once the print completes.
+func UpdateStatusAfterViewPrint(c *echo.Context) error {
+	orderID := c.Param("id")
+
+	orders := models.FetchOrders()
+	var so *models.Order
+	for i := range orders {
+		if orders[i].Name == orderID {
+			so = &orders[i]
+			break
+		}
+	}
+	if so == nil {
+		return c.String(http.StatusNotFound, "Order Not Found")
+	}
+	if so.Status != models.Ready {
+		return c.String(http.StatusBadRequest, "Order must be Ready to print the final receipt")
+	}
+
+	_ = so.CalculateOrderTotal()
+	return c.Render(http.StatusOK, "receipt", so)
+}
+
+// AdvanceStatusAfterViewPrint is called by the client ~15s after the actual
+// receipt print completes. It moves the order from Ready to the
+// type-specific next status: DineIn -> Waiting, Takeaway -> PickUp,
+// Delivery -> Transit. It's a no-op if the order has moved on already (e.g.
+// canceled, or advanced manually in the meantime).
+func AdvanceStatusAfterViewPrint(c *echo.Context) error {
+	orderID := c.Param("id")
+
+	orders := models.FetchOrders()
+	var so *models.Order
+	for i := range orders {
+		if orders[i].Name == orderID {
+			so = &orders[i]
+			break
+		}
+	}
+	if so == nil {
+		return c.String(http.StatusNotFound, "Order Not Found")
+	}
+
+	if so.Status != models.Ready {
+		// Status already moved on (canceled, or changed manually) — do nothing.
+		return c.NoContent(http.StatusOK)
+	}
+
+	next := models.NextStatus(so.Type, models.Ready)
+	if next == "" {
+		return c.String(http.StatusInternalServerError, "No next status defined for order type")
+	}
+
+	if err := models.UpdateOrderStatus(orderID, next); err != nil {
+		return c.String(http.StatusInternalServerError, "Failed to update status")
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
+// ManualUpdateOrderStatus lets a cashier/admin manually advance OR revert an
+// order's status by exactly one step. It strictly enforces the sequence for
+// the order's type (Placed -> Preparing -> Ready -> [Waiting|PickUp|Transit]
+// -> [Served|Taken|Delivered]) in either direction — it rejects any attempt
+// to skip a step. Returns the updated receipt fragment so callers can swap
+// it directly into whichever container is showing the order.
+func ManualUpdateOrderStatus(c *echo.Context) error {
+	orderID := c.Param("id")
+	target := models.Status(c.FormValue("status"))
+
+	if target == "" {
+		return c.String(http.StatusBadRequest, "Missing target status")
+	}
+
+	if err := models.UpdateOrderStatusManual(orderID, target); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	orders := models.FetchOrders()
+	var so *models.Order
+	for i := range orders {
+		if orders[i].Name == orderID {
+			so = &orders[i]
+			break
+		}
+	}
+	if so == nil {
+		return c.String(http.StatusNotFound, "Order Not Found")
+	}
+
+	if err := so.CalculateOrderTotal(); err != nil {
+		return c.String(http.StatusInternalServerError, "Calculation Error")
+	}
+
+	return c.Render(http.StatusOK, "receipt", so)
 }
 
 type CreateOrderRequest struct {

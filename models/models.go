@@ -73,6 +73,24 @@ func (o Order) IsEditable() bool {
 	return o.Status == Placed || o.Status == Preparing
 }
 
+// NextManualStatus returns the next status a cashier could manually advance
+// this order to, or "" if there is none (terminal status, or Canceled).
+func (o Order) NextManualStatus() Status {
+	if o.Status == Canceled {
+		return ""
+	}
+	return NextStatus(o.Type, o.Status)
+}
+
+// PreviousManualStatus returns the prior status a cashier could manually
+// revert this order to, or "" if there is none (first step, or Canceled).
+func (o Order) PreviousManualStatus() Status {
+	if o.Status == Canceled {
+		return ""
+	}
+	return PreviousStatus(o.Type, o.Status)
+}
+
 func (o Order) FormattedDateTime() string {
 	loc, err := time.LoadLocation("Africa/Kampala")
 	if err != nil {
@@ -514,6 +532,119 @@ func UpdateOrderStatus(
 	)
 
 	return err
+}
+
+// =======================
+// STATUS SEQUENCES (manual, per order Type)
+// =======================
+//
+// Delivery: Placed -> Preparing -> Ready -> Transit   -> Delivered
+// Takeaway: Placed -> Preparing -> Ready -> PickUp     -> Taken
+// DineIn:   Placed -> Preparing -> Ready -> Waiting    -> Served
+
+var statusSequence = map[Type][]Status{
+	Delivery: {Placed, Preparing, Ready, Transit, Delivered},
+	Takeaway: {Placed, Preparing, Ready, PickUp, Taken},
+	DineIn:   {Placed, Preparing, Ready, Waiting, Served},
+}
+
+// NextStatus returns the next status in the sequence for the given order
+// type, or "" if there is no next step (already at the terminal status) or
+// the type/status combination is unrecognized.
+func NextStatus(orderType Type, current Status) Status {
+	seq, ok := statusSequence[orderType]
+	if !ok {
+		return ""
+	}
+	for i, s := range seq {
+		if s == current && i+1 < len(seq) {
+			return seq[i+1]
+		}
+	}
+	return ""
+}
+
+// PreviousStatus returns the prior status in the sequence for the given
+// order type, or "" if already at the first step (Placed) or the
+// type/status combination is unrecognized.
+func PreviousStatus(orderType Type, current Status) Status {
+	seq, ok := statusSequence[orderType]
+	if !ok {
+		return ""
+	}
+	for i, s := range seq {
+		if s == current && i-1 >= 0 {
+			return seq[i-1]
+		}
+	}
+	return ""
+}
+
+// ValidateManualStatusChange enforces that manual status changes move
+// exactly one step — forward OR backward — along the strict sequential
+// order for the order's type. Canceling is always allowed (handled
+// separately via CancelOrder) — this only governs step-by-step
+// progression/regression through the sequence.
+func ValidateManualStatusChange(orderType Type, current, target Status) error {
+	seq, ok := statusSequence[orderType]
+	if !ok {
+		return fmt.Errorf("unknown order type: %s", orderType)
+	}
+
+	currentIdx, targetIdx := -1, -1
+	for i, s := range seq {
+		if s == current {
+			currentIdx = i
+		}
+		if s == target {
+			targetIdx = i
+		}
+	}
+
+	if currentIdx == -1 {
+		return fmt.Errorf("order is not in a valid state for manual transition (status: %s)", current)
+	}
+	if targetIdx == -1 {
+		return fmt.Errorf("%s is not a valid status for order type %s", target, orderType)
+	}
+
+	diff := targetIdx - currentIdx
+	if diff != 1 && diff != -1 {
+		if diff > 0 {
+			return fmt.Errorf("cannot skip ahead from %s to %s; next step must be %s", current, target, seq[currentIdx+1])
+		}
+		return fmt.Errorf("cannot skip back from %s to %s", current, target)
+	}
+
+	return nil
+}
+
+// UpdateOrderStatusManual performs a manual, cashier/admin-triggered status
+// change, validating that it follows the sequential order for the order's
+// type before writing to the DB.
+func UpdateOrderStatusManual(orderName string, target Status) error {
+	var currentStatus, orderType string
+
+	err := db.DB.QueryRow(`
+		SELECT status, type FROM orders WHERE name = ?
+	`, orderName).Scan(&currentStatus, &orderType)
+
+	if err == sql.ErrNoRows {
+		return fmt.Errorf("order %s not found", orderName)
+	}
+	if err != nil {
+		return err
+	}
+
+	if Status(currentStatus) == Canceled {
+		return fmt.Errorf("order is canceled and cannot be progressed")
+	}
+
+	if err := ValidateManualStatusChange(Type(orderType), Status(currentStatus), target); err != nil {
+		return err
+	}
+
+	return UpdateOrderStatus(orderName, target)
 }
 
 func CanAcceptDineIn() bool {

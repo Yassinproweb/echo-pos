@@ -306,3 +306,31 @@ select {
 .ext-suggestion strong {
   color: var(--pos-col);
 }
+
+/* ===== 80mm x 80mm receipt print slip ===== */
+@media print {
+  @page {
+    size: 80mm 80mm;
+    margin: 0;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #print-slip,
+  #print-slip * {
+    visibility: visible;
+  }
+
+  #print-slip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80mm;
+    height: 80mm;
+    margin: 0;
+    padding: 4mm;
+    box-sizing: border-box;
+  }
+}

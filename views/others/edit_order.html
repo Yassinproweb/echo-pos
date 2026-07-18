@@ -32,9 +32,9 @@
         class="w-full h-[95%] flex flex-col items-center justify-start gap-5">
         <input type="hidden" name="items" :value="JSON.stringify(items)">
 
-        <section class="w-full flex-1 grid grid-cols-3 gap-5 snap-mandatory snap-y scroll-pb-5 overflow-y-scroll">
+        <section class="w-full flex-1 grid grid-cols-5 gap-5 snap-mandatory snap-y scroll-pb-5 overflow-y-scroll">
           {{ range .products }}
-          {{ template "product_card" . }}
+          {{ template "product_view" . }}
           {{ end }}
         </section>
 

@@ -93,18 +93,55 @@
     {{ template "receipt_card" .}}
   </div>
 
-  <div class="relative w-full flex flex-col items-center justify-end">
-    {{ $isCanceled := eq .Status "Canceled" }}
-    {{ $isNotReady := ne .Status "Ready" }}
-
+  <div class="relative w-full flex flex-col items-center justify-end gap-2">
     {{ if eq .Status "Canceled" }}
     <button disabled
       class="w-full hidden items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col/55 cursor-not-allowed hover:bg-pos_col/65">
       Print Receipt</button>
-    {{ else }}
+    {{ else if or (eq .Status "Placed") (eq .Status "Preparing") }}
+    <!-- Order hasn't reached Ready yet: kitchen ticket / order-card.
+         Printing while Placed moves it to Preparing; printing again while
+         already Preparing is just a reprint (no status change needed). -->
     <button onclick="handlePrint('{{ .Name | urlquery }}', '{{ .Type }}')"
       class="w-full flex items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col transition-all hover:bg-pos_col/85">
+      Print Order-card</button>
+    {{ else if eq .Status "Ready" }}
+    <!-- Actual customer receipt: printing this triggers the 15s auto-advance
+         to Waiting (DineIn) / PickUp (Takeaway) / Transit (Delivery) -->
+    <button onclick="handleViewPrint('{{ .Name | urlquery }}')"
+      class="w-full flex items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col transition-all hover:bg-pos_col/85">
       Print Receipt</button>
+    {{ end }}
+
+    <!-- Manual sequential status controls: move exactly one step forward or
+         back along this order's Type sequence, e.g. for Delivery:
+         Placed -> Preparing -> Ready -> Transit -> Delivered -->
+    {{ if ne .Status "Canceled" }}
+    {{ $prev := .PreviousManualStatus }}
+    {{ $next := .NextManualStatus }}
+    {{ if or $prev $next }}
+    <div class="w-full flex items-center justify-between gap-2">
+      {{ if $prev }}
+      <button onclick="handleManualStatus('{{ $.Name | urlquery }}', '{{ $prev }}')"
+        class="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-pos_col font-bold border-2 border-pos_col rounded-xl bg-pos_whi transition-all hover:bg-pos_col/10">
+        &larr; {{ $prev }}</button>
+      {{ else }}
+      <button disabled
+        class="flex-1 flex items-center justify-center py-2.5 text-pos_lgh font-bold border-2 border-pos_lgh/25 rounded-xl bg-pos_whi cursor-not-allowed">
+        &larr; Previous</button>
+      {{ end }}
+
+      {{ if $next }}
+      <button onclick="handleManualStatus('{{ $.Name | urlquery }}', '{{ $next }}')"
+        class="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-pos_whi font-bold rounded-xl bg-pos_bla transition-all hover:bg-pos_bla/85">
+        {{ $next }} &rarr;</button>
+      {{ else }}
+      <button disabled
+        class="flex-1 flex items-center justify-center py-2.5 text-pos_lgh font-bold border-2 border-pos_lgh/25 rounded-xl bg-pos_whi cursor-not-allowed">
+        Next &rarr;</button>
+      {{ end }}
+    </div>
+    {{ end }}
     {{ end }}
   </div>
 </div>

@@ -23,6 +23,29 @@
 </div>
 {{ end }}
 
+{{ define "product_view" }}
+<div
+  class="product_cards w-full aspect-[16/10] items-center justify-center border-2 border-pos_lgh/10 rounded-2xl overflow-clip bg-pos_whi">
+  <div class="w-4/5 flex-col items-center justify-center gap-1.5 p-3">
+    <img src="{{ .Image }}" alt="product image" select="none"
+      class="w-full aspect-square object-center object-cover rounded-lg">
+    <div class="w-full flex-col gap-0">
+      <p class="text-lg text-pos_col font-black"><sup class="text-xs">Ugx</sup> {{ .Price }}</p>
+    </div>
+  </div>
+  <div class="w-full h-full flex-col items-start justify-between gap-1.5 p-3">
+    <h4 class="text-sm text-pos_bla font-black">{{ .Name }}</h4>
+    <div class="text-base w-full flex items-center justify-between p-1 rounded-full bg-gray-100">
+      <button type="button" @click="decrease('{{ .Name }}')"
+        class="w-8 aspect-square rounded-full text-pos_col bg-pos_whi">-</button>
+      <span x-text="quantities['{{ .Name }}'] || 0" class="text-pos_bla text-base font-medium"></span>
+      <button type="button" @click="increase('{{ .Name }}', {{ .Price }})"
+        class="w-8 aspect-square rounded-full text-pos_whi bg-pos_col">+</button>
+    </div>
+  </div>
+</div>
+{{ end }}
+
 {{ define "order_card" }}
 <div hx-get="/pos/order/{{ .Name | urlquery }}" hx-target="#receipt" hx-swap="innerHTML"
   class="snap-center w-64 aspect-[16/12] flex-col items-center justify-start gap-2.5 border-2 border-pos_lgh/25 rounded-[inherit]">
@@ -99,74 +122,16 @@
 {{ end }}
 
 {{ define "receipt_card" }}
-<div class="relative w-full max-w-[80mm] flex flex-col items-center justify-start text-pos_bla">
-  <div class="w-full flex flex-col items-center mb-3">
-    <h2 class="text-xl font-bold uppercase">Receipt</h2>
-    <p class="text-base">{{ .FormattedDateTime }}</p>
+<div id="print-slip"
+  class="relative w-[80mm] h-[80mm] flex flex-col items-center justify-center gap-3 text-pos_bla overflow-hidden">
+  <div class="w-full flex items-center justify-center text-7xl font-black">
+    <span>{{ .Name }}</span>
   </div>
-
-  <div class="w-full flex flex-col items-center gap-1 mb-3">
-    <div class="w-full flex justify-between">
-      <span class="font-bold">Order ID:</span>
-      <span>{{ .Name }}</span>
-    </div>
-    <div class="w-full flex justify-between">
-      <span class="font-bold">Customer:</span>
-      <span>{{ .CustName }}</span>
-    </div>
-    <div class="w-full flex justify-between">
-      <span class="font-bold">Contact:</span>
-      <span>{{ .CustNumber }}</span>
-    </div>
-    <div class="w-full flex justify-between">
-      <span class="font-bold">Type:</span>
-      <span>{{ .Type }}</span>
-    </div>
-    <div class="w-full flex justify-between">
-      <span class="font-bold">Cashier:</span>
-      <span>{{ .CashierDisplay }}</span>
-    </div>
-    {{ if .Destination }}
-    <div class="w-full flex justify-between">
-      <span class="font-bold">Table/Dest:</span>
-      <span>{{ .Destination }}</span>
-    </div>
-    {{ end }}
+  <div class="w-full flex items-center justify-center text-xl font-bold italic">
+    <span>{{ .CustName }}</span>
   </div>
-
-  <table class="w-full text-base mb-3">
-    <thead>
-      <tr class="border-b border-pos_bla">
-        <th class="text-left py-3">Item</th>
-        <th class="text-center py-3">Qty</th>
-        <th class="text-right py-3">Price</th>
-      </tr>
-    </thead>
-    <tbody class="max-h-[211px] overflow-y-auto">
-      {{ range .OrderCart }}
-      <tr class="border-b border-pos_lgh/10">
-        <td class="text-sm text-left">{{ .PdtName }}</td>
-        <td class="text-sm text-center">x{{ .Quantity }}</td>
-        <td class="text-sm text-right">{{ .UnitPrice }}</td>
-      </tr>
-      {{ end }}
-    </tbody>
-  </table>
-
-  <div class="w-full flex flex-col pt-3 space-y-1 border-t border-dashed border-pos_bla">
-    <div class="flex justify-between text-base">
-      <span>Total Items:</span>
-      <span>{{ .Items }}</span>
-    </div>
-    <div class="w-full flex justify-between text-base font-black">
-      <span>GRAND TOTAL:</span>
-      <span>Ugx {{ .Cost }}</span>
-    </div>
-  </div>
-
-  <div class="w-full flex flex-col text-center mt-6 text-base uppercase">
-    <p>*** Thank you ***</p>
-    <p>Powered by POS RESTO</p>
+  <div class="w-full flex items-center justify-center text-2xl font-bold">
+    <span>{{ .CustNumber }}</span>
   </div>
 </div>
 {{ end }}

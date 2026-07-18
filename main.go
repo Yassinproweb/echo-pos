@@ -107,6 +107,9 @@ func main() {
 	pos.POST("/order/:id/items", routes.UpdateOrderItemsRoute)
 	pos.POST("/order/:id/cancel", routes.CancelOrderRoute)
 	pos.POST("/order/update-status/:id", routes.UpdateStatusAfterPrint)
+	pos.POST("/order/:id/print", routes.UpdateStatusAfterViewPrint)
+	pos.POST("/order/:id/print/advance", routes.AdvanceStatusAfterViewPrint)
+	pos.POST("/order/:id/status", routes.ManualUpdateOrderStatus)
 	// Deleting an order is only ever allowed if it's Canceled (enforced in
 	// models.DeleteCanceledOrder), and only the admin may do it at all.
 	pos.POST("/orders/:id/delete", routes.DeleteOrderRoute, auth.RequireAdmin)
@@ -134,7 +137,7 @@ func main() {
 	pos.GET("/admin", controllers.RenderAdmin, auth.RequireAdmin)
 	pos.POST("/admin", routes.UpdateBusinessRoute, auth.RequireAdmin)
 
-	if err := e.Start(":5000"); err != nil {
+	if err := e.Start(":4000"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
 	}
 }
