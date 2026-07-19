@@ -102,13 +102,13 @@
     <!-- Order hasn't reached Ready yet: kitchen ticket / order-card.
          Printing while Placed moves it to Preparing; printing again while
          already Preparing is just a reprint (no status change needed). -->
-    <button onclick="handlePrint('{{ .Name | urlquery }}', '{{ .Type }}')"
+    <button onclick="handlePrint('{{ .Name }}', '{{ .Type }}')"
       class="w-full flex items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col transition-all hover:bg-pos_col/85">
       Print Order-card</button>
     {{ else if eq .Status "Ready" }}
     <!-- Actual customer receipt: printing this triggers the 15s auto-advance
          to Waiting (DineIn) / PickUp (Takeaway) / Transit (Delivery) -->
-    <button onclick="handleViewPrint('{{ .Name | urlquery }}')"
+    <button onclick="handleViewPrint('{{ .Name }}')"
       class="w-full flex items-center justify-center py-3 text-pos_whi rounded-xl bg-pos_col transition-all hover:bg-pos_col/85">
       Print Receipt</button>
     {{ end }}
@@ -122,7 +122,7 @@
     {{ if or $prev $next }}
     <div class="w-full flex items-center justify-between gap-2">
       {{ if $prev }}
-      <button onclick="handleManualStatus('{{ $.Name | urlquery }}', '{{ $prev }}')"
+      <button onclick="handleManualStatus('{{ $.Name }}', '{{ $prev }}')"
         class="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-pos_col font-bold border-2 border-pos_col rounded-xl bg-pos_whi transition-all hover:bg-pos_col/10">
         &larr; {{ $prev }}</button>
       {{ else }}
@@ -132,7 +132,7 @@
       {{ end }}
 
       {{ if $next }}
-      <button onclick="handleManualStatus('{{ $.Name | urlquery }}', '{{ $next }}')"
+      <button onclick="handleManualStatus('{{ $.Name }}', '{{ $next }}')"
         class="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-pos_whi font-bold rounded-xl bg-pos_bla transition-all hover:bg-pos_bla/85">
         {{ $next }} &rarr;</button>
       {{ else }}
