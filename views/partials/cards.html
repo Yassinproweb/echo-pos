@@ -89,7 +89,7 @@
 {{ end }}
 
 {{ define "table_card" }}
-<div
+<div id="table-card-{{ .Name | urlquery }}"
   class="w-72 snap-center aspect-video flex items-center justify-between p-2.5 gap-2.5 border-2 border-pos_lgh/25 rounded-[inherit]">
   <div class="w-full flex flex-col items-start justify-center gap-1.5">
     <h3 class="text-3xl text-center scolor font-black">{{ .Name }}</h3>
@@ -115,9 +115,30 @@
         {{end}}
       </p>
     </div>
+
+    {{if eq .State "Occupied"}}
+    <button hx-post="/pos/table/{{ .Name | urlquery }}/status"
+      hx-vals='{"status": "Pending"}' hx-swap="none"
+      class="w-full text-xs font-bold text-pos_whi bg-pos_cld rounded-md py-1 transition-all hover:opacity-85">
+      Mark Pending</button>
+    {{else if eq .State "Pending"}}
+    <button hx-post="/pos/table/{{ .Name | urlquery }}/status"
+      hx-vals='{"status": "Available"}' hx-swap="none"
+      class="w-full text-xs font-bold text-pos_whi bg-pos_pdg rounded-md py-1 transition-all hover:opacity-85">
+      Mark Available</button>
+    {{end}}
   </div>
 
   <i class="hgi hgi-stroke hgi-restaurant-table block text-5xl font-light scolor"></i>
+</div>
+{{ end }}
+
+{{ define "table_status_fragment" }}
+<div hx-swap-oob="outerHTML:#table-row-{{ .Name | urlquery }}">
+  {{ template "table_row" . }}
+</div>
+<div hx-swap-oob="outerHTML:#table-card-{{ .Name | urlquery }}">
+  {{ template "table_card" . }}
 </div>
 {{ end }}
 

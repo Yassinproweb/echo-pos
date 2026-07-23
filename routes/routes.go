@@ -152,6 +152,33 @@ func ManualUpdateOrderStatus(c *echo.Context) error {
 	return c.Render(http.StatusOK, "receipt", so)
 }
 
+// ManualUpdateTableStatus lets a cashier/admin manually move a table one
+// step forward or backward around its fixed state cycle:
+// Available -> Occupied -> Pending -> Available. This is the ONLY way a
+// table's state changes — there is no automatic/print-driven trigger for
+// it. The route itself is inside the /pos group, which already requires a
+// logged-in session (cashier or admin) via auth.RequireLogin, so no
+// separate customer-facing path can reach this.
+//
+// Returns both the updated table_row and table_card as out-of-band swaps,
+// since both may be visible on the tables page at once; the caller's own
+// hx-target/hx-swap can be "none" since everything updates via OOB.
+func ManualUpdateTableStatus(c *echo.Context) error {
+	tableID := c.Param("id")
+	target := models.State(c.FormValue("status"))
+
+	if target == "" {
+		return c.String(http.StatusBadRequest, "Missing target state")
+	}
+
+	tbl, err := models.UpdateTableStateManual(tableID, target)
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	return c.Render(http.StatusOK, "table_status_fragment", tbl)
+}
+
 type CreateOrderRequest struct {
 	CustomerName   string `form:"customer_name"`
 	CustomerNumber string `form:"customer_number"`

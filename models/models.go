@@ -132,6 +132,79 @@ type Table struct {
 }
 
 // =======================
+// TABLE STATE (manual only — cashier/admin)
+// =======================
+//
+// NextManualState / PreviousManualState kept as stubs so any existing
+// template references compile — they are no longer used after the
+// single-button simplification.
+
+func (t Table) NextManualState() State     { return "" }
+func (t Table) PreviousManualState() State { return "" }
+
+// ValidateManualTableStateChange enforces:
+//   - Available has no manual buttons — nothing should post from that state.
+//   - Occupied -> Pending (cashier marks table needs cleaning, drops order).
+//   - Pending  -> Available (table is clean and ready again).
+//   - Occupied is never a valid manual target (set automatically by system).
+func ValidateManualTableStateChange(current, target State) error {
+	if target == Occupied {
+		return fmt.Errorf("Occupied is set automatically by the system and cannot be assigned manually")
+	}
+	if current == Available {
+		return fmt.Errorf("Available tables have no manual state change")
+	}
+	allowed := map[State]State{
+		Occupied: Pending,
+		Pending:  Available,
+	}
+	expected, ok := allowed[current]
+	if !ok || target != expected {
+		return fmt.Errorf("cannot manually move table from %s to %s", current, target)
+	}
+	return nil
+}
+
+// UpdateTableStateManual performs a manual, cashier/admin-triggered table
+// state change (via the /pos route group, which already requires a logged
+// in session), validating it moves exactly one step around the cycle
+// before writing to the DB. Returns the refreshed Table on success.
+func UpdateTableStateManual(tableName string, target State) (Table, error) {
+	var currentState string
+
+	err := db.DB.QueryRow(`
+		SELECT state FROM tables WHERE name = ?
+	`, tableName).Scan(&currentState)
+
+	if err == sql.ErrNoRows {
+		return Table{}, fmt.Errorf("table %s not found", tableName)
+	}
+	if err != nil {
+		return Table{}, err
+	}
+
+	if err := ValidateManualTableStateChange(State(currentState), target); err != nil {
+		return Table{}, err
+	}
+
+	if _, err := db.DB.Exec(`
+		UPDATE tables SET state = ?,
+		current_order_name = CASE WHEN ? = 'Pending' THEN NULL ELSE current_order_name END
+		WHERE name = ?
+	`, string(target), string(target), tableName); err != nil {
+		return Table{}, err
+	}
+
+	for _, t := range FetchTables() {
+		if t.Name == tableName {
+			return t, nil
+		}
+	}
+
+	return Table{}, fmt.Errorf("table %s not found after update", tableName)
+}
+
+// =======================
 // ORDER LOGIC
 // =======================
 

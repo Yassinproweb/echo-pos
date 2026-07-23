@@ -61,6 +61,7 @@
                   <th onclick="sortTable(1)" class="px-4 py-2 text-left cursor-pointer">Capacity</th>
                   <th onclick="sortTable(2)" class="px-4 py-2 text-left cursor-pointer">State</th>
                   <th onclick="sortTable(3)" class="px-4 py-2 text-left cursor-pointer">Current Order</th>
+                  <th class="px-4 py-2 text-left">Actions</th>
                 </tr>
               </thead>
               <tbody id="tables" class="divide-y divide-gray-200">
@@ -76,43 +77,42 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const stateColors = {
-        available: "text-pos_pdg",
-        pending: "text-pos_cld",
-        occupied: "text-pos_dlv",
-      };
+    const stateColors = {
+      available: "text-pos_pdg",
+      pending: "text-pos_cld",
+      occupied: "text-pos_dlv",
+    };
 
-      document.querySelectorAll("#tables tr").forEach((row) => {
+    // Applies state-based color classes to all .scolor and .state elements
+    // within the given root element. Safe to call on initial load and after
+    // every htmx swap — first strips any existing stateColor class before
+    // re-applying, so a state change never leaves the old color behind.
+    function applyStateColors(root) {
+      const allClasses = Object.values(stateColors);
+
+      root.querySelectorAll("#tables tr, #tables-card > div").forEach((row) => {
         const stateEl = row.querySelector(".state");
         if (!stateEl) return;
 
         const state = stateEl.textContent.trim().toLowerCase();
         const textClass = stateColors[state];
+
+        // Strip any stale color first.
+        allClasses.forEach(c => stateEl.classList.remove(c));
+        row.querySelectorAll(".scolor").forEach(el => allClasses.forEach(c => el.classList.remove(c)));
+
         if (!textClass) return;
 
         stateEl.classList.add(textClass);
-
-        row.querySelectorAll(".scolor").forEach((el) => {
-          el.classList.add(textClass);
-        });
+        row.querySelectorAll(".scolor").forEach(el => el.classList.add(textClass));
       });
+    }
 
-      document.querySelectorAll("#tables-card div").forEach((row) => {
-        const stateEl = row.querySelector(".state");
-        if (!stateEl) return;
+    document.addEventListener("DOMContentLoaded", () => applyStateColors(document));
 
-        const state = stateEl.textContent.trim().toLowerCase();
-        const textClass = stateColors[state];
-        if (!textClass) return;
-
-        stateEl.classList.add(textClass);
-
-        row.querySelectorAll(".scolor").forEach((el) => {
-          el.classList.add(textClass);
-        });
-      });
-    });
+    // Re-color after every htmx OOB swap (table_status_fragment swaps both
+    // the row and the card simultaneously via hx-swap-oob).
+    document.addEventListener("htmx:afterSettle", () => applyStateColors(document));
 
     // Search functionality
     function searchTable() {

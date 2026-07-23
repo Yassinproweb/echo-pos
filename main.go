@@ -123,6 +123,7 @@ func main() {
 	pos.GET("/tables", controllers.RenderTables)
 	pos.GET("/tables/new", controllers.RenderNewTable)
 	pos.POST("/tables/new", routes.CreateTableRoute)
+	pos.POST("/table/:id/status", routes.ManualUpdateTableStatus)
 
 	// Analytics
 	pos.GET("/analytics", controllers.RenderAnalytics)
