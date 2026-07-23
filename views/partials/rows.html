@@ -69,19 +69,17 @@
     <span>{{ .CurrentOrderName.String }}</span>
     {{else if eq .State "Pending"}}
     <span>Cleaning Required</span>
-    {{else}}
+    {{else if eq .State "Available"}}
     <span>No Active Order</span>
     {{end}}
   </td>
 
   <td class="px-4 py-2 text-left text-base">
     {{if eq .State "Occupied"}}
-    <button hx-post="/pos/table/{{ .Name | urlquery }}/status"
-      hx-vals='{"status": "Pending"}' hx-swap="none"
+    <button hx-post="/pos/table/{{ .Name | urlquery }}/status" hx-vals='{"status": "Pending"}' hx-swap="none"
       class="font-bold text-pos_cld underline">Mark Pending</button>
     {{else if eq .State "Pending"}}
-    <button hx-post="/pos/table/{{ .Name | urlquery }}/status"
-      hx-vals='{"status": "Available"}' hx-swap="none"
+    <button hx-post="/pos/table/{{ .Name | urlquery }}/status" hx-vals='{"status": "Available"}' hx-swap="none"
       class="font-bold text-pos_pdg underline">Mark Available</button>
     {{end}}
   </td>
