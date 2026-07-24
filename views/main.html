@@ -9,7 +9,7 @@
         <input type="search" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
           class="mb-4 w-[75%] p-2 border border-pos_bla/25 rounded outline-none">
       </div>
-      <section class="w-full grid grid-cols-2 justify-start gap-3 snap-mandatory snap-y scroll-pb-9 overflow-y-scroll">
+      <section class="w-full grid grid-cols-3 justify-start gap-3 snap-mandatory snap-y scroll-pb-9 overflow-y-scroll">
         {{ range .products }}
         {{ template "product_card" .}}
         {{ end }}

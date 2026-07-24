@@ -9,8 +9,6 @@
 }
 
 .mono>* {
-  /* font-family: "M PLUS 1 Code"; */
-  /* Iosevka+Charon+Mono */
   font-family: "Iosevka Charon Mono";
 }
 
@@ -19,8 +17,7 @@ html {
 }
 
 body {
-  /* font-family: "LINE Seed JP"; */
-  font-family: "Inclusive Sans";
+  font-family: "Miranda Sans";
 }
 
 header,
@@ -39,51 +36,6 @@ input,
 select {
   outline: none;
 }
-
-/* @media print { */
-/**/
-/*   body * { */
-/*     display: none !important; */
-/*   } */
-/**/
-/*   /* 2. Un-hide the receipt container and its children */
-
-/*   #receipt_card, */
-/*   #receipt_card * { */
-/*     display: initial !important; */
-/*   } */
-/**/
-/*   /* Force container layout */
-
-/*   #receipt_card { */
-/*     display: block !important; */
-/*     width: 100% !important; */
-/*     padding: 0 !important; */
-/*     margin: 0 !important; */
-/*   } */
-/**/
-/*   /* 3. Configure the thermal roll dimensions */
-
-/*   @page { */
-/*     size: portrait; */
-/*     width: 80mm; */
-/*     height: auto; */
-/*     margin: 0; */
-/*   } */
-/**/
-/*   /* 4. Thermal-specific typography and spacing resets */
-
-/*   body { */
-/*     background: #fff; */
-/*     color: #000; */
-/*     margin: 0; */
-/*     padding: 2mm; */
-/*     font-family: 'Iosevka Charon Mono', monospace; */
-/*     font-size: 14px; */
-/*     line-height: 1.2; */
-/*   } */
-/* } */
-/**/
 
 @media print {
 

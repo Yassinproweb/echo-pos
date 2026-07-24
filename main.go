@@ -138,7 +138,7 @@ func main() {
 	pos.GET("/admin", controllers.RenderAdmin, auth.RequireAdmin)
 	pos.POST("/admin", routes.UpdateBusinessRoute, auth.RequireAdmin)
 
-	if err := e.Start(":4000"); err != nil {
+	if err := e.Start(":8000"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
 	}
 }
