@@ -50,7 +50,7 @@
 
 {{ define "order_card" }}
 <div hx-get="/pos/order/{{ .Name | urlquery }}" hx-target="#receipt" hx-swap="innerHTML"
-  class="snap-center w-64 aspect-[3/3.5] flex flex-col items-center justify-start gap-2.5 p-5 border-2 border-pos_lgh/25 rounded-xl">
+  class="snap-center w-64 aspect-[3/3.5] flex flex-col items-center justify-start gap-2.5 p-3 border-2 border-pos_lgh/25 rounded-xl">
   <div class="w-full flex flex-col items-start justify-start border-b-2 border-dashed border-b-pos_bla/15">
     <div class="w-full flex gap-2 items-center justify-between">
       <h4 class="text-xl text-pos_bla font-bold">{{ .CustName }}</h4>
