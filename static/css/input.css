@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Mozilla+Headline:wght@200..700&family=Mozilla+Text:wght@200..700&family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,7 +19,16 @@ html {
 }
 
 body {
-  font-family: "Miranda Sans";
+  font-family: "Mozilla Text";
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Mozilla Headline";
 }
 
 header,
