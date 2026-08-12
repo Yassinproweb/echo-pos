@@ -1,73 +1,141 @@
 {{ define "order_form" }}
 <form id="form" hx-post="/pos/orders/create" hx-swap="none"
   hx-on::after-request="if(event.detail.successful) { resetOrder(); }"
-  class="w-full h-full flex flex-col items-start justify-start gap-5 text-pos_bla">
-  <h2 class="text-2xl text-pos_bla font-bold capitalize">Enter New Order</h2>
+  class="w-full h-full flex flex-col items-start justify-start gap-4 text-pos_bla">
 
-  <div class="w-full flex flex-col items-start justify-start gap-1.5">
-    <label for="customer_name" class="text-base text-pos_col capitalize font-bold">Enter customer name</label>
-    <input type="text" id="customer_name" name="customer_name"
-      class="w-full border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-45" placeholder="" required>
+  <div class="w-full flex items-center justify-between">
+    <h2 class="text-xl text-pos_bla font-bold">Order details</h2>
   </div>
 
-  <div class="w-full flex flex-col items-start justify-start gap-1.5">
-    <label for="customer_number" class="text-base text-pos_col capitalize font-bold">Enter customer number</label>
-    <input type="tel" id="customer_number" name="customer_number"
-      class="w-full border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-45" placeholder="" required>
+  <!-- Order type segmented toggle -->
+  <div class="w-full grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-pos_bla/5">
+    <button type="button" @click="orderType = 'DineIn'"
+      :class="orderType === 'DineIn' ? 'bg-pos_col text-pos_whi' : 'text-pos_bla/60'"
+      class="flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-bold transition-all">
+      <i class="hgi hgi-stroke hgi-dining-table text-base"></i> Dine In
+    </button>
+    <button type="button" @click="orderType = 'Takeaway'"
+      :class="orderType === 'Takeaway' ? 'bg-pos_col text-pos_whi' : 'text-pos_bla/60'"
+      class="flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-bold transition-all">
+      <i class="hgi hgi-stroke hgi-shopping-bag-01 text-base"></i> Take Away
+    </button>
+    <button type="button" @click="orderType = 'Delivery'"
+      :class="orderType === 'Delivery' ? 'bg-pos_col text-pos_whi' : 'text-pos_bla/60'"
+      class="flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-bold transition-all">
+      <i class="hgi hgi-stroke hgi-delivery-truck-01 text-base"></i> Delivery
+    </button>
   </div>
+  <!-- hidden select keeps the same name/binding CreateOrder expects -->
+  <select id="order_type" name="order_type" x-model="orderType" class="hidden">
+    <option value="DineIn">DineIn</option>
+    <option value="Takeaway">Takeaway</option>
+    <option value="Delivery">Delivery</option>
+  </select>
 
-  <div class="w-full flex flex-col items-start justify-start gap-1.5">
-    <label for="order_type" class="text-base text-pos_col capitalize font-bold">select Order type</label>
+  <!-- Customer name + table/destination -->
+  <div class="w-full grid grid-cols-2 gap-2.5">
+    <div class="w-full flex flex-col items-start justify-start gap-1">
+      <label for="customer_name" class="text-xs text-pos_lgh font-bold">Customer Name</label>
+      <input type="text" id="customer_name" name="customer_name"
+        class="w-full border border-pos_lgh/25 rounded-lg px-3 py-2 text-sm placeholder:opacity-45" required>
+    </div>
 
-    <select id="order_type" name="order_type" x-model="orderType"
-      class="w-full text-pos_whi bg-pos_col border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-45">
-      <option value="Delivery" selected>Delivery</option>
-      <option value="Takeaway">Takeaway</option>
-      <option value="DineIn">DineIn</option>
-    </select>
-  </div>
-
-  <div class="w-full flex flex-col items-start justify-start gap-1.5">
-    <label for="order_dest" class="text-base text-pos_col capitalize font-bold">Order destination</label>
-    <input type="text" id="order_dest" name="order_dest"
-      class="w-full border-2 border-pos_col/45 rounded-md px-5 py-1.5 placeholder:opacity-75"
-      :disabled="orderType === 'DineIn' || orderType === 'Takeaway'" :required="orderType === 'Delivery'"
-      :placeholder="orderType === 'Delivery' ? 'Enter delivery destination' : 'Disabled for this order type'">
-  </div>
-
-  <div class="w-full flex flex-col items-start justify-start gap-1.5">
-    <p class="text-base text-pos_col capitalize font-bold">Order status</p>
-    <div class="w-full flex items-center justify-start gap-1.5">
-      <input type="radio" id="placed" name="order_status" value="Placed" class="accent-pos_col checked:accent-pos_col"
-        checked>
-      <label for="placed" class="text-base font-bold">Placed</label>
+    <div class="w-full flex flex-col items-start justify-start gap-1">
+      <label for="order_dest" class="text-xs text-pos_lgh font-bold">
+        <span x-text="orderType === 'DineIn' ? 'Table Number' : orderType === 'Delivery' ? 'Delivery Address' : 'Pickup Note'"></span>
+      </label>
+      <input type="text" id="order_dest" name="order_dest"
+        class="w-full border border-pos_lgh/25 rounded-lg px-3 py-2 text-sm placeholder:opacity-45"
+        :disabled="orderType === 'Takeaway'" :required="orderType === 'Delivery' || orderType === 'DineIn'"
+        :placeholder="orderType === 'DineIn' ? 'e.g. 10' : orderType === 'Delivery' ? 'Enter delivery address' : 'Not required'">
     </div>
   </div>
 
-  <!-- hidden items json -->
+  <div class="w-full flex flex-col items-start justify-start gap-1">
+    <label for="customer_number" class="text-xs text-pos_lgh font-bold">Customer Number</label>
+    <input type="tel" id="customer_number" name="customer_number"
+      class="w-full border border-pos_lgh/25 rounded-lg px-3 py-2 text-sm placeholder:opacity-45" required>
+  </div>
+
+  <input type="hidden" name="order_status" value="Placed">
   <input type="hidden" name="items" :value="JSON.stringify(items)">
 
-  <!-- selected items -->
+  <div class="w-full border-t border-dashed border-pos_lgh/25"></div>
+
+  <!-- Item list: images, name, price, qty steppers -->
   <div class="w-full flex flex-col items-start justify-start gap-1.5">
-    <label class="text-base text-pos_col capitalize font-bold">Items (Auto-filled)</label>
-    <div
-      class="w-full min-h-[100px] max-h-[215px] flex flex-col border border-pos_col/50 rounded-md p-3 overflow-y-scroll">
+    <p class="text-sm text-pos_bla font-bold">Order Items&nbsp;<span class="text-pos_lgh font-normal"
+        x-text="'(' + items.length + ')'"></span></p>
+
+    <div class="w-full max-h-[220px] flex flex-col gap-2.5 overflow-y-auto">
       <template x-for="item in items" :key="item.name">
-        <div class="flex items-start justify-between py-1">
-          <span class="text-sm text-pos_bla font-medium" x-text="item.name"></span>
-          <span class="text-sm font-bold" x-text="'x' + item.quantity"></span>
-          <span class="text-sm font-bold" x-text="item.unitPrice"></span>
+        <div class="w-full flex items-center gap-2.5">
+          <img :src="PRODUCT_IMAGES[item.name] || ''" alt=""
+            class="size-10 rounded-lg object-cover object-center bg-pos_bla/5 shrink-0">
+          <div class="flex-1 flex flex-col items-start justify-center gap-0 min-w-0">
+            <span class="text-sm text-pos_bla font-medium truncate w-full" x-text="item.name"></span>
+            <span class="text-xs scolor font-bold" x-text="'Ugx ' + item.unitPrice"></span>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" @click="decrease(item.name)"
+              class="size-6 flex items-center justify-center rounded-md text-pos_whi bg-pos_col">
+              <i class="hgi hgi-stroke hgi-rounded hgi-minus-sign text-xs"></i>
+            </button>
+            <span class="w-4 text-center text-sm font-bold" x-text="item.quantity"></span>
+            <button type="button" @click="increase(item.name, item.unitPrice)"
+              class="size-6 flex items-center justify-center rounded-md text-pos_whi bg-pos_col">
+              <i class="hgi hgi-stroke hgi-rounded hgi-plus-sign text-xs"></i>
+            </button>
+          </div>
         </div>
       </template>
-      <div x-show="items.length === 0" class="text-center text-pos_lgh italic py-3">
+      <div x-show="items.length === 0" class="w-full text-center text-pos_lgh text-sm italic py-3">
         No items selected yet
       </div>
     </div>
   </div>
 
+  <div class="w-full border-t border-dashed border-pos_lgh/25"></div>
+
+  <!-- Payment summary (live preview, computed client-side) -->
+  <div class="w-full flex flex-col items-stretch justify-start gap-1 text-sm">
+    <div class="w-full flex items-center justify-between text-pos_lgh">
+      <span>Subtotal</span>
+      <span x-text="'Ugx ' + subtotal()"></span>
+    </div>
+    <div class="w-full flex items-center justify-between text-pos_lgh">
+      <span>Tax (10%)</span>
+      <span x-text="'Ugx ' + tax()"></span>
+    </div>
+    <div class="w-full flex items-center justify-between text-pos_bla font-bold text-base pt-1">
+      <span>Total</span>
+      <span x-text="'Ugx ' + grandTotal()"></span>
+    </div>
+  </div>
+
+  <!-- Payment method: visual preference only — not wired to any backend
+       payment processing, this app doesn't process payments. -->
+  <div class="w-full grid grid-cols-3 gap-1.5">
+    <button type="button" @click="paymentMethod = 'card'"
+      :class="paymentMethod === 'card' ? 'border-pos_col bg-pos_col/10 text-pos_col' : 'border-pos_lgh/25 text-pos_lgh'"
+      class="flex flex-col items-center justify-center gap-1 py-2 rounded-lg border text-xs font-bold transition-all">
+      <i class="hgi hgi-stroke hgi-credit-card text-base"></i> Card
+    </button>
+    <button type="button" @click="paymentMethod = 'cash'"
+      :class="paymentMethod === 'cash' ? 'border-pos_col bg-pos_col/10 text-pos_col' : 'border-pos_lgh/25 text-pos_lgh'"
+      class="flex flex-col items-center justify-center gap-1 py-2 rounded-lg border text-xs font-bold transition-all">
+      <i class="hgi hgi-stroke hgi-money-03 text-base"></i> Cash
+    </button>
+    <button type="button" @click="paymentMethod = 'qr'"
+      :class="paymentMethod === 'qr' ? 'border-pos_col bg-pos_col/10 text-pos_col' : 'border-pos_lgh/25 text-pos_lgh'"
+      class="flex flex-col items-center justify-center gap-1 py-2 rounded-lg border text-xs font-bold transition-all">
+      <i class="hgi hgi-stroke hgi-qr-code text-base"></i> QR
+    </button>
+  </div>
+
   <button type="submit" :disabled="items.length === 0" hx-indicator="#loading"
-    class="w-full border-2 border-pos_col/45 px-5 py-1.5 text-base text-pos_whi text-center font-medium rounded-md bg-pos_col disabled:opacity-50 disabled:cursor-not-allowed">
-    <span class="htmx-inverted-indicator">Create Order</span>
+    class="w-full px-5 py-3 text-base text-pos_whi text-center font-bold rounded-xl bg-pos_col disabled:opacity-50 disabled:cursor-not-allowed">
+    <span class="htmx-inverted-indicator">Checkout</span>
     <span class="htmx-indicator" id="loading">...</span>
   </button>
 </form>

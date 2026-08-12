@@ -21,68 +21,86 @@
 </head>
 
 <body class="bg-pos_bla h-screen flex items-start justify-center">
-  <div
-    class="relative w-screen aspect-[16/10] flex flex-col items-start justify-between gap-0 bg-pos_whi overflow-y-scroll">
-    <div id="orders-card" class="w-full flex flex-col items-stretch justify-start gap-2.5 p-4">
-      <section class="w-full flex items-center justify-between">
-        <h3 class="text-2xl text-pos_bla font-black">Current Orders</h3>
-        <div class="flex items-center justify-end gap-3.5">
-          <a href="/pos/reservations" class="text-pos_col font-medium underline">Reservations</a>
-          <a href="/pos" class="text-pos_col font-medium underline">Back to Dashboard</a>
-          <a href="/pos/logout" class="text-pos_col font-medium underline">Logout</a>
-        </div>
-      </section>
-      <section
-        class="w-full grid grid-flow-col justify-start gap-3.5 rounded-3xl snap-mandatory snap-x scroll-pl-5 overflow-x-scroll">
-        {{ range .orders }}
-        {{ template "order_card" . }}
-        {{ end }}
-      </section>
-    </div>
+  <div class="relative w-screen aspect-[16/10] bg-pos_whi overflow-y-scroll">
+    {{ template "navbar" . }}
 
-    <div class="w-full h-full flex flex-col gap-12">
-      <div class="w-full h-full flex-col mx-auto bg-white p-4 rounded shadow">
-        <input type="search" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
-          class="mb-4 w-full p-2 border border-pos_bla/25 rounded outline-none">
+    <div class="relative w-[90%] h-full right-0 flex flex-col items-start justify-start">
+      {{ template "topbar" . }}
 
-        <div class="w-full h-[93%] flex flex-col gap-0.5">
-          <h2 class="text-pos_bla text-3xl font-bold mb-3">Orders List</h2>
+      <div id="orders-card" class="w-full flex flex-col items-stretch justify-start gap-2.5 p-4">
+        <section class="w-full flex items-center justify-between">
+          <h3 class="text-2xl text-pos_bla font-black">Current Orders</h3>
 
-          <div class="w-full max-h-[93%] overflow-y-scroll">
-            <table class="w-full divide-y divide-pos_bla border border-pos_lgh">
-              <thead class="sticky top-0 bg-pos_bla">
-                <tr class="text-xl text-pos_whi font-bold">
-                  <th onclick="sortTable(0)" class="px-4 py-2 text-left cursor-pointer">Name</th>
-                  <th onclick="sortTable(1)" class="px-4 py-2 text-left cursor-pointer">Date&nbsp;Time</th>
-                  <th onclick="sortTable(2)" class="px-4 py-2 text-left cursor-pointer">Customer Name</th>
-                  <th onclick="sortTable(3)" class="px-4 py-2 text-left cursor-pointer">Customer Number</th>
-                  <th onclick="sortTable(4)" class="px-4 py-2 text-left cursor-pointer">Destination (Table)</th>
-                  <th onclick="sortTable(5)" class="px-4 py-2 text-left cursor-pointer">Type</th>
-                  <th onclick="sortTable(6)" class="px-4 py-2 text-left cursor-pointer">Items Quantity</th>
-                  <th onclick="sortTable(7)" class="px-4 py-2 text-left cursor-pointer">Status</th>
-                  <th onclick="sortTable(8)" class="px-4 py-2 text-left cursor-pointer">Total Amount</th>
-                  <th onclick="sortTable(9)" class="px-4 py-2 text-left cursor-pointer">Cashier</th>
-                  <th class="px-4 py-2 text-left">Action</th>
-                </tr>
-              </thead>
-              <tbody id="orders" class="divide-y divide-gray-200">
-                {{ range .orders }}
-                {{ template "order_row" . }}
-                {{ end }}
-              </tbody>
-            </table>
+        </section>
+
+        <div class="w-full h-full flex flex-col mx-auto gap-5 bg-white">
+          <div class="w-full flex items-center justify-between gap-3">
+            <div id="status-filters" class="flex items-center gap-2">
+              <button type="button" onclick="filterOrders('all', this)"
+                class="filter-pill active-pill px-4 py-1.5 rounded-full text-base font-bold bg-pos_col text-pos_whi flex items-center gap-1.5">
+                <span>All</span><span class="pill-count px-2 py-0.5 rounded-full text-xs bg-pos_whi/20">0</span>
+              </button>
+              <button type="button" onclick="filterOrders('Placed', this)"
+                class="filter-pill px-4 py-1.5 rounded-full text-base font-medium border border-pos_col/30 text-pos_col flex items-center gap-1.5">
+                <span>New</span><span class="pill-count px-2 py-0.5 rounded-full text-sm bg-pos_col/10">0</span>
+              </button>
+              <button type="button" onclick="filterOrders('Preparing', this)"
+                class="filter-pill px-4 py-1.5 rounded-full text-base font-medium border border-pos_col/30 text-pos_col flex items-center gap-1.5">
+                <span>Cooking</span><span class="pill-count px-2 py-0.5 rounded-full text-sm bg-pos_col/10">0</span>
+              </button>
+              <button type="button" onclick="filterOrders('Ready', this)"
+                class="filter-pill px-4 py-1.5 rounded-full text-base font-medium border border-pos_col/30 text-pos_col flex items-center gap-1.5">
+                <span>Ready</span><span class="pill-count px-2 py-0.5 rounded-full text-sm bg-pos_col/10">0</span>
+              </button>
+              <button type="button" onclick="filterOrders('done', this)"
+                class="filter-pill px-4 py-1.5 rounded-full text-base font-medium border border-pos_col/30 text-pos_col flex items-center gap-1.5">
+                <span>Completed</span><span class="pill-count px-2 py-0.5 rounded-full text-sm bg-pos_col/10">0</span>
+              </button>
+              <button type="button" onclick="filterOrders('Canceled', this)"
+                class="filter-pill px-4 py-1.5 rounded-full text-base font-medium border border-pos_col/30 text-pos_col flex items-center gap-1.5">
+                <span>Cancelled</span><span class="pill-count px-2 py-0.5 rounded-full text-sm bg-pos_col/10">0</span>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-end gap-5">
+              <div class="flex items-center p-1.5 border border-pos_col/25 rounded-full gap-2">
+                <i
+                  class="hgi hgi-stroke hgi-calendar-02 text-xl text-pos_col flex items-center justify-center size-9 rounded-full bg-pos_col/15 border border-pos_col/45"></i>
+
+                <select id="periodSelect" onchange="applyPeriodFilter()"
+                  class="text-base text-pos_col text-end font-semibold rounded-full outline-none bg-white appearance-none">
+                  <option value="all" selected>All Dates</option>
+                  <option value="day">Day</option>
+                  <option value="week">Week</option>
+                  <option value="month">Month</option>
+                  <option value="year">Year</option>
+                </select>
+                <input type="date" id="periodDate" onchange="applyPeriodFilter()" style="display:none;"
+                  class="text-base outline-none">
+              </div>
+
+              <input type="search" id="searchInput" onkeyup="searchTable()" placeholder="Name or number..."
+                class="w-44 px-3 py-1.5 text-sm border border-pos_bla/25 rounded-full outline-none">
+            </div>
           </div>
+
+          <section id="order-grid" class="w-full grid grid-cols-4 grid-flow-row justify-start gap-5">
+            {{ range .orders }}
+            {{ template "order_card" . }}
+            {{ end }}
+          </section>
         </div>
       </div>
     </div>
   </div>
 
   <div id="order-modal" onclick="if(event.target===this) closeOrderModal()"
-    style="display:none;position:fixed;width:100vw;aspect-ratio:16/10;top:0;left:0;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:center;justify-content:center;">
-    <div class="flex flex-col items-center justify-center gap-5"
-      style="width:35%;height:max-content;max-height:90%;background:#fff;border-radius:12px;overflow-y:auto;padding:1.25rem;position:relative;">
-      <button onclick="closeOrderModal()" class="text-pos_whi rounded-full size-11 bg-pos_col"
-        style="position:absolute;top:1rem;right:1rem;font-size:1.5rem;cursor:pointer;line-height:1;">×</button>
+    class="hidden fixed w-screen aspect-[16/10] top-0 left-0 items-center justify-center inset-0 bg-[rgba(0,0,0,.5)] z-50">
+    <div
+      class="relative w-[35%] h-max max-h-[90%] flex flex-col items-center justify-center gap-5 p-5 rounded-xl overflow-auto bg-pos_whi">
+      <button onclick="closeOrderModal()"
+        class="text-pos_whi rounded-full size-11 bg-pos_col absolute top-5 right-5 text-lg cursor-pointer">×</button>
+
       <div id="order-modal-body">Loading…</div>
     </div>
   </div>
@@ -96,13 +114,13 @@
         pickup: "text-pos_trs",
         ready: "text-pos_rdy",
         preparing: "text-pos_pdg",
-        canceled: "text-pos_cld",
+        cancelled: "text-pos_cld",
         taken: "text-pos_dlv",
         served: "text-pos_dlv",
         delivered: "text-pos_dlv",
       };
 
-      document.querySelectorAll("#orders tr").forEach((row) => {
+      document.querySelectorAll(".order-card").forEach((row) => {
         const statusEl = row.querySelector(".status");
         if (!statusEl) return;
 
@@ -116,16 +134,130 @@
           el.classList.add(textClass);
         });
       });
+
+      updatePillCounts();
     });
 
-    // Search functionality
+    // Filter functionality
+    const doneStatuses = ["Delivered", "Served", "Taken"];
+
+    function filterOrders(status, btn) {
+      document.querySelectorAll(".filter-pill").forEach(p => {
+        p.classList.remove("active-pill", "bg-pos_col", "text-pos_whi");
+        p.classList.add("border", "border-pos_col/30", "text-pos_col");
+      });
+      btn.classList.add("active-pill", "bg-pos_col", "text-pos_whi");
+      btn.classList.remove("border", "border-pos_col/30", "text-pos_col");
+
+      searchTable();
+    }
+
+    // Date/Week/Month/Year period filter
+    function applyPeriodFilter() {
+      const period = document.getElementById("periodSelect").value;
+      const dateInput = document.getElementById("periodDate");
+      dateInput.style.display = period === "day" ? "" : "none";
+      searchTable();
+    }
+
+    function isoWeek(d) {
+      const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      const dayNum = date.getUTCDay() || 7;
+      date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+      return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+    }
+
+    function matchesPeriod(cardDateStr) {
+      const period = document.getElementById("periodSelect").value;
+      if (period === "all" || !cardDateStr) return true;
+
+      const cardDate = new Date(cardDateStr);
+      if (isNaN(cardDate)) return true;
+
+      if (period === "day") {
+        const pickedStr = document.getElementById("periodDate").value;
+        const picked = pickedStr ? new Date(pickedStr + "T00:00:00") : new Date();
+        return cardDate.getFullYear() === picked.getFullYear()
+          && cardDate.getMonth() === picked.getMonth()
+          && cardDate.getDate() === picked.getDate();
+      }
+
+      const now = new Date();
+      if (period === "week") {
+        return cardDate.getFullYear() === now.getFullYear() && isoWeek(cardDate) === isoWeek(now);
+      }
+      if (period === "month") {
+        return cardDate.getFullYear() === now.getFullYear() && cardDate.getMonth() === now.getMonth();
+      }
+      if (period === "year") {
+        return cardDate.getFullYear() === now.getFullYear();
+      }
+      return true;
+    }
+
+    // Search functionality — filters order cards by name/number, status
+    // pill, and date/week/month/year period, all combined; also filters the
+    // table rows below by plain text, if present. Also refreshes the count
+    // badge on every pill.
     function searchTable() {
       const input = document.getElementById("searchInput").value.toLowerCase();
-      const rows = document.querySelectorAll("tbody tr");
+      const activePill = document.querySelector(".filter-pill.active-pill");
+      const status = activePill ? activePill.querySelector("span:first-child").textContent.trim() : "All";
 
+      document.querySelectorAll("#order-grid .order-card").forEach(card => {
+        const search = (card.dataset.search || "").toLowerCase();
+        const matchesSearch = search.includes(input);
+
+        let matchesFilter = true;
+        if (status !== "All") {
+          const cardStatus = card.dataset.status;
+          if (status === "Completed") matchesFilter = doneStatuses.includes(cardStatus);
+          else if (status === "New") matchesFilter = cardStatus === "Placed";
+          else if (status === "Cooking") matchesFilter = cardStatus === "Preparing";
+          else matchesFilter = cardStatus === status.replace("Cancelled", "Canceled");
+        }
+
+        const matchesDate = matchesPeriod(card.dataset.datetime);
+
+        card.style.display = (matchesSearch && matchesFilter && matchesDate) ? "" : "none";
+      });
+
+      const rows = document.querySelectorAll("tbody tr");
       rows.forEach(row => {
         const text = row.innerText.toLowerCase();
         row.style.display = text.includes(input) ? "" : "none";
+      });
+
+      updatePillCounts();
+    }
+
+    // Recomputes the count badge on each filter pill, based on the current
+    // search text and date/week/month/year period (but ignoring which pill
+    // is currently selected, so every pill shows its own true count).
+    function updatePillCounts() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const counts = {all: 0, Placed: 0, Preparing: 0, Ready: 0, done: 0, Canceled: 0};
+
+      document.querySelectorAll("#order-grid .order-card").forEach(card => {
+        const search = (card.dataset.search || "").toLowerCase();
+        if (!search.includes(input)) return;
+        if (!matchesPeriod(card.dataset.datetime)) return;
+
+        const cardStatus = card.dataset.status;
+        counts.all++;
+        if (cardStatus === "Placed") counts.Placed++;
+        else if (cardStatus === "Preparing") counts.Preparing++;
+        else if (cardStatus === "Ready") counts.Ready++;
+        else if (doneStatuses.includes(cardStatus)) counts.done++;
+        else if (cardStatus === "Canceled") counts.Canceled++;
+      });
+
+      const pills = document.querySelectorAll("#status-filters .filter-pill");
+      const order = ["all", "Placed", "Preparing", "Ready", "done", "Canceled"];
+      pills.forEach((pill, i) => {
+        const countEl = pill.querySelector(".pill-count");
+        if (countEl) countEl.textContent = counts[order[i]];
       });
     }
 

@@ -33,29 +33,25 @@
           <div class="w-full flex items-center justify-between mb-3">
             <h2 class="text-pos_bla text-3xl font-bold">Products List</h2>
             <div class="flex items-center justify-end gap-3.5 shrink-0">
-              <a href="/pos/products/new" class="text-pos_col font-medium underline">Add Product</a>
               <a href="/pos/reservations" class="text-pos_col font-medium underline">Reservations</a>
               <a href="/pos" class="text-pos_col font-medium underline">Back to Dashboard</a>
               <a href="/pos/logout" class="text-pos_col font-medium underline">Logout</a>
             </div>
           </div>
 
-          <div class="w-full max-h-[93%] overflow-y-scroll">
-            <table class="w-full divide-y divide-pos_bla border border-pos_lgh">
-              <thead class="sticky top-0 bg-pos_bla">
-                <tr class="text-xl text-pos_whi font-bold">
-                  <th onclick="sortTable(0)" class="px-4 py-2 text-left cursor-pointer">Name</th>
-                  <th onclick="sortTable(1)" class="px-4 py-2 text-left cursor-pointer">Description</th>
-                  <th onclick="sortTable(2)" class="px-4 py-2 text-left cursor-pointer">Price</th>
-                  <th onclick="sortTable(3)" class="px-4 py-2 text-left cursor-pointer">Thumbnail</th>
-                </tr>
-              </thead>
-              <tbody id="products" class="divide-y divide-gray-200">
-                {{ range .products }}
-                {{ template "product_row" . }}
-                {{ end }}
-              </tbody>
-            </table>
+          <div class="w-full max-h-[93%] p-5">
+            <div class="w-full grid grid-cols-6 justify-start gap-3.5">
+              <a href="/pos/products/new"
+                class="w-full aspect-square flex flex-col items-center justify-center gap-5 p-5 border-2 border-pos_col/45 border-dashed rounded-2xl overflow-clip bg-pos_whi">
+                <i
+                  class="hgi hgi-stroke hgi-plus-sign size-9 text-2xl text-pos_whi font-black flex items-center justify-center rounded-xl bg-pos_col"></i>
+                <h4 class="w-full text-base text-pos_bla text-center font-semibold">Add New Products</h4>
+              </a>
+
+              {{ range .products }}
+              {{ template "product_view" . }}
+              {{ end }}
+            </div>
           </div>
         </div>
       </div>

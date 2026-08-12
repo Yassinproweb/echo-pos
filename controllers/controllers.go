@@ -15,6 +15,7 @@ func RenderOrders(c *echo.Context) error {
 	tables := models.FetchTables()
 
 	isAdmin := auth.IsAdminSession(c)
+	business, _ := models.GetBusiness()
 
 	orders := models.FetchOrders()
 	for i := range orders {
@@ -26,6 +27,7 @@ func RenderOrders(c *echo.Context) error {
 	}
 
 	data := map[string]any{
+		"Business":  business,
 		"orders":    orders,
 		"tables":    tables,
 		"IsAdmin":   isAdmin,
@@ -38,8 +40,10 @@ func RenderOrders(c *echo.Context) error {
 // products controllers
 func RenderProducts(c *echo.Context) error {
 	products := models.FetchProducts()
+	business, _ := models.GetBusiness()
 
 	data := map[string]any{
+		"Business":  business,
 		"products":  products,
 		"IsAdmin":   auth.IsAdminSession(c),
 		"ActorName": auth.ActorName(c),
@@ -76,12 +80,12 @@ func RenderEditOrder(c *echo.Context) error {
 	products := models.FetchProducts()
 
 	data := map[string]any{
-		"Order":            order,
-		"products":         products,
-		"quantities":       quantities,
-		"InitialItemsB64":  base64.StdEncoding.EncodeToString(itemsJSON),
-		"IsAdmin":          auth.IsAdminSession(c),
-		"ActorName":        auth.ActorName(c),
+		"Order":           order,
+		"products":        products,
+		"quantities":      quantities,
+		"InitialItemsB64": base64.StdEncoding.EncodeToString(itemsJSON),
+		"IsAdmin":         auth.IsAdminSession(c),
+		"ActorName":       auth.ActorName(c),
 	}
 
 	return c.Render(http.StatusOK, "edit_order.html", data)
@@ -91,8 +95,10 @@ func RenderEditOrder(c *echo.Context) error {
 func RenderTables(c *echo.Context) error {
 	orders := models.FetchOrders()
 	tables := models.FetchTables()
+	business, _ := models.GetBusiness()
 
 	data := map[string]any{
+		"Business":  business,
 		"orders":    orders,
 		"tables":    tables,
 		"IsAdmin":   auth.IsAdminSession(c),

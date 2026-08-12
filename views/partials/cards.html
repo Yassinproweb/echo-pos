@@ -25,128 +25,171 @@
 
 {{ define "product_view" }}
 <div
-  class="product_cards w-full flex flex-col items-center justify-center border-2 border-pos_lgh/10 rounded-2xl overflow-clip bg-pos_whi p-2.5">
+  class="product_cards w-full aspect-square flex flex-col items-center justify-center gap-5 p-5 border-2 border-pos_lgh/25 rounded-2xl overflow-clip bg-pos_whi">
+  <img src="{{ .Image }}" alt="product image" select="none"
+    class="w-1/2 aspect-square object-center object-cover rounded-lg">
   <div class="w-full flex flex-col items-center justify-center gap-0.5">
-    <img src="{{ .Image }}" alt="product image" select="none"
-      class="w-full aspect-video object-center object-cover rounded-lg">
-    <h4 class="w-full text-base text-pos_bla text-start font-semibold">{{ .Name }}</h4>
+    <p class="w-full text-base text-pos_bla text-center line-clamp-1 text-ellipsis">{{ .Name }}</p>
+    <p class="text-lg text-pos_bla/55 font-bold">Ugx {{ .Price }}</p>
   </div>
-  <div class="w-full flex flex-col items-start justify-between gap-1.5">
-    <div class="w-full flex items-center justify-between gap-5">
-      <p class="text-lg text-pos_col font-bold">Ugx {{ .Price }}</p>
-    </div>
-    <div class="text-lg w-full flex items-center justify-between rounded-xl bg-pos_col/15 p-1.5">
-      <button type="button" @click="decrease('{{ .Name }}')"
-        class="size-8 flex items-center justify-center rounded-lg text-pos_whi bg-pos_col"><i
-          class="hgi hgi-stroke hgi-rounded hgi-minus-sign font-bold"></i></button>
-      <span x-text="quantities['{{ .Name }}'] || 0" class="text-pos_bla text-base font-normal"></span>
-      <button type="button" @click="increase('{{ .Name }}', {{ .Price }})"
-        class="size-8 flex items-center justify-center rounded-lg text-pos_whi bg-pos_col"><i
-          class="hgi hgi-stroke hgi-rounded hgi-plus-sign font-bold"></i></button>
-    </div>
+</div>
+{{ end }}
+
+{{ define "order_view" }}
+<div
+  class="order-card w-64 flex flex-col items-center justify-between gap-5 p-3.5 rounded-2xl border border-pos_lgh/15 shadow-sm bg-pos_whi">
+  <div class="w-full flex items-start justify-between">
+    <span class="font-semibold text-pos_bla text-base">{{ .CustName }}</span>
+    <span class="scolor text-sm font-bold underline" onclick="openOrderModal('{{ .Name | urlquery }}')">{{
+      .Name
+      }}</span>
+  </div>
+
+  <!-- Order summary -->
+  <div class="w-full flex items-center justify-between mb-2">
+    <span class="text-pos_lgh text-base font-semibold">Order ({{ .Items }})</span>
+    <span class="text-pos_lgh font-semibold text-base flex items-center justify-normal gap-3.5">
+      {{if eq .Type "DineIn"}}
+      {{if .Destination}}
+      <div class="flex items-center gap-1.5 text-pos_lgh text-xs">
+        <i class="hgi hgi-stroke hgi-dining-table text-2xl leading-none"></i>
+        <span>{{ .Destination }}</span>
+      </div>
+      {{end}}
+      {{else if eq .Type "Takeaway"}}
+      <div class="flex items-center gap-1.5 text-pos_lgh text-xs">
+        <i class="hgi hgi-stroke hgi-packaging text-2xl leading-none"></i>
+        <span>Takeaway</span>
+      </div>
+      {{else}}
+      {{if .Destination}}
+      <div class="flex items-center gap-1.5 text-pos_lgh text-xs">
+        <i class="hgi hgi-stroke hgi-delivery-truck-01 text-2xl leading-none"></i>
+        <span>{{ .Destination }}</span>
+      </div>
+      {{end}}
+      {{end}}
+    </span>
   </div>
 </div>
 {{ end }}
 
 {{ define "order_card" }}
-<div
-  class="order-card w-64 flex flex-col items-center justify-between p-3.5 rounded-2xl border border-pos_lgh/15 shadow-sm bg-pos_whi">
-  <!-- Header -->
-  <div class="w-full flex items-start justify-between">
-    <span class="font-semibold text-pos_bla text-[15px]">{{ .CustName }}</span>
-    <span class="text-pos_lgh text-sm font-medium">{{ .Name }}</span>
+<div data-status="{{ .Status }}" data-search="{{ .Name }} {{ .CustName }} {{ .CustNumber }}"
+  data-datetime="{{ .DateTime.Format " 2006-01-02T15:04:05Z07:00" }}"
+  class="order-card w-full flex flex-col items-center justify-between gap-2.5 p-3.5 rounded-2xl border border-pos_lgh/15 shadow-sm bg-pos_whi">
+  <div class="w-full flex flex-col items-start justify-normal gap-3">
+    <!-- Header -->
+    <div class="w-full flex flex-col items-start justify-normal gap-3">
+      <div class="w-full flex items-start justify-between">
+        <span class="font-semibold text-pos_bla text-base">{{ .CustName }}</span>
+        <span class="text-pos_cld scolor text-sm font-bold underline"
+          onclick="openOrderModal('{{ .Name | urlquery }}')">{{
+          .Name
+          }}</span>
+      </div>
+
+      <div class="w-full flex flex-col items-start justify-between">
+        <div class="flex items-center gap-1.5 text-pos_lgh text-sm">
+          <i class="hgi hgi-stroke hgi-contact-02 text-base leading-none"></i>
+          <span>{{ .CustNumber }}</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-pos_lgh text-sm">
+          <i class="hgi hgi-stroke hgi-clock-01 text-base leading-none"></i>
+          <span>{{ .FormattedDateTime }}</span>
+        </div>
+        {{if eq .Type "DineIn"}}
+        {{if .Destination}}
+        <div class="flex items-center gap-1.5 text-pos_lgh text-sm">
+          <i class=" hgi hgi-stroke hgi-dining-table text-base leading-none"></i>
+          <span>{{ .Destination }}</span>
+        </div>
+        {{end}}
+        {{else if eq .Type "Takeaway"}}
+        <div class="flex items-center gap-1.5 text-pos_lgh text-sm">
+          <i class="hgi hgi-stroke hgi-packaging text-base leading-none"></i>
+          <span>Takeaway</span>
+        </div>
+        {{else}}
+        {{if .Destination}}
+        <div class="flex items-center gap-1.5 text-pos_lgh text-sm">
+          <i class="hgi hgi-stroke hgi-delivery-truck-01 text-base leading-none"></i>
+          <span>{{ .Destination }}</span>
+        </div>
+        {{end}}
+        {{end}}
+        <span class="border-b border-dashed border-pos_lgh/45 mt-5"></span>
+      </div>
+    </div>
+
+    <!-- Order summary -->
+    <div class="w-full flex flex-col items-start justify-normal gap-3">
+      <div class="w-full flex items-center justify-between mb-2">
+        <span class="text-pos_lgh text-lg font-semibold">Order ({{ .Items }})</span>
+        <span class="text-pos_bla font-semibold text-lg">Ugx {{ .Cost }}</span>
+      </div>
+
+      <!-- Items list: first 2 shown, rest revealed via "See more" -->
+      <div class="w-full flex flex-col items-stretch justify-normal gap-0.5">
+        {{ range $i, $item := .OrderCart }}
+        <div class="flex items-center justify-between text-sm {{ if ge $i 2 }}extra-item hidden{{ end }}">
+          <span class="text-pos_lgh">{{ $item.Quantity }}x {{ $item.PdtName }}</span>
+          <span class="text-pos_lgh">{{ $item.UnitPrice }}</span>
+        </div>
+        {{ end }}
+      </div>
+
+      {{ if gt (len .OrderCart) 2 }}
+      <button type="button" onclick="openOrderModal('{{ .Name | urlquery }}')"
+        class="see-more-btn text-pos_col text-base font-medium mt-1 flex items-center justify-center gap-1 w-full py-1 hover:opacity-80">
+        <span>See more</span>
+        <i class="hgi hgi-stroke hgi-arrow-right-01 text-base leading-none"></i>
+      </button>
+      {{ end }}
+    </div>
   </div>
-
-  <div class="w-full flex flex-col items-start justify-between">
-    <div class="flex items-center gap-1.5 text-pos_lgh text-xs">
-      <i class="hgi hgi-stroke hgi-clock-01 text-sm leading-none"></i>
-      <span>{{ .FormattedDateTime }}</span>
-    </div>
-    {{if eq .Type "DineIn"}}
-    {{if .Destination}}
-    <div class="flex items-center gap-1.5 text-pos_lgh text-xs">
-      <i class="hgi hgi-stroke hgi-dining-table text-sm leading-none"></i>
-      <span>{{ .Destination }}</span>
-    </div>
-    {{end}}
-    {{else if eq .Type "Takeaway"}}
-    <div class="flex items-center gap-1.5 text-pos_lgh text-xs">
-      <i class="hgi hgi-stroke hgi-packaging text-sm leading-none"></i>
-      <span>Takeaway</span>
-    </div>
-    {{else}}
-    {{if .Destination}}
-    <div class="flex items-center gap-1.5 text-pos_lgh text-xs">
-      <i class="hgi hgi-stroke hgi-delivery-truck-01 text-sm leading-none"></i>
-      <span>{{ .Destination }}</span>
-    </div>
-    {{end}}
-    {{end}}
-  </div>
-
-  <!-- Divider -->
-  <div class="w-full border-t border-dashed border-pos_lgh/25 my-3"></div>
-
-  <!-- Order summary -->
-  <div class="w-full flex items-center justify-between mb-2">
-    <span class="text-pos_lgh text-sm">Order ({{ .Items }})</span>
-    <span class="text-pos_bla font-semibold text-sm">Ugx {{ .Cost }}</span>
-  </div>
-
-  <!-- Items list: first 2 shown, rest revealed via "See more" -->
-  <div class="w-full flex flex-col items-stretch justify-normal gap-0.5">
-    {{ range $i, $item := .OrderCart }}
-    <div class="flex items-center justify-between text-xs {{ if ge $i 2 }}extra-item hidden{{ end }}">
-      <span class="text-pos_lgh">{{ $item.Quantity }}x {{ $item.PdtName }}</span>
-      <span class="text-pos_lgh">{{ $item.UnitPrice }}</span>
-    </div>
-    {{ end }}
-  </div>
-
-  {{ if gt (len .OrderCart) 2 }}
-  <button type="button" onclick="openOrderModal('{{ .Name | urlquery }}')"
-    class="see-more-btn text-pos_col text-xs font-medium mt-1 flex items-center justify-center gap-1 w-full py-1 hover:opacity-80">
-    <span>See more</span>
-    <i class="hgi hgi-stroke hgi-arrow-right-01 text-xs leading-none"></i>
-  </button>
-  {{ end }}
 
   <!-- Status -->
   <div class="w-full mt-3">
     {{if eq .Status "Placed"}}
     <button type="button"
-      class="w-full flex items-center justify-center gap-1.5 text-xs font-medium rounded-full py-2 bg-pos_plc/10 text-pos_plc">
-      <i class="hgi hgi-stroke hgi-sparkles text-sm leading-none"></i>
+      class="w-full flex items-center justify-center gap-1.5 text-sm font-medium rounded-full py-2 bg-pos_plc/10 text-pos_plc">
+      <span class="status hidden">{{ .Status }}</span>
+      <i class="hgi hgi-stroke hgi-sparkles text-lg leading-none"></i>
       <span>New Order</span>
     </button>
     {{else if eq .Status "Preparing"}}
     <button type="button"
-      class="w-full flex items-center justify-center gap-1.5 text-xs font-medium rounded-full py-2 bg-pos_pdg/10 text-pos_pdg">
-      <i class="hgi hgi-stroke hgi-pan-03 text-sm leading-none"></i>
+      class="w-full flex items-center justify-center gap-1.5 text-sm font-medium rounded-full py-2 bg-pos_pdg/10 text-pos_pdg">
+      <span class="status hidden">{{ .Status }}</span>
+      <i class="hgi hgi-stroke hgi-pan-03 text-lg leading-none"></i>
       <span>Cooking</span>
     </button>
     {{else if eq .Status "Ready"}}
     <button type="button"
-      class="w-full flex items-center justify-center gap-1.5 text-xs font-medium rounded-full py-2 bg-pos_rdy/10 text-pos_rdy">
-      <i class="hgi hgi-stroke hgi-serving-food text-sm leading-none"></i>
+      class="w-full flex items-center justify-center gap-1.5 text-sm font-medium rounded-full py-2 bg-pos_rdy/10 text-pos_rdy">
+      <span class="status hidden">{{ .Status }}</span>
+      <i class="hgi hgi-stroke hgi-serving-food text-lg leading-none"></i>
       <span>Ready to serve</span>
     </button>
     {{else if eq .Status "Canceled"}}
     <button type="button"
-      class="w-full flex items-center justify-center gap-1.5 text-xs font-medium rounded-full py-2 bg-pos_cld/10 text-pos_cld">
-      <i class="hgi hgi-stroke hgi-cancel-circle text-sm leading-none"></i>
-      <span>Cancelled</span>
+      class="w-full flex items-center justify-center gap-1.5 text-sm font-medium rounded-full py-2 bg-pos_cld/10 text-pos_cld">
+      <i class="hgi hgi-stroke hgi-cancel-circle text-lg leading-none"></i>
+      <span class="status">Cancelled</span>
     </button>
     {{else if eq .Status "Waiting" "PickUp" "Transit"}}
     <button type="button"
-      class="w-full flex items-center justify-center gap-1.5 text-xs font-medium rounded-full py-2 bg-pos_trs/10 text-pos_trs">
-      <i class="hgi hgi-stroke hgi-package-process-01 text-sm leading-none"></i>
+      class="w-full flex items-center justify-center gap-1.5 text-sm font-medium rounded-full py-2 bg-pos_trs/10 text-pos_trs">
+      <span class="status hidden">{{ .Status }}</span>
+      <i class="hgi hgi-stroke hgi-package-process-01 text-lg leading-none"></i>
       <span class="status">Processing</span>
     </button>
     {{else}}
     <button type="button"
-      class="w-full flex items-center justify-center gap-1.5 text-xs font-medium rounded-full py-2 bg-pos_dlv/10 text-pos_dlv">
-      <i class="hgi hgi-stroke hgi-checkmark-square-04 text-sm leading-none"></i>
+      class="w-full flex items-center justify-center gap-1.5 text-sm font-medium rounded-full py-2 bg-pos_dlv/10 text-pos_dlv">
+      <span class="status hidden">{{ .Status }}</span>
+      <i class="hgi hgi-stroke hgi-checkmark-square-04 text-lg leading-none"></i>
       <span class="status">{{ .Status }}</span>
     </button>
     {{end}}

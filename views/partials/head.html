@@ -1,112 +1,43 @@
 {{ define "head" }}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="viewport" content="width=1367">
-  <title>Point Of Sale</title>
+<div class="relative w-screen h-full flex items-start justify-between gap-0 overflow-clip bg-pos_whi">
 
-  {{ template "font" . }}
+  <!-- ============ Sidebar ============ -->
+  {{ template "navbar" . }}
+  {{ template "topbar" . }}
 
-  <!-- icons -->
-  <link href="/assets/hugeicons.css" rel="stylesheet">
-  <link href="/assets/card.png" rel="shortcut icon" type="image/x-icon" />
+  <script>
+    (function () {
+      const el = document.getElementById('today-date');
+      if (el) {
+        el.textContent = new Date().toLocaleDateString(undefined, {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+      }
 
-  <link href="/css/output.min.css" rel="stylesheet">
+      // Highlight the sidebar nav link matching the current path. Exact
+      // match first; falls back to the longest href that's a prefix of
+      // the current path (so e.g. /pos/order/ORD001 still highlights
+      // "Order" -> /pos/orders is not a prefix of that, so this only
+      // kicks in for genuine sub-routes of a nav target).
+      const path = window.location.pathname;
+      const links = Array.from(document.querySelectorAll('[data-nav-link]'));
+      let best = links.find(a => a.getAttribute('href') === path);
+      if (!best) {
+        best = links
+          .filter(a => path.startsWith(a.getAttribute('href')) && a.getAttribute('href') !== '/pos')
+          .sort((a, b) => b.getAttribute('href').length - a.getAttribute('href').length)[0];
+      }
+      if (best) {
+        best.classList.add('bg-pos_col', 'text-pos_whi');
+        best.classList.remove('text-pos_bla/60', 'hover:bg-pos_col/10');
+      }
+    })();
+  </script>
+  {{ end }}
 
-  <script src="/js/alpine.min.js" defer></script>
-  <script src="/js/htmx.min.js" defer></script>
-  <script src="/js/main.js" defer></script>
-</head>
-
-<body class="bg-pos_bla w-screen aspect-[16/10] flex items-start justify-center">
-  <div class="relative w-screen h-full flex items-start justify-between gap-0 overflow-clip bg-pos_whi">
-    <header class="w-[15%] h-full flex flex-col items-start justify-start p-5 border-r border-r-pos_cld/25 bg-pos_col">
-      <div class="w-full h-full grid grid-rows-[125px_1fr] gap-7">
-        <div class="w-fit flex flex-col items-start justify-start gap-0">
-          {{ if .Business }}
-          <h3 class="text-xl text-pos_whi font-bold leading-none">{{ .Business.RestaurantName }}</h3>
-          <p class="text-pos_whi font-medium">{{ .Business.Location }}</p>
-          {{ else }}
-          <h3 class="text-xl text-pos_whi font-bold leading-none">Point Of Sale</h3>
-          {{ end }}
-        </div>
-
-        <nav class="w-full h-full flex flex-col items-start justify-between gap-9">
-          <div class="w-full flex flex-col items-start justify-start gap-3.5">
-            <h3 class="text-xl text-pos_whi font-black">Main Menu</h3>
-            <div class="w-full flex flex-col items-start justify-start gap-2 pl-1">
-              <a href="/pos" class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-dashboard-square-03 text-2xl"></i>
-                <span>Dashboard</span>
-              </a>
-              <a href="/pos/orders"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-menu-restaurant text-2xl"></i>
-                <span>Orders</span>
-              </a>
-              <a href="/pos/products"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-noodles text-2xl"></i>
-                <span>Products</span>
-              </a>
-              <a href="/pos/tables"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-dining-table text-2xl"></i>
-                <span>Tables</span>
-              </a>
-              <a href="/pos/analytics"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-analytics-02 text-2xl"></i>
-                <span>Analytics</span>
-              </a>
-              <a href="/pos/reservations"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-calendar-03 text-2xl"></i>
-                <span>Reservations</span>
-              </a>
-              {{ if .IsAdmin }}
-              <a href="/pos/admin"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-store-management-02 text-2xl"></i>
-                <span>Manage</span>
-              </a>
-              {{ end }}
-            </div>
-          </div>
-
-          <div class="w-full flex flex-col items-start justify-start gap-3.5">
-            <div class="w-full flex flex-col items-start justify-end gap-0.5">
-              {{ if .ActorName }}
-              <p class="w-full text-sm text-pos_whi font-medium">Logged in as {{ .ActorName }}</p>
-              {{ end }}
-              <a href="/pos/logout"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-logout-square-01 text-2xl"></i>
-                <span>Logout</span>
-              </a>
-            </div>
-          </div>
-        </nav>
-      </div>
-    </header>
-
-    <menu
-      class="absolute w-[60%] h-[4.5rem] px-7 py-3.5 flex items-center justify-between top-0 right-[25%] border-b-2 border-b-pos_lgh/25 bg-pos_whi">
-      <h1 class="w-full flex flex-col items-start justify-center gap-0 text-2xl font-bold mono">
-        {{if .CanAcceptDineIn}}
-        <span class="text-pos_dlv">We are accepting DineIn orders.</span>
-        {{else}}
-        <span class="text-pos_rdy">Restaurant is Full. DineIn is currently disabled.</span>
-        {{end}}
-      </h1>
-    </menu>
-    {{ end }}
-
-    {{ define "foot" }}
-  </div>
+  {{ define "foot" }}
+</div>
 </body>
 
 </html>
