@@ -17,7 +17,7 @@
     <button type="button" @click="orderType = 'Takeaway'"
       :class="orderType === 'Takeaway' ? 'bg-pos_col text-pos_whi' : 'text-pos_bla/60'"
       class="flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-bold transition-all">
-      <i class="hgi hgi-stroke hgi-shopping-bag-01 text-base"></i> Take Away
+      <i class="hgi hgi-stroke hgi-packaging text-base"></i> Take Away
     </button>
     <button type="button" @click="orderType = 'Delivery'"
       :class="orderType === 'Delivery' ? 'bg-pos_col text-pos_whi' : 'text-pos_bla/60'"
@@ -35,36 +35,46 @@
   <!-- Customer name + table/destination -->
   <div class="w-full grid grid-cols-2 gap-2.5">
     <div class="w-full flex flex-col items-start justify-start gap-1">
-      <label for="customer_name" class="text-xs text-pos_lgh font-bold">Customer Name</label>
+      <label for="customer_name" class="text-xs text-pos_pdg font-bold">Customer Name</label>
       <input type="text" id="customer_name" name="customer_name"
-        class="w-full border border-pos_lgh/25 rounded-lg px-3 py-2 text-sm placeholder:opacity-45" required>
+        class="w-full border border-pos_pdg/25 rounded-lg px-3 py-2 text-sm placeholder:opacity-45" required>
     </div>
 
     <div class="w-full flex flex-col items-start justify-start gap-1">
-      <label for="order_dest" class="text-xs text-pos_lgh font-bold">
-        <span x-text="orderType === 'DineIn' ? 'Table Number' : orderType === 'Delivery' ? 'Delivery Address' : 'Pickup Note'"></span>
+      <label for="order_dest" class="text-xs text-pos_pdg font-bold">
+        <span
+          x-text="orderType === 'DineIn' ? 'Table Number' : orderType === 'Delivery' ? 'Delivery Address' : 'Pickup Note'"></span>
       </label>
       <input type="text" id="order_dest" name="order_dest"
-        class="w-full border border-pos_lgh/25 rounded-lg px-3 py-2 text-sm placeholder:opacity-45"
+        class="w-full border border-pos_pdg/25 rounded-lg px-3 py-2 text-sm placeholder:opacity-45"
         :disabled="orderType === 'Takeaway'" :required="orderType === 'Delivery' || orderType === 'DineIn'"
         :placeholder="orderType === 'DineIn' ? 'e.g. 10' : orderType === 'Delivery' ? 'Enter delivery address' : 'Not required'">
     </div>
   </div>
 
+  <!-- Party size — DineIn only, drives how many seats show occupied on
+       Manage Tables and how many empty seats are left on that table. -->
+  <div class="w-full flex flex-col items-start justify-start gap-1" x-show="orderType === 'DineIn'">
+    <label for="num_people" class="text-xs text-pos_pdg font-bold">Number of Guests</label>
+    <input type="number" id="num_people" name="num_people" min="1" value="1" x-model="numPeople"
+      class="w-full border border-pos_pdg/25 rounded-lg px-3 py-2 text-sm placeholder:opacity-45"
+      :required="orderType === 'DineIn'">
+  </div>
+
   <div class="w-full flex flex-col items-start justify-start gap-1">
-    <label for="customer_number" class="text-xs text-pos_lgh font-bold">Customer Number</label>
+    <label for="customer_number" class="text-xs text-pos_pdg font-bold">Customer Number</label>
     <input type="tel" id="customer_number" name="customer_number"
-      class="w-full border border-pos_lgh/25 rounded-lg px-3 py-2 text-sm placeholder:opacity-45" required>
+      class="w-full border border-pos_pdg/25 rounded-lg px-3 py-2 text-sm placeholder:opacity-45" required>
   </div>
 
   <input type="hidden" name="order_status" value="Placed">
   <input type="hidden" name="items" :value="JSON.stringify(items)">
 
-  <div class="w-full border-t border-dashed border-pos_lgh/25"></div>
+  <div class="w-full border-t border-dashed border-pos_pdg/25"></div>
 
   <!-- Item list: images, name, price, qty steppers -->
   <div class="w-full flex flex-col items-start justify-start gap-1.5">
-    <p class="text-sm text-pos_bla font-bold">Order Items&nbsp;<span class="text-pos_lgh font-normal"
+    <p class="text-base text-pos_bla font-bold">Order Items&nbsp;<span class="text-pos_pdg font-normal"
         x-text="'(' + items.length + ')'"></span></p>
 
     <div class="w-full max-h-[220px] flex flex-col gap-2.5 overflow-y-auto">
@@ -74,40 +84,40 @@
             class="size-10 rounded-lg object-cover object-center bg-pos_bla/5 shrink-0">
           <div class="flex-1 flex flex-col items-start justify-center gap-0 min-w-0">
             <span class="text-sm text-pos_bla font-medium truncate w-full" x-text="item.name"></span>
-            <span class="text-xs scolor font-bold" x-text="'Ugx ' + item.unitPrice"></span>
+            <span class="text-sm scolor font-bold" x-text="'Ugx ' + item.unitPrice"></span>
           </div>
           <div class="flex items-center gap-1.5 shrink-0">
             <button type="button" @click="decrease(item.name)"
               class="size-6 flex items-center justify-center rounded-md text-pos_whi bg-pos_col">
-              <i class="hgi hgi-stroke hgi-rounded hgi-minus-sign text-xs"></i>
+              <i class="hgi hgi-stroke hgi-rounded hgi-minus-sign text-base"></i>
             </button>
             <span class="w-4 text-center text-sm font-bold" x-text="item.quantity"></span>
             <button type="button" @click="increase(item.name, item.unitPrice)"
               class="size-6 flex items-center justify-center rounded-md text-pos_whi bg-pos_col">
-              <i class="hgi hgi-stroke hgi-rounded hgi-plus-sign text-xs"></i>
+              <i class="hgi hgi-stroke hgi-rounded hgi-plus-sign text-base"></i>
             </button>
           </div>
         </div>
       </template>
-      <div x-show="items.length === 0" class="w-full text-center text-pos_lgh text-sm italic py-3">
+      <div x-show="items.length === 0" class="w-full text-center text-pos_pdg text-base italic py-3">
         No items selected yet
       </div>
     </div>
   </div>
 
-  <div class="w-full border-t border-dashed border-pos_lgh/25"></div>
+  <div class="w-full border-t border-dashed border-pos_pdg/25"></div>
 
   <!-- Payment summary (live preview, computed client-side) -->
-  <div class="w-full flex flex-col items-stretch justify-start gap-1 text-sm">
-    <div class="w-full flex items-center justify-between text-pos_lgh">
+  <div class="w-full flex flex-col items-stretch justify-start gap-1 text-base">
+    <div class="w-full flex items-center justify-between text-pos_pdg">
       <span>Subtotal</span>
       <span x-text="'Ugx ' + subtotal()"></span>
     </div>
-    <div class="w-full flex items-center justify-between text-pos_lgh">
-      <span>Tax (10%)</span>
+    <div class="w-full flex items-center justify-between text-pos_pdg">
+      <span>Tax (0%)</span>
       <span x-text="'Ugx ' + tax()"></span>
     </div>
-    <div class="w-full flex items-center justify-between text-pos_bla font-bold text-base pt-1">
+    <div class="w-full flex items-center justify-between text-pos_bla font-bold text-lg pt-1">
       <span>Total</span>
       <span x-text="'Ugx ' + grandTotal()"></span>
     </div>
@@ -117,17 +127,17 @@
        payment processing, this app doesn't process payments. -->
   <div class="w-full grid grid-cols-3 gap-1.5">
     <button type="button" @click="paymentMethod = 'card'"
-      :class="paymentMethod === 'card' ? 'border-pos_col bg-pos_col/10 text-pos_col' : 'border-pos_lgh/25 text-pos_lgh'"
+      :class="paymentMethod === 'card' ? 'border-pos_col bg-pos_col/10 text-pos_col' : 'border-pos_pdg/25 text-pos_pdg'"
       class="flex flex-col items-center justify-center gap-1 py-2 rounded-lg border text-xs font-bold transition-all">
       <i class="hgi hgi-stroke hgi-credit-card text-base"></i> Card
     </button>
     <button type="button" @click="paymentMethod = 'cash'"
-      :class="paymentMethod === 'cash' ? 'border-pos_col bg-pos_col/10 text-pos_col' : 'border-pos_lgh/25 text-pos_lgh'"
+      :class="paymentMethod === 'cash' ? 'border-pos_col bg-pos_col/10 text-pos_col' : 'border-pos_pdg/25 text-pos_pdg'"
       class="flex flex-col items-center justify-center gap-1 py-2 rounded-lg border text-xs font-bold transition-all">
       <i class="hgi hgi-stroke hgi-money-03 text-base"></i> Cash
     </button>
     <button type="button" @click="paymentMethod = 'qr'"
-      :class="paymentMethod === 'qr' ? 'border-pos_col bg-pos_col/10 text-pos_col' : 'border-pos_lgh/25 text-pos_lgh'"
+      :class="paymentMethod === 'qr' ? 'border-pos_col bg-pos_col/10 text-pos_col' : 'border-pos_pdg/25 text-pos_pdg'"
       class="flex flex-col items-center justify-center gap-1 py-2 rounded-lg border text-xs font-bold transition-all">
       <i class="hgi hgi-stroke hgi-qr-code text-base"></i> QR
     </button>
@@ -157,7 +167,7 @@
 {{ define "receipt" }}
 <div class="relative w-full h-full flex flex-col items-stretch justify-start gap-2.5 bg-pos_whi">
   <div id="receipt_card"
-    class="w-full max-h-[85%] flex flex-col items-start justify-start gap-1.5 p-3 border-2 border-pos_lgh/15 mono">
+    class="w-full max-h-[85%] flex flex-col items-start justify-start gap-1.5 p-3 border-2 border-pos_pdg/15 mono">
     {{ template "receipt_card" .}}
   </div>
 
@@ -195,7 +205,7 @@
         &larr; {{ $prev }}</button>
       {{ else }}
       <button disabled
-        class="flex-1 flex items-center justify-center py-2.5 text-pos_lgh font-bold border-2 border-pos_lgh/25 rounded-xl bg-pos_whi cursor-not-allowed">
+        class="flex-1 flex items-center justify-center py-2.5 text-pos_pdg font-bold border-2 border-pos_pdg/25 rounded-xl bg-pos_whi cursor-not-allowed">
         &larr; Previous</button>
       {{ end }}
 
@@ -205,7 +215,7 @@
         {{ $next }} &rarr;</button>
       {{ else }}
       <button disabled
-        class="flex-1 flex items-center justify-center py-2.5 text-pos_lgh font-bold border-2 border-pos_lgh/25 rounded-xl bg-pos_whi cursor-not-allowed">
+        class="flex-1 flex items-center justify-center py-2.5 text-pos_pdg font-bold border-2 border-pos_pdg/25 rounded-xl bg-pos_whi cursor-not-allowed">
         Next &rarr;</button>
       {{ end }}
     </div>

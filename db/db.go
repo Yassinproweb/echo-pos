@@ -75,6 +75,14 @@ func migrateSchema() {
 		}
 	}
 
+	// orders.num_people — party size for DineIn orders, used to compute
+	// how many seats on the assigned table are actually occupied.
+	if !columnExists("orders", "num_people") {
+		if _, err := DB.Exec(`ALTER TABLE orders ADD COLUMN num_people INTEGER NOT NULL DEFAULT 1`); err != nil {
+			log.Println("migration error (orders.num_people):", err)
+		}
+	}
+
 	// tables — add the 'Reserved' state + reserved_for column for the
 	// reservations feature. SQLite can't ALTER a CHECK constraint, so the
 	// table has to be rebuilt if it predates this feature.
@@ -185,6 +193,8 @@ func createTables() {
 		destination TEXT,
 
 		cashier_name TEXT,
+
+		num_people INTEGER NOT NULL DEFAULT 1,
 
 		date_time DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
@@ -498,10 +508,13 @@ func createTables() {
 		)
 		WHERE id = NEW.id;
 
+		-- Booked but the guest hasn't been marked served yet: hold the table
+		-- as Reserved (not Occupied) so walking past it in Manage Tables
+		-- shows it's spoken for, until the order actually reaches 'Served'.
 		UPDATE tables
 		SET
 			current_order_name = NEW.name,
-			state = 'Occupied'
+			state = 'Reserved'
 		WHERE name = (
 			SELECT destination
 			FROM orders
@@ -528,6 +541,10 @@ func createTables() {
 				ELSE NEW.name
 			END,
 
+			-- Reserved for the whole pre-served lifecycle (Placed,
+			-- Preparing, Ready) — the guest's table is held for them.
+			-- Served -> Pending (needs clearing/cleaning).
+			-- Canceled -> back to Available immediately.
 			state = CASE
 				WHEN NEW.status = 'Canceled'
 				THEN 'Available'
@@ -535,7 +552,7 @@ func createTables() {
 				WHEN NEW.status = 'Served'
 				THEN 'Pending'
 
-				ELSE 'Occupied'
+				ELSE 'Reserved'
 			END
 
 		WHERE name = NEW.destination;

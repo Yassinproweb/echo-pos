@@ -198,12 +198,15 @@ func RenderAnalytics(c *echo.Context) error {
 	tables := models.FetchTables()
 	totalTables := len(tables)
 	availTables := 0
+	reservedTables := 0
 	occupTables := 0
 	pendTables := 0
 	for _, t := range tables {
 		switch t.State {
 		case models.Available:
 			availTables++
+		case models.Reserved:
+			reservedTables++
 		case models.Occupied:
 			occupTables++
 		case models.Pending:
@@ -267,6 +270,7 @@ func RenderAnalytics(c *echo.Context) error {
 		// Tables
 		"TotalTables":     totalTables,
 		"AvailableTables": availTables,
+		"ReservedTables":  reservedTables,
 		"OccupiedTables":  occupTables,
 		"PendingTables":   pendTables,
 		"TotalProducts":   totalProducts,

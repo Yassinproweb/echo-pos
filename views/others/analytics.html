@@ -24,7 +24,7 @@
   <div class="relative w-screen aspect-[16/10] bg-pos_whi overflow-y-scroll">
     {{ template "navbar" . }}
 
-    <div class="relative w-[90%] right-0 flex flex-col items-start justify-start bg-[#f5f6fa]">
+    <div class="relative w-[93%] right-0 flex flex-col items-start justify-start bg-[#f5f6fa]">
       {{ template "topbar" . }}
 
       <div class="relative w-full right-0 flex flex-col items-start justify-start py-5 overflow-y-auto">
@@ -136,18 +136,22 @@
                   <span class="text-4xl font-black text-pos_bla">{{ .TotalTables }}</span>
                 </div>
 
-                <div class="flex items-center justify-start gap-5">
-                  <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_pdg/5">
-                    <span class="text-xs text-pos_pdg uppercase tracking-wide font-medium">Available</span>
-                    <span class="text-xl font-black text-pos_pdg">{{ .AvailableTables }}</span>
+                <div class="flex items-center justify-start gap-3">
+                  <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_trs/5">
+                    <span class="text-xs text-pos_trs uppercase tracking-wide font-medium">Available</span>
+                    <span class="text-xl font-black text-pos_trs">{{ .AvailableTables }}</span>
                   </div>
                   <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_dlv/5">
-                    <span class="text-xs text-pos_dlv uppercase tracking-wide font-medium">Occupied</span>
-                    <span class="text-xl font-black text-pos_dlv">{{ .OccupiedTables }}</span>
+                    <span class="text-xs text-pos_dlv uppercase tracking-wide font-medium">Reserved</span>
+                    <span class="text-xl font-black text-pos_dlv">{{ .ReservedTables }}</span>
                   </div>
                   <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_cld/5">
-                    <span class="text-xs text-pos_cld uppercase tracking-wide font-medium">Pending</span>
-                    <span class="text-xl font-black text-pos_cld">{{ .PendingTables }}</span>
+                    <span class="text-xs text-pos_cld uppercase tracking-wide font-medium">On Dine</span>
+                    <span class="text-xl font-black text-pos_cld">{{ .OccupiedTables }}</span>
+                  </div>
+                  <div class="flex flex-col gap-0.5 p-1.5 rounded-xl bg-pos_rdy/5">
+                    <span class="text-xs text-pos_rdy uppercase tracking-wide font-medium">Cleaning</span>
+                    <span class="text-xl font-black text-pos_rdy">{{ .PendingTables }}</span>
                   </div>
                 </div>
               </div>
@@ -376,4 +380,6 @@
     setActivePeriod('weekly');
   </script>
 
-  {{ template "foot" . }}
+</body>
+
+</html>

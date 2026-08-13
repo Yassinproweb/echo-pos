@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/Yassinproweb/echo-pos/auth"
 	"github.com/Yassinproweb/echo-pos/db"
@@ -186,6 +187,7 @@ type CreateOrderRequest struct {
 	OrderDest      string `form:"order_dest"`
 	OrderStatus    string `form:"order_status"`
 	Items          string `form:"items"` // JSON string
+	NumPeople      string `form:"num_people"` // DineIn party size; blank/0 defaults to 1
 }
 
 func CreateOrder(c *echo.Context) error {
@@ -204,12 +206,18 @@ func CreateOrder(c *echo.Context) error {
 
 	cashierName := auth.ActorName(c)
 
+	numPeople, err := strconv.Atoi(req.NumPeople)
+	if err != nil || numPeople < 1 {
+		numPeople = 1
+	}
+
 	order := models.Order{
 		Type:        models.Type(req.OrderType),
 		Status:      models.Status(req.OrderStatus),
 		CustName:    req.CustomerName,
 		CustNumber:  req.CustomerNumber,
 		Destination: req.OrderDest,
+		NumPeople:   numPeople,
 		OrderCart:   cartItems,
 	}
 
@@ -231,9 +239,9 @@ func CreateOrder(c *echo.Context) error {
 
 	// Insert order
 	result, err := tx.Exec(`
-		INSERT INTO orders (type, status, cust_name, cust_number, destination, cashier_name)
-		VALUES (?, ?, ?, ?, ?, ?)
-	`, order.Type, order.Status, order.CustName, order.CustNumber, order.Destination, cashierName)
+		INSERT INTO orders (type, status, cust_name, cust_number, destination, cashier_name, num_people)
+		VALUES (?, ?, ?, ?, ?, ?, ?)
+	`, order.Type, order.Status, order.CustName, order.CustNumber, order.Destination, cashierName, order.NumPeople)
 
 	if err != nil {
 		fmt.Println("Order insert error:")

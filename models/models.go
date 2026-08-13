@@ -50,6 +50,7 @@ type Order struct {
 	CustNumber  string
 	Destination string
 	CashierName sql.NullString
+	NumPeople   int
 	DateTime    time.Time
 	OrderCart   []OrderItem
 
@@ -121,6 +122,7 @@ const (
 	Available State = "Available"
 	Occupied  State = "Occupied"
 	Pending   State = "Pending"
+	Reserved  State = "Reserved"
 )
 
 type Table struct {
@@ -129,6 +131,84 @@ type Table struct {
 	State            State
 	CurrentOrderName sql.NullString
 	ReservedFor      sql.NullString
+
+	// OccupiedSeats is not stored on the tables row itself — it's filled in
+	// by FetchTables from the seated DineIn order's num_people, so templates
+	// can show "2 of 6 seats free" instead of just a binary state.
+	OccupiedSeats int
+}
+
+// EmptySeats is Capacity minus however many guests are currently seated
+// (0 when the table isn't Occupied/Reserved, or the order has no party size).
+func (t Table) EmptySeats() int {
+	empty := t.Capacity - t.OccupiedSeats
+	if empty < 0 {
+		return 0
+	}
+	return empty
+}
+
+// SeatIcons returns one bool per seat on this table (true = currently
+// occupied, false = empty), used to render filled vs. empty chair icons
+// around the table card border.
+func (t Table) SeatIcons() []bool {
+	filled := t.OccupiedSeats
+	if filled > t.Capacity {
+		filled = t.Capacity
+	}
+	if filled < 0 {
+		filled = 0
+	}
+
+	seats := make([]bool, t.Capacity)
+	for i := 0; i < filled; i++ {
+		seats[i] = true
+	}
+	return seats
+}
+
+// StateLabel returns the human-facing label for a table's state, matching
+// the "Available / Reserved / On Dine / Cleaning" vocabulary used in the UI.
+func (t Table) StateLabel() string {
+	switch t.State {
+	case Available:
+		return "Available"
+	case Reserved:
+		return "Reserved"
+	case Occupied:
+		return "On Dine"
+	case Pending:
+		return "Cleaning"
+	default:
+		return string(t.State)
+	}
+}
+
+// BookingLabel describes who/what the table is currently held for, whether
+// that's a live DineIn order or a future event reservation.
+func (t Table) BookingLabel() string {
+	if t.CurrentOrderName.Valid && t.CurrentOrderName.String != "" {
+		return "Order " + t.CurrentOrderName.String
+	}
+	if t.ReservedFor.Valid && t.ReservedFor.String != "" {
+		return t.ReservedFor.String
+	}
+	return ""
+}
+
+// TopSeats / BottomSeats split SeatIcons roughly in half so the table card
+// can draw a row of chairs along the top edge and another along the bottom
+// edge, mirroring how a real table is laid out.
+func (t Table) TopSeats() []bool {
+	seats := t.SeatIcons()
+	half := (len(seats) + 1) / 2
+	return seats[:half]
+}
+
+func (t Table) BottomSeats() []bool {
+	seats := t.SeatIcons()
+	half := (len(seats) + 1) / 2
+	return seats[half:]
 }
 
 // =======================
@@ -146,13 +226,19 @@ func (t Table) PreviousManualState() State { return "" }
 //   - Available has no manual buttons — nothing should post from that state.
 //   - Occupied -> Pending (cashier marks table needs cleaning, drops order).
 //   - Pending  -> Available (table is clean and ready again).
-//   - Occupied is never a valid manual target (set automatically by system).
+//   - Occupied and Reserved are never valid manual targets — Reserved is set
+//     automatically the moment a DineIn order is placed (and cleared/advanced
+//     automatically as that order's status changes), and Occupied is legacy/
+//     system-only.
 func ValidateManualTableStateChange(current, target State) error {
-	if target == Occupied {
-		return fmt.Errorf("Occupied is set automatically by the system and cannot be assigned manually")
+	if target == Occupied || target == Reserved {
+		return fmt.Errorf("%s is set automatically by the system and cannot be assigned manually", target)
 	}
 	if current == Available {
 		return fmt.Errorf("Available tables have no manual state change")
+	}
+	if current == Reserved {
+		return fmt.Errorf("Reserved tables are booked for a DineIn order and can't be changed manually — the table frees up automatically once that order is served or canceled")
 	}
 	allowed := map[State]State{
 		Occupied: Pending,
@@ -370,6 +456,7 @@ func FetchOrders() []Order {
 			cust_number,
 			destination,
 			cashier_name,
+			num_people,
 			date_time
 		FROM orders
 		ORDER BY id ASC
@@ -396,6 +483,7 @@ func FetchOrders() []Order {
 			&o.CustNumber,
 			&o.Destination,
 			&o.CashierName,
+			&o.NumPeople,
 			&o.DateTime,
 		)
 
@@ -523,12 +611,16 @@ func CancelOrder(orderName string) error {
 func FetchTables() []Table {
 	rows, err := db.DB.Query(`
 		SELECT
-			name,
-			capacity,
-			state,
-			current_order_name,
-			reserved_for
-		FROM tables
+			t.name,
+			t.capacity,
+			t.state,
+			t.current_order_name,
+			t.reserved_for,
+			COALESCE(o.num_people, 0)
+		FROM tables t
+		LEFT JOIN orders o
+			ON o.name = t.current_order_name
+			AND o.status NOT IN ('Canceled', 'Served')
 	`)
 
 	if err != nil {
@@ -548,6 +640,7 @@ func FetchTables() []Table {
 			&t.State,
 			&t.CurrentOrderName,
 			&t.ReservedFor,
+			&t.OccupiedSeats,
 		)
 
 		if err != nil {

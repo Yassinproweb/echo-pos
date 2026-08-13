@@ -57,16 +57,19 @@
   <td class="px-4 py-2 text-left text-base text-pos_bla font-bold scolor state">
     {{if eq .State "Available"}}
     <span>Available</span>
+    {{else if eq .State "Reserved"}}
+    <span>Reserved</span>
     {{else if eq .State "Occupied"}}
-    <span>Occupied</span>
+    <span>On Dine</span>
     {{else if eq .State "Pending"}}
-    <span>Pending</span>
+    <span>Cleaning</span>
     {{end}}
   </td>
 
   <td class="px-4 py-2 text-left text-base scolor font-bold">
-    {{if .CurrentOrderName.Valid}}
-    <span>{{ .CurrentOrderName.String }}</span>
+    {{ $booking := .BookingLabel }}
+    {{if $booking}}
+    <span>{{ $booking }}</span>
     {{else if eq .State "Pending"}}
     <span>Cleaning Required</span>
     {{else if eq .State "Available"}}
