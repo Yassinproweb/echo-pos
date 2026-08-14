@@ -75,11 +75,14 @@ func migrateSchema() {
 		}
 	}
 
-	// orders.num_people — party size for DineIn orders, used to compute
-	// how many seats on the assigned table are actually occupied.
-	if !columnExists("orders", "num_people") {
-		if _, err := DB.Exec(`ALTER TABLE orders ADD COLUMN num_people INTEGER NOT NULL DEFAULT 1`); err != nil {
-			log.Println("migration error (orders.num_people):", err)
+	// orders.table_name — links a DineIn order to the actual table it was
+	// placed at (tables.name). Nullable: only DineIn orders set this.
+	if !columnExists("orders", "table_name") {
+		if _, err := DB.Exec(`
+			ALTER TABLE orders ADD COLUMN table_name TEXT
+			REFERENCES tables(name) ON DELETE SET NULL
+		`); err != nil {
+			log.Println("migration error (orders.table_name):", err)
 		}
 	}
 
@@ -114,6 +117,7 @@ func migrateSchema() {
 
 				current_order_name TEXT,
 				reserved_for TEXT,
+				area TEXT NOT NULL DEFAULT 'Main Dining',
 
 				FOREIGN KEY(current_order_name)
 				REFERENCES orders(name)
@@ -129,6 +133,15 @@ func migrateSchema() {
 
 		if err != nil {
 			log.Println("migration error (tables.Reserved/reserved_for):", err)
+		}
+	}
+
+	// Separate migration: add `area` even if the Reserved migration above
+	// already ran in a previous deploy (so tables.area is guaranteed to
+	// exist either way).
+	if !columnExists("tables", "area") {
+		if _, err := DB.Exec(`ALTER TABLE tables ADD COLUMN area TEXT NOT NULL DEFAULT 'Main Dining'`); err != nil {
+			log.Println("migration error (tables.area):", err)
 		}
 	}
 }
@@ -192,9 +205,9 @@ func createTables() {
 
 		destination TEXT,
 
-		cashier_name TEXT,
+		table_name TEXT REFERENCES tables(name) ON DELETE SET NULL,
 
-		num_people INTEGER NOT NULL DEFAULT 1,
+		cashier_name TEXT,
 
 		date_time DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
@@ -221,6 +234,7 @@ func createTables() {
 
 		current_order_name TEXT,
 		reserved_for TEXT,
+		area TEXT NOT NULL DEFAULT 'Main Dining',
 
 		FOREIGN KEY(current_order_name)
 		REFERENCES orders(name)
@@ -508,13 +522,10 @@ func createTables() {
 		)
 		WHERE id = NEW.id;
 
-		-- Booked but the guest hasn't been marked served yet: hold the table
-		-- as Reserved (not Occupied) so walking past it in Manage Tables
-		-- shows it's spoken for, until the order actually reaches 'Served'.
 		UPDATE tables
 		SET
 			current_order_name = NEW.name,
-			state = 'Reserved'
+			state = 'Occupied'
 		WHERE name = (
 			SELECT destination
 			FROM orders
@@ -541,10 +552,6 @@ func createTables() {
 				ELSE NEW.name
 			END,
 
-			-- Reserved for the whole pre-served lifecycle (Placed,
-			-- Preparing, Ready) — the guest's table is held for them.
-			-- Served -> Pending (needs clearing/cleaning).
-			-- Canceled -> back to Available immediately.
 			state = CASE
 				WHEN NEW.status = 'Canceled'
 				THEN 'Available'
@@ -552,7 +559,7 @@ func createTables() {
 				WHEN NEW.status = 'Served'
 				THEN 'Pending'
 
-				ELSE 'Reserved'
+				ELSE 'Occupied'
 			END
 
 		WHERE name = NEW.destination;

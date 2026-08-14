@@ -17,7 +17,7 @@
     <button type="button" @click="orderType = 'Takeaway'"
       :class="orderType === 'Takeaway' ? 'bg-pos_col text-pos_whi' : 'text-pos_bla/60'"
       class="flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-bold transition-all">
-      <i class="hgi hgi-stroke hgi-packaging text-base"></i> Take Away
+      <i class="hgi hgi-stroke hgi-shopping-bag-01 text-base"></i> Take Away
     </button>
     <button type="button" @click="orderType = 'Delivery'"
       :class="orderType === 'Delivery' ? 'bg-pos_col text-pos_whi' : 'text-pos_bla/60'"
@@ -74,7 +74,7 @@
 
   <!-- Item list: images, name, price, qty steppers -->
   <div class="w-full flex flex-col items-start justify-start gap-1.5">
-    <p class="text-base text-pos_bla font-bold">Order Items&nbsp;<span class="text-pos_pdg font-normal"
+    <p class="text-sm text-pos_bla font-bold">Order Items&nbsp;<span class="text-pos_pdg font-normal"
         x-text="'(' + items.length + ')'"></span></p>
 
     <div class="w-full max-h-[220px] flex flex-col gap-2.5 overflow-y-auto">
@@ -84,22 +84,22 @@
             class="size-10 rounded-lg object-cover object-center bg-pos_bla/5 shrink-0">
           <div class="flex-1 flex flex-col items-start justify-center gap-0 min-w-0">
             <span class="text-sm text-pos_bla font-medium truncate w-full" x-text="item.name"></span>
-            <span class="text-sm scolor font-bold" x-text="'Ugx ' + item.unitPrice"></span>
+            <span class="text-xs scolor font-bold" x-text="'Ugx ' + item.unitPrice"></span>
           </div>
           <div class="flex items-center gap-1.5 shrink-0">
             <button type="button" @click="decrease(item.name)"
               class="size-6 flex items-center justify-center rounded-md text-pos_whi bg-pos_col">
-              <i class="hgi hgi-stroke hgi-rounded hgi-minus-sign text-base"></i>
+              <i class="hgi hgi-stroke hgi-rounded hgi-minus-sign text-xs"></i>
             </button>
             <span class="w-4 text-center text-sm font-bold" x-text="item.quantity"></span>
             <button type="button" @click="increase(item.name, item.unitPrice)"
               class="size-6 flex items-center justify-center rounded-md text-pos_whi bg-pos_col">
-              <i class="hgi hgi-stroke hgi-rounded hgi-plus-sign text-base"></i>
+              <i class="hgi hgi-stroke hgi-rounded hgi-plus-sign text-xs"></i>
             </button>
           </div>
         </div>
       </template>
-      <div x-show="items.length === 0" class="w-full text-center text-pos_pdg text-base italic py-3">
+      <div x-show="items.length === 0" class="w-full text-center text-pos_pdg text-sm italic py-3">
         No items selected yet
       </div>
     </div>
@@ -108,16 +108,16 @@
   <div class="w-full border-t border-dashed border-pos_pdg/25"></div>
 
   <!-- Payment summary (live preview, computed client-side) -->
-  <div class="w-full flex flex-col items-stretch justify-start gap-1 text-base">
+  <div class="w-full flex flex-col items-stretch justify-start gap-1 text-sm">
     <div class="w-full flex items-center justify-between text-pos_pdg">
       <span>Subtotal</span>
       <span x-text="'Ugx ' + subtotal()"></span>
     </div>
     <div class="w-full flex items-center justify-between text-pos_pdg">
-      <span>Tax (0%)</span>
+      <span>Tax (10%)</span>
       <span x-text="'Ugx ' + tax()"></span>
     </div>
-    <div class="w-full flex items-center justify-between text-pos_bla font-bold text-lg pt-1">
+    <div class="w-full flex items-center justify-between text-pos_bla font-bold text-base pt-1">
       <span>Total</span>
       <span x-text="'Ugx ' + grandTotal()"></span>
     </div>

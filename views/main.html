@@ -43,7 +43,7 @@
               {{ end }}
               {{ end }}
               {{ if not .orders }}
-              <p class="text-sm text-pos_pdg/55 italic py-4">No orders yet today.</p>
+              <p class="text-sm text-pos_pdg italic py-4">No orders yet today.</p>
               {{ end }}
             </div>
           </div>
@@ -52,15 +52,8 @@
           <div id="products-card" class="relative w-full h-full flex flex-col items-start justify-start gap-2.5">
             <div class="w-full flex items-center justify-between">
               <h3 class="text-xl text-pos_bla font-bold shrink-0">Menu</h3>
-
-              <div
-                class="w-1/3 flex items-center justify-between p-1.5 gap-5 border border-pos_col/55 rounded-full bg-pos_whi">
-                <i
-                  class="hgi hgi-stroke hgi-search-02 text-2xl text-pos_whi shrink-0 flex items-center justify-center size-10 rounded-full bg-pos_col border border-pos_col/45"></i>
-
-                <input type="search" id="searchInput" onkeyup="searchTable()" placeholder="Search..."
-                  class="w-full outline-none">
-              </div>
+              <input type="search" id="searchInput" onkeyup="searchTable()" placeholder="Search meals..."
+                class="w-[60%] px-3 py-2 text-sm border border-pos_bla/25 rounded-lg outline-none">
             </div>
             <section
               class="w-full grid grid-cols-3 justify-start gap-3 snap-mandatory snap-y scroll-pb-5 overflow-y-scroll">
@@ -175,7 +168,7 @@
         },
 
         tax() {
-          return Math.round(this.subtotal() * 0.00)
+          return Math.round(this.subtotal() * 0.10)
         },
 
         grandTotal() {
@@ -185,12 +178,10 @@
         resetOrder() {
           this.items = []
           this.quantities = {}
-          this.numPeople = 0
+          this.numPeople = 1
         }
       }
     }
   </script>
 
-</body>
-
-</html>
+  {{ template "foot" . }}

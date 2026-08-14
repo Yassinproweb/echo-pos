@@ -108,6 +108,7 @@ func CreateProductRoute(c *echo.Context) error {
 
 type CreateTableRequest struct {
 	Capacity string `form:"capacity"`
+	Area     string `form:"area"`
 }
 
 func renderTableFormError(c *echo.Context, message string) error {
@@ -131,7 +132,12 @@ func CreateTableRoute(c *echo.Context) error {
 		return renderTableFormError(c, "Capacity must be a whole number.")
 	}
 
-	if _, err := models.CreateTable(capacity); err != nil {
+	area := strings.TrimSpace(req.Area)
+	if area == "" {
+		area = "Main Dining"
+	}
+
+	if _, err := models.CreateTable(capacity, area); err != nil {
 		return renderTableFormError(c, err.Error())
 	}
 

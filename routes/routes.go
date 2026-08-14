@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/Yassinproweb/echo-pos/auth"
 	"github.com/Yassinproweb/echo-pos/db"
@@ -49,7 +48,9 @@ func UpdateStatusAfterPrint(c *echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Failed to update status")
 	}
 
-	return c.Render(http.StatusOK, "order_form", nil)
+	return c.Render(http.StatusOK, "order_form", map[string]any{
+		"tables": models.FetchTables(),
+	})
 }
 
 // UpdateStatusAfterViewPrint renders the actual customer receipt while
@@ -187,7 +188,6 @@ type CreateOrderRequest struct {
 	OrderDest      string `form:"order_dest"`
 	OrderStatus    string `form:"order_status"`
 	Items          string `form:"items"` // JSON string
-	NumPeople      string `form:"num_people"` // DineIn party size; blank/0 defaults to 1
 }
 
 func CreateOrder(c *echo.Context) error {
@@ -206,19 +206,17 @@ func CreateOrder(c *echo.Context) error {
 
 	cashierName := auth.ActorName(c)
 
-	numPeople, err := strconv.Atoi(req.NumPeople)
-	if err != nil || numPeople < 1 {
-		numPeople = 1
-	}
-
 	order := models.Order{
 		Type:        models.Type(req.OrderType),
 		Status:      models.Status(req.OrderStatus),
 		CustName:    req.CustomerName,
 		CustNumber:  req.CustomerNumber,
 		Destination: req.OrderDest,
-		NumPeople:   numPeople,
 		OrderCart:   cartItems,
+	}
+
+	if order.Type == models.DineIn && req.OrderDest == "" {
+		return c.String(http.StatusBadRequest, "A table must be selected for DineIn orders")
 	}
 
 	if err := order.CalculateOrderTotal(); err != nil {
@@ -238,10 +236,15 @@ func CreateOrder(c *echo.Context) error {
 	}()
 
 	// Insert order
+	var tableName sql.NullString
+	if order.Type == models.DineIn {
+		tableName = sql.NullString{String: req.OrderDest, Valid: true}
+	}
+
 	result, err := tx.Exec(`
-		INSERT INTO orders (type, status, cust_name, cust_number, destination, cashier_name, num_people)
+		INSERT INTO orders (type, status, cust_name, cust_number, destination, table_name, cashier_name)
 		VALUES (?, ?, ?, ?, ?, ?, ?)
-	`, order.Type, order.Status, order.CustName, order.CustNumber, order.Destination, cashierName, order.NumPeople)
+	`, order.Type, order.Status, order.CustName, order.CustNumber, order.Destination, tableName, cashierName)
 
 	if err != nil {
 		fmt.Println("Order insert error:")
@@ -256,6 +259,16 @@ func CreateOrder(c *echo.Context) error {
 	if err != nil {
 		fmt.Println("Failed to get order name:", err)
 		return c.String(http.StatusInternalServerError, "Failed to get order name")
+	}
+
+	// Reserve the booked table for DineIn orders, in the same transaction —
+	// if the table isn't actually available (e.g. a race with another
+	// cashier), the whole order creation rolls back rather than silently
+	// double-booking a table.
+	if order.Type == models.DineIn {
+		if err := models.ReserveTableForOrder(tx, req.OrderDest, orderName); err != nil {
+			return c.String(http.StatusConflict, err.Error())
+		}
 	}
 
 	fmt.Println("Created Order:", orderName, orderID)
