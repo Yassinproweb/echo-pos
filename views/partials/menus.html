@@ -68,7 +68,7 @@
 
 {{ define "topbar" }}
 <menu
-  class="sticky w-full h-[7%] px-7 shrink-0 flex items-center justify-between top-0 right-0 border-b border-pos_pdg/15 bg-pos_whi z-50">
+  class="sticky w-full h-[7%] px-7 shrink-0 flex items-center justify-between top-0 right-0 border-b border-pos_pdg/55 bg-pos_whi z-50">
   <div class="flex flex-col items-start justify-center gap-0">
     <h1 class="text-xl text-pos_bla font-bold leading-tight">
       {{ .Business.RestaurantName }}
@@ -80,12 +80,12 @@
     {{if .CanAcceptDineIn}}
     <span
       class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-pos_dlv/10 text-pos_dlv">
-      <i class="hgi hgi-stroke hgi-dining-table text-sm"></i> Accepting DineIn
+      <i class="hgi hgi-stroke hgi-dining-table text-sm"></i> Accepting DineIn &amp; Reservations
     </span>
     {{else}}
     <span
       class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-pos_rdy/10 text-pos_rdy">
-      <i class="hgi hgi-stroke hgi-alert-02 text-sm"></i> DineIn Disabled
+      <i class="hgi hgi-stroke hgi-alert-02 text-sm"></i> DineIn &amp; Reservations Disabled
     </span>
     {{end}}
 

@@ -27,29 +27,15 @@ func RenderOrders(c *echo.Context) error {
 	}
 
 	data := map[string]any{
-		"Business":  business,
-		"orders":    orders,
-		"tables":    tables,
-		"IsAdmin":   isAdmin,
-		"ActorName": auth.ActorName(c),
+		"Business":        business,
+		"orders":          orders,
+		"CanAcceptDineIn": models.CanAcceptDineIn(),
+		"tables":          tables,
+		"IsAdmin":         isAdmin,
+		"ActorName":       auth.ActorName(c),
 	}
 
 	return c.Render(http.StatusOK, "orders.html", data)
-}
-
-// products controllers
-func RenderProducts(c *echo.Context) error {
-	products := models.FetchProducts()
-	business, _ := models.GetBusiness()
-
-	data := map[string]any{
-		"Business":  business,
-		"products":  products,
-		"IsAdmin":   auth.IsAdminSession(c),
-		"ActorName": auth.ActorName(c),
-	}
-
-	return c.Render(http.StatusOK, "products.html", data)
 }
 
 // RenderEditOrder shows the item-swap page for one order (only usable
@@ -83,12 +69,38 @@ func RenderEditOrder(c *echo.Context) error {
 		"Order":           order,
 		"products":        products,
 		"quantities":      quantities,
+		"CanAcceptDineIn": models.CanAcceptDineIn(),
 		"InitialItemsB64": base64.StdEncoding.EncodeToString(itemsJSON),
 		"IsAdmin":         auth.IsAdminSession(c),
 		"ActorName":       auth.ActorName(c),
 	}
 
 	return c.Render(http.StatusOK, "edit_order.html", data)
+}
+
+// products controllers
+func RenderProducts(c *echo.Context) error {
+	products := models.FetchProducts()
+	business, _ := models.GetBusiness()
+
+	data := map[string]any{
+		"Business":        business,
+		"products":        products,
+		"CanAcceptDineIn": models.CanAcceptDineIn(),
+		"IsAdmin":         auth.IsAdminSession(c),
+		"ActorName":       auth.ActorName(c),
+	}
+
+	return c.Render(http.StatusOK, "products.html", data)
+}
+
+// RenderNewProduct shows the "add product" form.
+func RenderNewProduct(c *echo.Context) error {
+	return c.Render(http.StatusOK, "product_new.html", map[string]any{
+		"Error":     "",
+		"IsAdmin":   auth.IsAdminSession(c),
+		"ActorName": auth.ActorName(c),
+	})
 }
 
 // tables controllers
@@ -98,12 +110,53 @@ func RenderTables(c *echo.Context) error {
 	business, _ := models.GetBusiness()
 
 	data := map[string]any{
-		"Business":  business,
-		"orders":    orders,
-		"tables":    tables,
-		"IsAdmin":   auth.IsAdminSession(c),
-		"ActorName": auth.ActorName(c),
+		"Business":        business,
+		"orders":          orders,
+		"tables":          tables,
+		"CanAcceptDineIn": models.CanAcceptDineIn(),
+		"IsAdmin":         auth.IsAdminSession(c),
+		"ActorName":       auth.ActorName(c),
 	}
 
 	return c.Render(http.StatusOK, "tables.html", data)
+}
+
+// RenderNewTable shows the "add table" form.
+func RenderNewTable(c *echo.Context) error {
+	return c.Render(http.StatusOK, "table_new.html", map[string]any{
+		"Error":     "",
+		"IsAdmin":   auth.IsAdminSession(c),
+		"ActorName": auth.ActorName(c),
+	})
+}
+
+// RenderReservations lists every reservation.
+func RenderReservations(c *echo.Context) error {
+	reservations := models.FetchReservations()
+	business, _ := models.GetBusiness()
+
+	return c.Render(http.StatusOK, "reservations.html", map[string]any{
+		"reservations":    reservations,
+		"Business":        business,
+		"CanAcceptDineIn": models.CanAcceptDineIn(),
+		"IsAdmin":         auth.IsAdminSession(c),
+		"ActorName":       auth.ActorName(c),
+	})
+}
+
+// RenderNewReservation shows the "book a table" form, along with the
+// current table list so staff can see capacities at a glance.
+func RenderNewReservation(c *echo.Context) error {
+	tables := models.FetchTables()
+	business, _ := models.GetBusiness()
+
+	return c.Render(http.StatusOK, "reservation_new.html", map[string]any{
+		"tables":          tables,
+		"Business":        business,
+		"CanAcceptDineIn": models.CanAcceptDineIn(),
+		"eventTypes":      models.EventTypes,
+		"Error":           "",
+		"IsAdmin":         auth.IsAdminSession(c),
+		"ActorName":       auth.ActorName(c),
+	})
 }

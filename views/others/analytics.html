@@ -44,7 +44,7 @@
                 <i class="hgi hgi-stroke hgi-menu-restaurant text-2xl text-pos_col"></i>
               </div>
               <div class="flex flex-col">
-                <span class="text-xs text-pos_lgh font-medium uppercase tracking-wide">Total Orders</span>
+                <span class="text-xs text-pos_pdg font-medium uppercase tracking-wide">Total Orders</span>
                 <span class="text-3xl font-black text-pos_bla leading-tight">{{ .TotalOrders }}</span>
                 <span class="text-xs text-pos_col mt-0.5">All time</span>
               </div>
@@ -55,7 +55,7 @@
                 <i class="hgi hgi-stroke hgi-delivery-box-01 text-2xl text-pos_dlv"></i>
               </div>
               <div class="flex flex-col">
-                <span class="text-xs text-pos_lgh font-medium uppercase tracking-wide">Completed</span>
+                <span class="text-xs text-pos_pdg font-medium uppercase tracking-wide">Completed</span>
                 <span class="text-3xl font-black text-pos_bla leading-tight">{{ .TotalDelivered }}</span>
                 <span class="text-xs text-pos_dlv mt-0.5">Served, Delivered &amp; Taken</span>
               </div>
@@ -66,7 +66,7 @@
                 <i class="hgi hgi-stroke hgi-cancel-01 text-2xl text-pos_cld"></i>
               </div>
               <div class="flex flex-col">
-                <span class="text-xs text-pos_lgh font-medium uppercase tracking-wide">Total Canceled</span>
+                <span class="text-xs text-pos_pdg font-medium uppercase tracking-wide">Total Canceled</span>
                 <span class="text-3xl font-black text-pos_bla leading-tight">{{ .TotalCanceled }}</span>
                 <span class="text-xs text-pos_cld mt-0.5">Needs follow-up</span>
               </div>
@@ -77,7 +77,7 @@
                 <i class="hgi hgi-stroke hgi-coins-01 text-2xl text-pos_col"></i>
               </div>
               <div class="flex flex-col">
-                <span class="text-xs text-pos_lgh font-medium uppercase tracking-wide">Total Revenue</span>
+                <span class="text-xs text-pos_pdg font-medium uppercase tracking-wide">Total Revenue</span>
                 <span class="text-2xl font-black text-pos_bla leading-tight">{{ .TotalRevenueFormatted }}</span>
                 <span class="text-xs text-pos_col mt-0.5">All Orders</span>
               </div>
@@ -164,15 +164,15 @@
                   <div class="h-full bg-pos_dlv rounded-r-full" style="width:{{ .DeliveryPct }}%"></div>
                 </div>
                 <div class="flex items-center gap-5">
-                  <span class="flex items-center gap-1.5 text-xs text-pos_lgh">
+                  <span class="flex items-center gap-1.5 text-xs text-pos_pdg">
                     <span class="inline-block w-2.5 h-2.5 rounded-full bg-pos_col"></span>
                     DineIn — {{ .DineInCount }}
                   </span>
-                  <span class="flex items-center gap-1.5 text-xs text-pos_lgh">
+                  <span class="flex items-center gap-1.5 text-xs text-pos_pdg">
                     <span class="inline-block w-2.5 h-2.5 rounded-full bg-pos_trs"></span>
                     Takeaway — {{ .TakeawayCount }}
                   </span>
-                  <span class="flex items-center gap-1.5 text-xs text-pos_lgh">
+                  <span class="flex items-center gap-1.5 text-xs text-pos_pdg">
                     <span class="inline-block w-2.5 h-2.5 rounded-full bg-pos_dlv"></span>
                     Delivery — {{ .DeliveryCount }}
                   </span>
@@ -215,7 +215,7 @@
                 <div class="w-full flex items-center justify-between py-1.5 border-b border-pos_bla/5 last:border-0">
                   <div class="flex flex-col">
                     <span class="text-sm font-bold text-pos_bla">{{ .CustName }}</span>
-                    <span class="text-xs text-pos_lgh">{{ .Name }} · {{ .FormattedDateTime }}</span>
+                    <span class="text-xs text-pos_pdg">{{ .Name }} · {{ .FormattedDateTime }}</span>
                   </div>
                   <span class="text-base font-black text-pos_bla">{{ .CostFormatted }}</span>
                 </div>
@@ -283,7 +283,7 @@
         ticks: {
           font: {
             size: 10,
-            family: 'Inclusive Sans',
+            family: 'Mozilla Text',
             weight: 500
           },
           color: '#9ca3af',
@@ -299,7 +299,7 @@
         ticks: {
           font: {
             size: 10,
-            family: 'Inclusive Sans',
+            family: 'Mozilla Text',
             weight: 400
           },
           color: '#9ca3af',

@@ -16,111 +16,44 @@
   <script src="/js/alpine.min.js" defer></script>
 </head>
 
-<body class="bg-pos_bla w-screen aspect-[16/10] flex items-start justify-center">
-  <div class="relative w-screen h-full flex items-start justify-between gap-0 overflow-clip bg-pos_whi">
-    <header class="w-[15%] h-full flex flex-col items-start justify-start p-5 border-r border-r-pos_cld/25 bg-pos_col">
-      <div class="w-full h-full grid grid-rows-[125px_1fr] gap-7">
-        <div class="w-fit flex flex-col items-start justify-start gap-0">
-          {{ if .Business }}
-          <h3 class="text-xl text-pos_whi font-bold leading-none">{{ .Business.RestaurantName }}</h3>
-          <p class="text-pos_whi font-medium">{{ .Business.Location }}</p>
-          {{ else }}
-          <h3 class="text-xl text-pos_whi font-bold leading-none">Point Of Sale</h3>
-          {{ end }}
-        </div>
+<body class="bg-pos_bla h-screen flex items-start justify-center">
+  <div class="relative w-screen aspect-[16/10] bg-pos_whi overflow-y-scroll">
+    {{ template "navbar" . }}
 
-        <nav class="w-full h-full flex flex-col items-start justify-between gap-9">
-          <div class="w-full flex flex-col items-start justify-start gap-3.5">
-            <h3 class="text-xl text-pos_whi font-black">Main Menu</h3>
-            <div class="w-full flex flex-col items-start justify-start gap-2 pl-1">
-              <a href="/pos" class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-dashboard-square-03 text-2xl"></i>
-                <span>Dashboard</span>
-              </a>
-              <a href="/pos/orders"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-menu-restaurant text-2xl"></i>
-                <span>Orders</span>
-              </a>
-              <a href="/pos/tables"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-dining-table text-2xl"></i>
-                <span>Tables</span>
-              </a>
-              <a href="/pos/analytics"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-analytics-02 text-2xl"></i>
-                <span>Analytics</span>
-              </a>
-              <a href="/pos/reservations"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-calendar-03 text-2xl"></i>
-                <span>Reservations</span>
-              </a>
-              {{ if .IsAdmin }}
-              <a href="/pos/admin"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-store-management-02 text-2xl"></i>
-                <span>Manage</span>
-              </a>
-              {{ end }}
-            </div>
-          </div>
+    <div class="relative w-[93%] right-0 flex flex-col items-start justify-start bg-pos_lgh/45">
+      {{ template "topbar" . }}
 
-          <div class="w-full flex flex-col items-start justify-start gap-3.5">
-            <div class="w-full flex flex-col items-start justify-start gap-2">
-              {{ if .ActorName }}
-              <p class="w-full text-sm text-pos_whi font-medium">Logged in as {{ .ActorName }}</p>
-              {{ end }}
-              <a href="/pos/logout"
-                class="w-full flex items-end justify-start gap-2 text-base text-pos_whi hover:opacity-65">
-                <i class="hgi hgi-stroke hgi-logout-square-01 text-2xl"></i>
-                <span>Logout</span>
-              </a>
-            </div>
-          </div>
-        </nav>
-      </div>
-    </header>
-
-    <div class="w-[85%] h-full flex flex-col items-center justify-center gap-5 py-5 px-5">
-      <div class="w-full h-[57%] flex flex-col items-center justify-center gap-5">
-        <div class="w-full flex items-center justify-between gap-2.5">
+      <div class="w-full flex flex-col items-center justify-center p-5 gap-5">
+        <div class="w-full h-[57%] flex flex-col items-center justify-center gap-5">
           <h1 class="text-3xl text-pos_bla font-bold">New Reservation</h1>
-          <nav class="flex items-center justify-end gap-3.5 shrink-0">
-            <a href="/pos/reservations" class="text-base text-pos_col font-medium underline">Back to Reservations</a>
-            <a href="/pos" class="text-base text-pos_col font-medium underline">Dashboard</a>
-          </nav>
-        </div>
 
-        {{ if .Error }}
-        <div class="text-base text-pos_cld font-medium p-1 py-0.5 border-2 border-pos_cld/45 rounded bg-pos_cld/5">{{
-          .Error }}</div>
-        {{ end }}
+          {{ if .Error }}
+          <div class="text-base text-pos_cld font-medium p-1 py-0.5 border-2 border-pos_cld/45 rounded bg-pos_cld/5">{{
+            .Error }}</div>
+          {{ end }}
 
-        <div class="w-full grid grid-cols-[1fr_350px] grid-rows-1 gap-10">
-          <form class="w-full flex flex-col items-start justify-start gap-5" method="POST" action="/pos/reservations">
+          <form class="w-[50%] flex flex-col items-start justify-start gap-5" method="POST" action="/pos/reservations">
             <h2 class="text-2xl text-pos_bla font-bold">Reservation Form</h2>
             <div class="w-full grid grid-cols-2 gap-5">
               <div class="w-full flex flex-col items-start justify-start gap-2.5">
-                <label for="cust_name" class="text-base text-pos_col font-medium">Customer name</label>
+                <label for="cust_name" class="text-base text-pos_bla font-medium">Customer name</label>
                 <input type="text" id="cust_name" name="cust_name"
-                  class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+                  class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45"
                   required>
               </div>
               <div class="w-full flex flex-col items-start justify-start gap-2.5">
-                <label for="cust_number" class="text-base text-pos_col font-medium">Customer number</label>
+                <label for="cust_number" class="text-base text-pos_bla font-medium">Customer number</label>
                 <input type="tel" id="cust_number" name="cust_number"
-                  class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+                  class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45"
                   required>
               </div>
             </div>
 
             <div class="w-full grid grid-cols-2 gap-5">
               <div class="w-full flex flex-col items-start justify-start gap-2.5">
-                <label for="event_type" class="text-base text-pos_col font-medium">Event type</label>
+                <label for="event_type" class="text-base text-pos_bla font-medium">Event type</label>
                 <select id="event_type" name="event_type"
-                  class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45 bg-transparent"
+                  class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45 bg-pos_whi"
                   required>
                   {{ range .eventTypes }}
                   <option value="{{ . }}">{{ . }}</option>
@@ -129,32 +62,33 @@
               </div>
 
               <div class="w-full flex flex-col items-start justify-start gap-2.5">
-                <label for="num_people" class="text-base text-pos_col font-medium">Number of people</label>
+                <label for="num_people" class="text-base text-pos_bla font-medium">Number of people</label>
                 <input type="number" id="num_people" name="num_people"
-                  class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+                  class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45"
                   min="1" required>
               </div>
             </div>
 
-            <p class="block w-full text-base text-pos_col font-medium">We'll work out how many tables — and which ones —
+            <p class="block w-full text-base text-pos_bla font-medium">We'll work out how many tables — and which ones
+              —
               are needed to seat this many guests.</p>
 
             <div class="w-full grid grid-cols-2 gap-5">
               <div class="w-full flex flex-col items-start justify-start gap-2.5">
-                <label for="reservation_date" class="text-base text-pos_col font-medium">Date</label>
+                <label for="reservation_date" class="text-base text-pos_bla font-medium">Date</label>
                 <input type="date" id="reservation_date" name="reservation_date"
-                  class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45 bg-transparent"
+                  class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45 bg-pos_whi"
                   required>
               </div>
               <div class="w-full flex flex-col items-start justify-start gap-2.5">
-                <label for="reservation_time" class="text-base text-pos_col font-medium">Time</label>
+                <label for="reservation_time" class="text-base text-pos_bla font-medium">Time</label>
                 <input type="time" id="reservation_time" name="reservation_time"
-                  class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45 bg-transparent"
+                  class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45 bg-pos_whi"
                   required>
               </div>
             </div>
 
-            <div class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45">
+            <div class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45">
               <p>Tables are assigned automatically from what's currently <strong>Available</strong> — smallest single
                 table that fits the party, or several combined if needed.</p>
             </div>
@@ -162,34 +96,10 @@
             <button type="submit" class="w-full text-base text-pos_whi font-medium px-7 py-3 rounded-lg bg-pos_col">Book
               Reservation</button>
           </form>
-
-          <div class="w-full flex flex-col items-center justify-center gap-2.5">
-            <h2 class="text-2xl text-pos_bla font-bold">Current Tables</h2>
-            <div
-              class="w-full max-h-[497px] flex flex-col items-end justify-start border border-pos_lgh rounded-xl overflow-y-auto">
-              <table class="w-full h-full divide-y divide-pos_bla rounded-xl">
-                <thead class="sticky top-0 bg-pos_bla">
-                  <tr class="text-xl text-pos_whi font-bold">
-                    <th class="px-4 py-2 text-left">Name</th>
-                    <th class="px-4 py-2 text-center">Capacity</th>
-                    <th class="px-4 py-2 text-right">State</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-pos_lgh/35">
-                  {{ range .tables }}
-                  <tr class="even:bg-pos_lgh/25">
-                    <td class="px-4 py-2 text-left text-base text-pos_bla font-normal">{{ .Name }}</td>
-                    <td class="px-4 py-2 text-center text-base text-pos_bla font-normal">{{ .Capacity }}</td>
-                    <td class="px-4 py-2 text-right text-base text-pos_bla font-normal">{{ .State }}</td>
-                  </tr>
-                  {{ end }}
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
       </div>
     </div>
+  </div>
 </body>
 
 </html>
