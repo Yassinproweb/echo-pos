@@ -1,55 +1,55 @@
 {{ define "navbar" }}
 <header
-  class="sticky top-0 left-0 w-[7%] h-full flex flex-col items-start justify-start px-4 py-6 border-r border-pos_lgh/15 bg-pos_whi">
+  class="sticky top-0 left-0 w-[7%] h-full flex flex-col items-start justify-start px-1 py-6 border-r border-pos_pdg/15 bg-pos_whi">
   <div class="w-full h-full flex flex-col items-center gap-9">
 
     <!-- Logo mark -->
-    <a href="/pos" class="flex items-center justify-center size-12 rounded-2xl bg-pos_col shrink-0">
-      <i class="hgi hgi-stroke hgi-store-01 text-2xl text-pos_whi"></i>
+    <a href="/pos" class="flex items-center justify-center size-16 rounded-2xl bg-pos_col shrink-0">
+      <i class="hgi hgi-stroke hgi-store-01 text-[42px] text-pos_whi"></i>
     </a>
 
     <nav id="sidebar-nav" class="w-full h-full flex flex-col items-center justify-between gap-9">
       <div class="w-full flex flex-col items-center justify-start gap-2">
 
         <a href="/pos" data-nav-link
-          class="nav-link w-full flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
+          class="nav-link w-full flex flex-col items-center justify-center gap-0.5 px-2 py-2.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
           <i class="hgi hgi-stroke hgi-home-03 text-2xl"></i>
           <span>Home</span>
         </a>
 
         <a href="/pos/orders" data-nav-link
-          class="nav-link w-full flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
+          class="nav-link w-full flex flex-col items-center justify-center gap-0.5 p-1.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
           <i class="hgi hgi-stroke hgi-menu-restaurant text-2xl"></i>
           <span>Order</span>
         </a>
 
         <a href="/pos/products" data-nav-link
-          class="nav-link w-full flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
+          class="nav-link w-full flex flex-col items-center justify-center gap-0.5 p-1.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
           <i class="hgi hgi-stroke hgi-noodles text-2xl"></i>
           <span>Menu</span>
         </a>
 
         <a href="/pos/tables" data-nav-link
-          class="nav-link w-full flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
+          class="nav-link w-full flex flex-col items-center justify-center gap-0.5 p-1.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
           <i class="hgi hgi-stroke hgi-dining-table text-2xl"></i>
           <span>Tables</span>
         </a>
 
         <a href="/pos/analytics" data-nav-link
-          class="nav-link w-full flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
+          class="nav-link w-full flex flex-col items-center justify-center gap-0.5 p-1.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
           <i class="hgi hgi-stroke hgi-analytics-02 text-2xl"></i>
-          <span>Chart</span>
+          <span>Analytics</span>
         </a>
 
         <a href="/pos/reservations" data-nav-link
-          class="nav-link w-full flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
+          class="nav-link w-full flex flex-col items-center justify-center gap-0.5 p-1.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
           <i class="hgi hgi-stroke hgi-calendar-03 text-2xl"></i>
           <span>Reserve</span>
         </a>
 
         {{ if .IsAdmin }}
         <a href="/pos/admin" data-nav-link
-          class="nav-link w-full flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
+          class="nav-link w-full flex flex-col items-center justify-center gap-0.5 p-1.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 transition-all">
           <i class="hgi hgi-stroke hgi-store-management-02 text-2xl"></i>
           <span>Manage</span>
         </a>
@@ -57,7 +57,7 @@
       </div>
 
       <a href="/pos/logout"
-        class="w-full flex flex-col items-center justify-center gap-1 px-2 py-2.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 hover:text-pos_col transition-all">
+        class="w-full flex flex-col items-center justify-center gap-0.5 p-1.5 rounded-2xl text-base font-normal text-pos_col hover:bg-pos_col/10 hover:text-pos_col transition-all">
         <i class="hgi hgi-stroke hgi-logout-square-01 text-2xl"></i>
         <span>Logout</span>
       </a>
@@ -67,14 +67,13 @@
 {{end}}
 
 {{ define "topbar" }}
-<!-- ============ Top bar ============ -->
 <menu
-  class="sticky w-full h-[10%] px-7 flex items-center justify-between top-0 right-0 border-b border-pos_lgh/15 bg-pos_whi z-50">
+  class="sticky w-full h-[7%] px-7 shrink-0 flex items-center justify-between top-0 right-0 border-b border-pos_pdg/15 bg-pos_whi z-50">
   <div class="flex flex-col items-start justify-center gap-0">
     <h1 class="text-xl text-pos_bla font-bold leading-tight">
       {{ .Business.RestaurantName }}
     </h1>
-    <p class="text-sm text-pos_lgh font-medium">{{ .Business.Location }}</p>
+    <p class="text-sm text-pos_pdg font-medium">{{ .Business.Location }}</p>
   </div>
 
   <div class="flex items-center justify-end gap-3.5">
@@ -95,7 +94,7 @@
         <i class="hgi hgi-stroke hgi-user-circle text-2xl"></i>
       </div>
       <div class="hidden lg:flex flex-col items-start justify-center gap-0">
-        <span class="text-xs text-pos_lgh font-medium">{{ if .IsAdmin }}Hi, I'm an Admin{{ else }}Hi, I'm a Cashier{{
+        <span class="text-xs text-pos_pdg font-medium">{{ if .IsAdmin }}Hi, I'm an Admin{{ else }}Hi, I'm a Cashier{{
           end }}</span>
         {{ if .ActorName }}
         <span class="text-sm text-pos_bla font-bold leading-none">{{ .ActorName }}</span>
@@ -107,8 +106,8 @@
 {{ end }}
 
 {{ define "foot" }}
-    </div>
-  </div>
+</div>
+</div>
 </body>
 
 </html>

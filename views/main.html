@@ -20,16 +20,17 @@
   <script src="/js/main.js" defer></script>
 </head>
 
-<body class="bg-pos_bla w-screen aspect-[16/10] flex items-start justify-center">
-  <div class="relative w-screen aspect-[16/10] bg-pos_whi overflow-y-scroll">
+<body class="bg-pos_bla w-screen h-screen flex items-start justify-center">
+  <div class="relative w-screen aspect-[16/10] bg-pos_whi overflow-clip">
     {{ template "navbar" . }}
 
-    <div class="relative w-[93%] h-full right-0 flex flex-col items-start justify-start bg-pos_lgh">
+    <div
+      class="relative w-[93%] h-full right-0 flex flex-col items-start justify-start gap-0 bg-pos_lgh/45 overflow-clip">
       {{ template "topbar" . }}
 
       <div x-data="orderApp()" @order-submitted.window="resetOrder()"
-        class="relative w-full h-full flex items-start justify-start gap-0">
-        <main class="relative w-[70%] h-[90%] flex flex-col items-start justify-start p-5 gap-5 overflow-y-auto">
+        class="relative w-full h-[93%] flex items-start justify-start gap-0 overflow-clip">
+        <main class="relative w-[70%] h-full flex flex-col items-start justify-start p-5 gap-5 overflow-y-auto">
           <!-- Order Queue -->
           <div class="w-full flex flex-col items-start justify-start gap-2.5">
             <div class="w-full flex items-center justify-between">
