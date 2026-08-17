@@ -73,7 +73,7 @@
         </main>
 
         <aside
-          class="w-[30%] h-full flex flex-col items-start justify-start p-5 border-l-2 border-l-pos_pdg/25 bg-pos_whi mt-[70px]">
+          class="w-[30%] h-full flex flex-col items-start justify-start p-5 border-l-2 border-l-pos_pdg/25 bg-pos_whi">
           <div id="order-panel" class="w-full h-full">
             {{ template "order_form" . }}
           </div>
@@ -95,6 +95,8 @@
   </div>
 
   <script>
+    window.PRODUCT_IMAGES = {{ .productImages}};
+
     function openOrderModal(name) {
       document.getElementById('order-modal').style.display = 'flex';
       document.getElementById('order-modal-body').innerHTML = 'Loading…';
@@ -176,7 +178,7 @@
         },
 
         tax() {
-          return Math.round(this.subtotal() * 0.10)
+          return Math.round(this.subtotal() * 0.00)
         },
 
         grandTotal() {
@@ -186,7 +188,7 @@
         resetOrder() {
           this.items = []
           this.quantities = {}
-          this.numPeople = 1
+          this.numPeople = 0
         }
       }
     }

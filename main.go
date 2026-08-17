@@ -78,6 +78,11 @@ func main() {
 	pos.GET("", func(c *echo.Context) error {
 		products := models.FetchProducts()
 		tables := models.FetchTables()
+		productImages := make(map[string]string)
+
+		for _, p := range products {
+			productImages[p.Name] = p.Image
+		}
 
 		orders := models.FetchOrders()
 
@@ -90,6 +95,7 @@ func main() {
 		return c.Render(http.StatusOK, "main.html", map[string]any{
 			"orders":          orders,
 			"products":        products,
+			"productImages":   productImages,
 			"tables":          tables,
 			"CanAcceptDineIn": models.CanAcceptDineIn(),
 			"selectedOrder":   nil,
@@ -138,7 +144,7 @@ func main() {
 	pos.GET("/admin", controllers.RenderAdmin, auth.RequireAdmin)
 	pos.POST("/admin", routes.UpdateBusinessRoute, auth.RequireAdmin)
 
-	if err := e.Start(":5000"); err != nil {
+	if err := e.Start(":8000"); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
 	}
 }

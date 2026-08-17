@@ -20,8 +20,7 @@
       <div class="w-full flex flex-col items-center justify-center gap-5">
         <div class="w-full flex flex-col items-center justify-center gap-2">
           <h1 class="text-4xl text-pos_bla font-bold">Welcome Back</h1>
-          <p class="text-base text-pos_lgh">Sign in to access the POS. Or click to <a href="/register"
-              class="text-pos_col font-medium underline underline-offset-2">Register here</a>.</p>
+          <p class="text-base text-pos_pdg">Sign in to access the POS.</p>
         </div>
 
         {{ if .Error }}
@@ -30,36 +29,36 @@
 
         <div class="flex items-center justify-center gap-2 mb-5 border-b-2 border-pos_bla/15">
           <button type="button" id="tab-cashier"
-            class="ext-tab flex-1 text-base text-center text-pos_lgh font-bold cursor-pointer border-b-2 border-transparent -mb-0.5 tactive"
+            class="ext-tab flex-1 text-base text-center text-pos_pdg font-bold cursor-pointer border-b-2 border-transparent -mb-0.5 tactive"
             onclick="showTab('cashier')">Cashier</button>
           <button type="button" id="tab-admin"
-            class="ext-tab flex-1 text-base text-center text-pos_lgh font-bold cursor-pointer border-b-2 border-transparent -mb-0.5"
+            class="ext-tab flex-1 text-base text-center text-pos_pdg font-bold cursor-pointer border-b-2 border-transparent -mb-0.5"
             onclick="showTab('admin')">Admin</button>
         </div>
 
         <form id="form-cashier" class="w-[55%] flex flex-col items-center justify-center gap-5" method="POST"
           action="/login">
-          <p class="text-base text-center text-pos_lgh">New here? Just enter your name and the cashier password given to
+          <p class="text-base text-center text-pos_pdg">New here? Just enter your name and the cashier password given to
             you by the
             admin — we'll
             sign you up automatically. Already signed up? Same form logs you in.</p>
           <div class="w-full flex flex-col items-start justify-start gap-2.5">
-            <label for="cashier_name" class="text-base text-pos_col font-medium">Your name</label>
+            <label for="cashier_name" class="text-base text-pos_bla font-medium">Your name</label>
             <input type="text" id="cashier_name" name="cashier_name"
-              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
+              class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45"
               placeholder="e.g. Amina" required>
           </div>
           <div class="w-full flex flex-col items-start justify-start gap-2.5">
-            <label for="cashier_contact" class="text-base text-pos_col font-medium">Cashier Contact</label>
+            <label for="cashier_contact" class="text-base text-pos_bla font-medium">Cashier Contact</label>
             <input type="tel" id="cashier_contact" name="cashier_contact"
-              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
-              placeholder="min 4 characters" minlength="10" required>
+              class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45"
+              placeholder="07XXXXXXXX" minlength="10" required>
           </div>
           <div class="w-full flex flex-col items-start justify-start gap-2.5">
-            <label for="cashier_password_field" class="text-base text-pos_col font-medium">Cashier password</label>
+            <label for="cashier_password_field" class="text-base text-pos_bla font-medium">Cashier password</label>
             <input type="password" id="cashier_password_field" name="password"
-              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
-              required>
+              class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45"
+              placeholder="min 4 characters" required>
           </div>
           <button type="submit"
             class="w-full text-base text-pos_whi font-medium px-7 py-3 rounded-lg bg-pos_col">Continue</button>
@@ -67,13 +66,13 @@
 
         <form id="form-admin" class="w-[55%] flex flex-col items-center justify-center gap-5" method="POST"
           action="/login/admin" style="display:none">
-          <p class="text-base text-center text-pos_lgh">Enter the admin password to manage business details and
+          <p class="text-base text-center text-pos_pdg">Enter the admin password to manage business details and
             passwords.</p>
           <div class="w-full flex flex-col items-start justify-start gap-2.5">
-            <label for="admin_password_field" class="text-base text-pos_col font-medium">Admin password</label>
+            <label for="admin_password_field" class="text-base text-pos_bla font-medium">Admin password</label>
             <input type="password" id="admin_password_field" name="admin_password"
-              class="w-full text-base text-pos_col font-medium px-3 py-2.5 rounded-lg border-2 border-pos_col/45"
-              required>
+              class="w-full text-base text-pos_bla font-medium px-3 py-2.5 rounded-lg border-2 border-pos_bla/45"
+              placeholder="min 4 characters" required>
           </div>
           <button type="submit"
             class="w-full text-base text-pos_whi font-medium px-7 py-3 rounded-lg bg-pos_col ext-btn--dark">Sign In As

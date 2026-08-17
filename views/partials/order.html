@@ -70,14 +70,12 @@
   <input type="hidden" name="order_status" value="Placed">
   <input type="hidden" name="items" :value="JSON.stringify(items)">
 
-  <div class="w-full border-t border-dashed border-pos_pdg"></div>
-
   <!-- Item list: images, name, price, qty steppers -->
-  <div class="w-full flex flex-col items-start justify-start gap-1.5">
+  <div class="w-full max-h-[165px] flex flex-col items-start justify-start gap-1.5 overflow-clip">
     <p class="text-sm text-pos_bla font-bold">Order Items&nbsp;<span class="text-pos_bla/65 font-normal"
         x-text="'(' + items.length + ')'"></span></p>
 
-    <div class="w-full max-h-[220px] flex flex-col gap-2.5 overflow-y-auto">
+    <div class="w-full h-full flex flex-col gap-2.5 overflow-y-scroll">
       <template x-for="item in items" :key="item.name">
         <div class="w-full flex items-center gap-2.5">
           <img :src="PRODUCT_IMAGES[item.name] || ''" alt=""
@@ -139,7 +137,7 @@
     <button type="button" @click="paymentMethod = 'mm'"
       :class="paymentMethod === 'mm' ? 'border-pos_col bg-pos_col text-pos_whi' : 'border-pos_pdg text-pos_pdg'"
       class="flex flex-col items-center justify-center gap-0.5 py-2 rounded-lg border text-sm font-bold transition-all">
-      <i class="hgi hgi-stroke hgi-sim-card-02 text-xl"></i> Mobile Money
+      <i class="hgi hgi-stroke hgi-simcard-02 text-xl"></i> Mobile Money
     </button>
   </div>
 
