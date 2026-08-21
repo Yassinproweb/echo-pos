@@ -97,9 +97,10 @@ func RenderProducts(c *echo.Context) error {
 // RenderNewProduct shows the "add product" form.
 func RenderNewProduct(c *echo.Context) error {
 	return c.Render(http.StatusOK, "product_new.html", map[string]any{
-		"Error":     "",
-		"IsAdmin":   auth.IsAdminSession(c),
-		"ActorName": auth.ActorName(c),
+		"Error":           "",
+		"CanAcceptDineIn": models.CanAcceptDineIn(),
+		"IsAdmin":         auth.IsAdminSession(c),
+		"ActorName":       auth.ActorName(c),
 	})
 }
 
@@ -124,9 +125,10 @@ func RenderTables(c *echo.Context) error {
 // RenderNewTable shows the "add table" form.
 func RenderNewTable(c *echo.Context) error {
 	return c.Render(http.StatusOK, "table_new.html", map[string]any{
-		"Error":     "",
-		"IsAdmin":   auth.IsAdminSession(c),
-		"ActorName": auth.ActorName(c),
+		"Error":           "",
+		"CanAcceptDineIn": models.CanAcceptDineIn(),
+		"IsAdmin":         auth.IsAdminSession(c),
+		"ActorName":       auth.ActorName(c),
 	})
 }
 

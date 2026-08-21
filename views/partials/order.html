@@ -1,6 +1,6 @@
 {{ define "order_form" }}
 <form id="form" hx-post="/pos/orders/create" hx-swap="none"
-  hx-on::after-request="if(event.detail.successful) { resetOrder(); }"
+  hx-on::after-request="if(event.detail.successful) { resetOrder(); }" x-effect="autoAssignTable()"
   class="w-full h-full flex flex-col items-start justify-start gap-4 text-pos_bla">
 
   <div class="w-full flex items-center justify-between">
@@ -17,7 +17,7 @@
     <button type="button" @click="orderType = 'Takeaway'"
       :class="orderType === 'Takeaway' ? 'bg-pos_col text-pos_whi' : 'text-pos_bla/60'"
       class="flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-bold transition-all">
-      <i class="hgi hgi-stroke hgi-shopping-bag-01 text-base"></i> Take Away
+      <i class="hgi hgi-stroke hgi-packaging text-base"></i> Take Away
     </button>
     <button type="button" @click="orderType = 'Delivery'"
       :class="orderType === 'Delivery' ? 'bg-pos_col text-pos_whi' : 'text-pos_bla/60'"
@@ -40,20 +40,36 @@
         class="w-full border border-pos_pdg rounded-lg px-3 py-2 text-sm placeholder:opacity-45" required>
     </div>
 
-    <div class="w-full flex flex-col items-start justify-start gap-1">
+    <div class="w-full flex flex-col items-start justify-start gap-1" x-show="orderType !== 'DineIn'">
       <label for="order_dest" class="text-sm text-pos_bla/65 font-bold">
-        <span
-          x-text="orderType === 'DineIn' ? 'Table Number' : orderType === 'Delivery' ? 'Delivery Address' : 'Pickup Note'"></span>
+        <span x-text="orderType === 'Delivery' ? 'Delivery Address' : 'Pickup Note'"></span>
       </label>
-      <input type="text" id="order_dest" name="order_dest"
+      <input type="text" id="order_dest_freeform" name="order_dest"
         class="w-full border border-pos_pdg rounded-lg px-3 py-2 text-sm placeholder:opacity-45"
-        :disabled="orderType === 'Takeaway'" :required="orderType === 'Delivery' || orderType === 'DineIn'"
-        :placeholder="orderType === 'DineIn' ? 'e.g. 10' : orderType === 'Delivery' ? 'Enter delivery address' : 'Not required'">
+        :disabled="orderType === 'Takeaway' || orderType === 'DineIn'" :required="orderType === 'Delivery'"
+        :placeholder="orderType === 'Delivery' ? 'Enter delivery address' : 'Not required'">
+    </div>
+
+    <!-- DineIn: table is assigned automatically (smallest Available table
+         that seats the party), not typed in. order_dest is kept in sync
+         via x-model on the hidden input below so CreateOrder still gets
+         the table name in the same form field it always expected. -->
+    <div class="w-full flex flex-col items-start justify-start gap-1" x-show="orderType === 'DineIn'">
+      <label class="text-sm text-pos_bla/65 font-bold">Assigned Table</label>
+      <div
+        class="w-full flex items-center gap-2 border border-pos_pdg rounded-lg px-3 py-2 text-sm"
+        :class="assignedTable ? 'text-pos_bla' : 'text-pos_col'">
+        <i class="hgi hgi-stroke hgi-dining-table text-base shrink-0"></i>
+        <span x-text="assignedTable || 'No table available for this party size'"></span>
+      </div>
+      <input type="hidden" id="order_dest" name="order_dest" x-model="assignedTable"
+        :disabled="orderType !== 'DineIn'">
     </div>
   </div>
 
   <!-- Party size — DineIn only, drives how many seats show occupied on
-       Manage Tables and how many empty seats are left on that table. -->
+       Manage Tables, how many empty seats are left on that table, and
+       which table gets auto-assigned above. -->
   <div class="w-full flex flex-col items-start justify-start gap-1" x-show="orderType === 'DineIn'">
     <label for="num_people" class="text-sm text-pos_bla/65 font-bold">Number of Guests</label>
     <input type="number" id="num_people" name="num_people" min="1" value="1" x-model="numPeople"
@@ -141,12 +157,28 @@
     </button>
   </div>
 
-  <button type="submit" :disabled="items.length === 0" hx-indicator="#loading"
+  <button type="submit" :disabled="items.length === 0 || (orderType === 'DineIn' && !assignedTable)"
+    hx-indicator="#loading"
     class="w-full px-5 py-3 text-base text-pos_whi text-center font-bold rounded-xl bg-pos_col disabled:opacity-50 disabled:cursor-not-allowed">
     <span class="htmx-inverted-indicator">Checkout</span>
     <span class="htmx-indicator" id="loading">...</span>
   </button>
 </form>
+
+<script>
+  // Every render/swap of this partial carries a fresh "tables" snapshot
+  // from the server, so re-sync the global used by autoAssignTable() and
+  // re-pick a table immediately — otherwise a table taken by the order
+  // just placed could still look auto-assignable for the next one.
+  window.TABLES = {{ .tables }};
+  document.querySelectorAll('[x-data]').forEach((el) => {
+    if (!window.Alpine) return;
+    const data = window.Alpine.$data(el);
+    if (data && typeof data.autoAssignTable === 'function') {
+      data.autoAssignTable();
+    }
+  });
+</script>
 {{ end }}
 
 {{ define "toast" }}

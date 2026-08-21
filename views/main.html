@@ -25,7 +25,7 @@
     {{ template "navbar" . }}
 
     <div
-      class="relative w-[93%] h-full right-0 flex flex-col items-start justify-start gap-0 bg-pos_lgh/45 overflow-clip">
+      class="relative w-[93%] h-full right-0 flex flex-col items-start justify-start gap-0 bg-[#f5f6fa] overflow-clip">
       {{ template "topbar" . }}
 
       <div x-data="orderApp()" @order-submitted.window="resetOrder()"
@@ -96,6 +96,7 @@
 
   <script>
     window.PRODUCT_IMAGES = {{ .productImages}};
+    window.TABLES = {{ .tables}};
 
     function openOrderModal(name) {
       document.getElementById('order-modal').style.display = 'flex';
@@ -136,6 +137,27 @@
         orderType: 'DineIn',
         numPeople: 1,
         paymentMethod: 'cash', // display-only; this app doesn't process payments
+        assignedTable: '', // auto-picked DineIn table name, mirrored into #order_dest
+
+        // Auto-assign the smallest Available table that seats numPeople.
+        // Re-run whenever orderType or numPeople changes (see x-effect in
+        // order.html). Picking the smallest fit (not just the first
+        // Available table) keeps bigger tables free for bigger parties.
+        autoAssignTable() {
+          if (this.orderType !== 'DineIn') {
+            this.assignedTable = ''
+            return
+          }
+
+          const need = Math.max(1, parseInt(this.numPeople) || 1)
+          const tables = Array.isArray(window.TABLES) ? window.TABLES : []
+
+          const fits = tables
+            .filter(t => t.State === 'Available' && t.Capacity >= need)
+            .sort((a, b) => a.Capacity - b.Capacity)
+
+          this.assignedTable = fits.length ? fits[0].Name : ''
+        },
 
         increase(name, price) {
           if (!this.quantities[name]) {
@@ -188,7 +210,8 @@
         resetOrder() {
           this.items = []
           this.quantities = {}
-          this.numPeople = 0
+          this.numPeople = 1
+          this.autoAssignTable()
         }
       }
     }
